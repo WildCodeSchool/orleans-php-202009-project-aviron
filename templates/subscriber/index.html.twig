@@ -21,9 +21,9 @@
                         <tbody>
                         {% for subscriber in subscribers %}
                         <tr>
-                            <td>{{ subscriber.licence_number}}</td>
+                            <td>{{ subscriber.licenceNumber}}</td>
                             <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
-                            <td>{{ subscriber.birthdate }}</td>
+                            <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                         </tr>
                         </tbody>
