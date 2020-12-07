@@ -30,7 +30,7 @@ class Subscriber
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private \DateTimeInterface $birthdate;
+    private ?\DateTimeInterface $birthdate;
 
     /**
      * @ORM\Column(type="integer")
@@ -76,7 +76,7 @@ class Subscriber
         return $this->birthdate;
     }
 
-    public function setBirthdate(\DateTimeInterface $birthdate): self
+    public function setBirthdate(?\DateTimeInterface $birthdate): self
     {
         $this->birthdate = $birthdate;
 
