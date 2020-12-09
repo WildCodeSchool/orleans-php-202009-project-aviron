@@ -45,13 +45,13 @@ class Subscriber
     private string $gender;
 
     /**
-     * @ORM\OneToMany(targetEntity=SubscriberSeason::class, mappedBy="subscriber")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="subscriber")
      */
-    private Collection $subscriberSeasons;
+    private Collection $subscriptions;
 
     public function __construct()
     {
-        $this->subscriberSeasons = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,29 +120,51 @@ class Subscriber
     }
 
     /**
-     * @return Collection|SubscriberSeason[]
+     * @return Collection|Subscription[]
      */
-    public function getSubscriberSeasons(): Collection
+    public function getSubscriptions(): Collection
     {
-        return $this->subscriberSeasons;
+        return $this->subscriptions;
     }
 
-    public function addSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    public function addSubscriptions(Subscription $subscriptions): self
     {
-        if (!$this->subscriberSeasons->contains($subscriberSeason)) {
-            $this->subscriberSeasons[] = $subscriberSeason;
-            $subscriberSeason->setSubscriber($this);
+        if (!$this->subscriptions->contains($subscriptions)) {
+            $this->subscriptions[] = $subscriptions;
+            $subscriptions->setSubscriber($this);
         }
 
         return $this;
     }
 
-    public function removeSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    public function removeSubscriptions(Subscription $subscriptions): self
     {
-        if ($this->subscriberSeasons->removeElement($subscriberSeason)) {
+        if ($this->subscriptions->removeElement($subscriptions)) {
             // set the owning side to null (unless already changed)
-            if ($subscriberSeason->getSubscriber() === $this) {
-                $subscriberSeason->setSubscriber(null);
+            if ($subscriptions->getSubscriber() === $this) {
+                $subscriptions->setSubscriber(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getSubscriber() === $this) {
+                $subscription->setSubscriber(null);
             }
         }
 

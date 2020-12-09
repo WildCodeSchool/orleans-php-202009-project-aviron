@@ -35,13 +35,13 @@ class Season
     private \DateTimeInterface $endingDate;
 
     /**
-     * @ORM\OneToMany(targetEntity=SubscriberSeason::class, mappedBy="season")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="season")
      */
-    private Collection $subscriberSeasons;
+    private Collection $subscriptions;
 
     public function __construct()
     {
-        $this->subscriberSeasons = new ArrayCollection();
+        $this->subscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,29 +86,51 @@ class Season
     }
 
     /**
-     * @return Collection|SubscriberSeason[]
+     * @return Collection|Subscription[]
      */
-    public function getSubscriberSeasons(): Collection
+    public function getSubscriptions(): Collection
     {
-        return $this->subscriberSeasons;
+        return $this->subscriptions;
     }
 
-    public function addSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    public function addSubscriptions(Subscription $subscriptions): self
     {
-        if (!$this->subscriberSeasons->contains($subscriberSeason)) {
-            $this->subscriberSeasons[] = $subscriberSeason;
-            $subscriberSeason->setSeason($this);
+        if (!$this->subscriptions->contains($subscriptions)) {
+            $this->subscriptions[] = $subscriptions;
+            $subscriptions->setSeason($this);
         }
 
         return $this;
     }
 
-    public function removeSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    public function removeSubscriptions(Subscription $subscriptions): self
     {
-        if ($this->subscriberSeasons->removeElement($subscriberSeason)) {
+        if ($this->subscriptions->removeElement($subscriptions)) {
             // set the owning side to null (unless already changed)
-            if ($subscriberSeason->getSeason() === $this) {
-                $subscriberSeason->setSeason(null);
+            if ($subscriptions->getSeason() === $this) {
+                $subscriptions->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addSubscription(Subscription $subscription): self
+    {
+        if (!$this->subscriptions->contains($subscription)) {
+            $this->subscriptions[] = $subscription;
+            $subscription->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscription(Subscription $subscription): self
+    {
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getSeason() === $this) {
+                $subscription->setSeason(null);
             }
         }
 
