@@ -1,0 +1,53 @@
+/* Sidebar **/
+
+.sidebar {
+  padding-top: $spacing * 2;
+  width: $navbar-width;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  background: $primary;
+  color: $light;
+  box-shadow: 3px 0px 3px $dark-shadow;
+  text-align: left;
+  font-family: $font-family-title;
+
+  ul li a {
+    display: block;
+    padding: $spacing $spacing*2;
+    border: 0;
+    color: $light;
+  }
+
+  ul ul a {
+    background: darken($primary, 4%);
+    padding-left: $spacing*5;
+    font-size: $font-size-sm;
+  }
+}
+
+
+.sidebar ul li a:hover,
+.sidebar ul li.active > a:hover,
+.sidebar ul li.active > a:focus {
+  background: $secondary;
+  color: $light;
+  text-decoration: none;
+}
+
+.sidebar, a[aria-expanded="true"] {
+  background: $secondary;
+}
+
+.sidebar a[data-toggle="collapse"] {
+  position: relative;
+}
+
+.sidebar .dropdown-toggle::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: $spacing*3;
+  transform: translateY(-50%);
+}
+
