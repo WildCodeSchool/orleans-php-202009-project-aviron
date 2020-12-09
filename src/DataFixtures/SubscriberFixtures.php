@@ -20,9 +20,12 @@ class SubscriberFixtures extends Fixture
         $faker = Faker\Factory::create('fr_FR');
         for ($i = 0; $i < 100; $i++) {
             $subscriber = new Subscriber();
-            $subscriber->setFirstname($faker->firstNameMale);
+            $subscriber->setFirstname($faker->firstName);
             $subscriber->setLastname($faker->lastName);
-            $subscriber->setBirthdate(\DateTime::createFromFormat('Y-m-d', "1980-09-09"));
+            $subscriber->setBirthdate(\DateTime::createFromFormat(
+                'Y-m-d',
+                $faker->dateTimeThisCentury->format('Y-m-d')
+            ));
             $subscriber->setLicenceNumber($faker->randomNumber(5, false));
             $subscriber->setGender(self::GENDER[rand(0, 1)]);
 
