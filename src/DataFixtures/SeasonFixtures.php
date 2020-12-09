@@ -29,6 +29,14 @@ class SeasonFixtures extends Fixture
             'startingDate' => '2016-09-01',
             'endingDate' => '2017-06-30',
         ],
+        '2015-2016' => [
+            'startingDate' => '2015-09-01',
+            'endingDate' => '2016-06-30',
+        ],
+        '2014-2015' => [
+            'startingDate' => '2014-09-01',
+            'endingDate' => '2015-06-30',
+        ],
     ];
     public function load(ObjectManager $manager)
     {
