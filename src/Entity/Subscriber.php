@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SubscriberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Subscriber
      * @ORM\Column(type="string", length=45)
      */
     private string $gender;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SubscriberSeason::class, mappedBy="subscriber")
+     */
+    private Collection $subscriberSeasons;
+
+    public function __construct()
+    {
+        $this->subscriberSeasons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,36 @@ class Subscriber
     public function setGender(string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|SubscriberSeason[]
+     */
+    public function getSubscriberSeasons(): Collection
+    {
+        return $this->subscriberSeasons;
+    }
+
+    public function addSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    {
+        if (!$this->subscriberSeasons->contains($subscriberSeason)) {
+            $this->subscriberSeasons[] = $subscriberSeason;
+            $subscriberSeason->setSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubscriberSeason(SubscriberSeason $subscriberSeason): self
+    {
+        if ($this->subscriberSeasons->removeElement($subscriberSeason)) {
+            // set the owning side to null (unless already changed)
+            if ($subscriberSeason->getSubscriber() === $this) {
+                $subscriberSeason->setSubscriber(null);
+            }
+        }
 
         return $this;
     }
