@@ -1,0 +1,10 @@
+@import 'variables.scss';
+
+.summary {
+  border: $small-border solid $primary;
+  border-radius: $border-radius;
+}
+
+.divider-right {
+  border-right: $large-border solid $primary;
+}
