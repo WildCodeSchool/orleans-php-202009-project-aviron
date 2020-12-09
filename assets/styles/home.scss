@@ -1,10 +1,30 @@
-@import 'variables.scss';
+@import 'variables';
 
-.summary {
-  border: $small-border solid $primary;
-  border-radius: $border-radius;
+body {
+    background-color: $fourth;
 }
 
-.divider-right {
-  border-right: $large-border solid $primary;
+.card-shadow {
+    background-color: $light;
+    border-radius: $border-radius;
+}
+
+.divider-border {
+    border-left: $large-border solid $dark;
+    border-right: $large-border solid $dark;
+}
+
+.graph-small {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+}
+
+@media screen and (max-width: 767.98px) {
+    .divider-border {
+        border-bottom: $large-border solid $primary;
+        border-left: 0;
+        border-right: 0;
+        border-top: $large-border solid $primary;
+    }
 }
