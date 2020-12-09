@@ -11,8 +11,8 @@ use Faker;
 class SubscriberFixtures extends Fixture
 {
     private const GENDER = [
-        'F',
-        'H',
+        'female' => 'F',
+        'male' => 'H',
     ];
 
     public function load(ObjectManager $manager)
@@ -20,14 +20,12 @@ class SubscriberFixtures extends Fixture
         $faker = Faker\Factory::create('fr_FR');
         for ($i = 0; $i < 100; $i++) {
             $subscriber = new Subscriber();
-            $subscriber->setFirstname($faker->firstName);
+            $gender = array_rand(self::GENDER, 1);
+            $subscriber->setGender(self::GENDER[$gender]);
+            $subscriber->setFirstname($faker->firstName($gender));
             $subscriber->setLastname($faker->lastName);
-            $subscriber->setBirthdate(\DateTime::createFromFormat(
-                'Y-m-d',
-                $faker->dateTimeThisCentury->format('Y-m-d')
-            ));
+            $subscriber->setBirthdate($faker->dateTimeThisCentury());
             $subscriber->setLicenceNumber($faker->randomNumber(5, false));
-            $subscriber->setGender(self::GENDER[rand(0, 1)]);
 
             $manager->persist($subscriber);
             $this->addReference('subscriber_' . $i, $subscriber);
