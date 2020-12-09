@@ -47,7 +47,7 @@ class Subscriber
     /**
      * @ORM\ManyToMany(targetEntity=Season::class, mappedBy="subscribers")
      */
-    private ArrayCollection $seasons;
+    private Collection $seasons;
 
     public function __construct()
     {

@@ -16,6 +16,9 @@
                             <th scope="col">Nom, Prénom</th>
                             <th scope="col">Date de naissance</th>
                             <th scope="col">Genre</th>
+                            {% for season in seasons %}
+                            <th scope="col">{{ season.name }}</th>
+                            {% endfor %}
                         </tr>
                         </thead>
                         <tbody>
