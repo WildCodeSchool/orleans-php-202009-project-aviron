@@ -14,12 +14,6 @@ body {
     border-right: $large-border solid $dark;
 }
 
-.graph-small {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: cover;
-}
-
 @media screen and (max-width: 767.98px) {
     .divider-border {
         border-bottom: $large-border solid $primary;
