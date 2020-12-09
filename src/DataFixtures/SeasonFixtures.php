@@ -36,8 +36,8 @@ class SeasonFixtures extends Fixture
         foreach (self::SEASONS as $name => $data) {
             $season = new Season();
             $season->setName($name);
-            $season->setStartingDate(\DateTime::createFromFormat('Y-m-d, ', $data['startingDate']));
-            $season->setEndingDate(\DateTime::createFromFormat('Y-m-d, ', $data['endingdate']));
+            $season->setStartingDate(\DateTime::createFromFormat('Y-m-d', $data['startingDate']));
+            $season->setEndingDate(\DateTime::createFromFormat('Y-m-d', $data['endingDate']));
             $manager->persist($season);
             $this->addReference('season_' . $index, $season);
             $index++;
