@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SubscriberRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Subscriber
      * @ORM\Column(type="string", length=45)
      */
     private string $gender;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Season::class, mappedBy="subscribers")
+     */
+    private ArrayCollection $seasons;
+
+    public function __construct()
+    {
+        $this->seasons = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,33 @@ class Subscriber
     public function setGender(string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Season[]
+     */
+    public function getSeasons(): Collection
+    {
+        return $this->seasons;
+    }
+
+    public function addSeason(Season $season): self
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons[] = $season;
+            $season->addSubscriber($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeason(Season $season): self
+    {
+        if ($this->seasons->removeElement($season)) {
+            $season->removeSubscriber($this);
+        }
 
         return $this;
     }
