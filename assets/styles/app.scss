@@ -2,11 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap');
 
 @import 'variables';
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
+@import 'navbar';
 
 body {
     background-color: $light;
-    color: $primary;
 }
 
 h1,
@@ -14,6 +14,11 @@ h2,
 h3,
 h4 {
     font-family: $font-family-title;
+}
+
+#content {
+    margin-left: $navbar-width;
+    transition: 0.5s;
 }
 
 .box-shadow {

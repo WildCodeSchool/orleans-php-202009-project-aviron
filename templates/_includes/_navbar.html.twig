@@ -1,0 +1,67 @@
+<nav class="sidebar bg-primary" id="mySidebar">
+    <button onclick="closeNav()" class="close-button btn">
+        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-left-square-fill" fill="white"
+             xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2
+            0 0 0-2-2H2zm9.5 8.5a.5.5 0 0 0 0-1H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3
+            3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5z"/>
+        </svg>
+    </button>
+
+    <ul class="list-unstyled">
+        <li>
+            <a href="#">Accueil</a>
+        </li>
+        <li>
+            <a href="#statistics" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button"
+               aria-controls="statistiques">Statistiques</a>
+            <ul class="collapse list-unstyled" id="statistics">
+                <li>
+                    <a href="#">Général</a>
+                </li>
+                <li>
+                    <a href="#">Sortants</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#recap" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
+               role="button" aria-controls="Récapitulatifs">Récapitulatifs</a>
+            <ul class="collapse list-unstyled" id="recap">
+                <li>
+                    <a href="#">Inscriptions</a>
+                </li>
+                <li>
+                    <a href="#">Renouvellements</a>
+                </li>
+                <li>
+                    <a href="#">Types de licences</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Pyramide</a>
+        </li>
+        <li>
+            <a href="#tools" data-toggle="collapse" aria-expanded="false"
+               class="dropdown-toggle" role="button">Outils</a>
+            <ul class="collapse list-unstyled" id="tools">
+                <li>
+                    <a href="#">Import</a>
+                </li>
+                <li>
+                    <a href="#">Gestion des filtres</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<button onclick="openNav()" class="btn open-button">
+    <svg width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-arrow-right-square-fill" fill="#05445e"
+         xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2
+        2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1
+        0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+    </svg>
+</button>
