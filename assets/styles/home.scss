@@ -10,15 +10,15 @@ body {
 }
 
 .divider-border {
-    border-left: $large-border solid $dark;
-    border-right: $large-border solid $dark;
+    border-inline-end: solid;
+    border-inline-start: solid;
 }
 
-@media screen and (max-width: 767.98px) {
+@media screen and (max-width: 768px) {
     .divider-border {
-        border-bottom: $large-border solid $primary;
-        border-left: 0;
-        border-right: 0;
-        border-top: $large-border solid $primary;
+        border-block-end: solid;
+        border-block-start: solid;
+        border-inline-end: 0;
+        border-inline-start: 0;
     }
 }
