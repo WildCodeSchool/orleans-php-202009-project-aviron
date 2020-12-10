@@ -23,13 +23,13 @@ class Subscription
     private \DateTimeInterface $subscriptionDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Subscriber::class, inversedBy="subscriberSeasons")
+     * @ORM\ManyToOne(targetEntity=Subscriber::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Subscriber $subscriber;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="subscriberSeasons")
+     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Season $season;

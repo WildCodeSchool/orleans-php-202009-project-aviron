@@ -23,7 +23,6 @@
                         </thead>
                         <tbody>
                         {% for subscriber in subscribers %}
-                        {% for subscription in subscriber.subscription %}
                         <tr>
                             <td>{{ subscriber.licenceNumber}}</td>
                             <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
@@ -32,8 +31,6 @@
                         </tr>
                         </tbody>
                         {% endfor %}
-                        {% endfor %}
-
                     </table>
                 </div>
             </div>
