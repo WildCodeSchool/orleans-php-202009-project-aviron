@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}Licenciés{% endblock %}
+{% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1>Récapitulatif des inscriptions</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">N° adhérent</th>
+                            <th scope="col">Nom, Prénom</th>
+                            <th scope="col">Date de naissance</th>
+                            <th scope="col">Genre</th>
+                            {% for season in seasons %}
+                                <th scope="col">{{ season.name }}</th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for subscriber in subscribers %}
+                        {% for subscription in subscriber.subscription %}
+                        <tr>
+                            <td>{{ subscriber.licenceNumber}}</td>
+                            <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
+                            <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
+                            <td>{{ subscriber.gender }}</td>
+                        </tr>
+                        </tbody>
+                        {% endfor %}
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock %}
