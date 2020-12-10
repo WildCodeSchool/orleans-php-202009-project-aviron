@@ -13,8 +13,9 @@ h1, h2, h3, h4 {
     font-family: $font-family-title;
 }
 
-.content {
+#content {
     margin-left: $navbar-width;
+    transition: 0.5s;
 }
 
 .box-shadow {

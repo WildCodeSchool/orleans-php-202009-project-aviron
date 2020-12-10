@@ -10,16 +10,15 @@
         {% endblock %}
     </head>
     <body>
-        <div class="sidebar bg-primary">
             {% block navbar %} {% include '_includes/_navbar.html.twig' %} {% endblock %}
-        </div>
 
-        <div class="content">
+        <div id="content" >
             {% block body %}{% endblock %}
         </div>
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
+            {{ encore_entry_script_tags('navbar') }}
         {% endblock %}
     </body>
 </html>
