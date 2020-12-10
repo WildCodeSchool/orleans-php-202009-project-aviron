@@ -93,7 +93,7 @@ class Season
         return $this->subscriptions;
     }
 
-    public function addSubscriptions(Subscription $subscriptions): self
+    public function addSubscription(Subscription $subscriptions): self
     {
         if (!$this->subscriptions->contains($subscriptions)) {
             $this->subscriptions[] = $subscriptions;
@@ -103,7 +103,7 @@ class Season
         return $this;
     }
 
-    public function removeSubscriptions(Subscription $subscriptions): self
+    public function removeSubscription(Subscription $subscriptions): self
     {
         if ($this->subscriptions->removeElement($subscriptions)) {
             // set the owning side to null (unless already changed)
