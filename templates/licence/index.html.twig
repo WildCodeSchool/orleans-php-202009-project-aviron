@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} - Types de licence{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="text-center my-4">Récapitulatif des types de licences</h1>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">N° adhérent</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Date de naissance</th>
+                        <th scope="col">Genre</th>
+                        {% for season in seasons %}
+                            <th scope="col">{{ season.name }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for subscriber in subscribers %}
+                        <tr>
+                            <td>{{ subscriber.licenceNumber}}</td>
+                            <td>{{ subscriber.lastname }}</td>
+                            <td>{{ subscriber.firstname }}</td>
+                            <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
+                            <td>{{ subscriber.gender }}</td>
+                            {% for season in seasons %}
+                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                    <td>{{ subscription.licence.acronym }}</td>
+                                {% else %}
+                                    <td></td>
+                                {% endfor %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

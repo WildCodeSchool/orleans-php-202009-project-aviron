@@ -23,16 +23,22 @@ class Subscription
     private \DateTimeInterface $subscriptionDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Subscriber::class, inversedBy="subscriberSeasons")
+     * @ORM\ManyToOne(targetEntity=Subscriber::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Subscriber $subscriber;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="subscriberSeasons")
+     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Season $season;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Licence::class, inversedBy="subscriptions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Licence $licence;
 
     public function getId(): ?int
     {
@@ -71,6 +77,18 @@ class Subscription
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getLicence(): ?Licence
+    {
+        return $this->licence;
+    }
+
+    public function setLicence(?Licence $licence): self
+    {
+        $this->licence = $licence;
 
         return $this;
     }

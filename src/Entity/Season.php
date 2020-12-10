@@ -114,26 +114,4 @@ class Season
 
         return $this;
     }
-
-    public function addSubscription(Subscription $subscription): self
-    {
-        if (!$this->subscriptions->contains($subscription)) {
-            $this->subscriptions[] = $subscription;
-            $subscription->setSeason($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscription(Subscription $subscription): self
-    {
-        if ($this->subscriptions->removeElement($subscription)) {
-            // set the owning side to null (unless already changed)
-            if ($subscription->getSeason() === $this) {
-                $subscription->setSeason(null);
-            }
-        }
-
-        return $this;
-    }
 }
