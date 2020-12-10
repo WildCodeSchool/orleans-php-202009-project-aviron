@@ -1,0 +1,24 @@
+@import 'variables';
+
+body {
+    background-color: $fourth;
+}
+
+.card-shadow {
+    background-color: $light;
+    border-radius: $border-radius;
+}
+
+.divider-border {
+    border-inline-end: solid;
+    border-inline-start: solid;
+}
+
+@media screen and (max-width: 768px) {
+    .divider-border {
+        border-block-end: solid;
+        border-block-start: solid;
+        border-inline-end: 0;
+        border-inline-start: 0;
+    }
+}
