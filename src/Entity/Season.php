@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\SubscriberRepository;
+use App\Repository\SeasonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=SubscriberRepository::class)
+ * @ORM\Entity(repositoryClass=SeasonRepository::class)
  */
-class Subscriber
+class Season
 {
     /**
      * @ORM\Id
@@ -22,30 +22,20 @@ class Subscriber
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private string $firstname;
+    private string $name;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="date")
      */
-    private string $lastname;
+    private \DateTimeInterface $startingDate;
 
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(type="date")
      */
-    private \DateTimeInterface $birthdate;
+    private \DateTimeInterface $endingDate;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private int $licenceNumber;
-
-    /**
-     * @ORM\Column(type="string", length=45)
-     */
-    private string $gender;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="subscriber")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="season")
      */
     private Collection $subscriptions;
 
@@ -59,62 +49,38 @@ class Subscriber
         return $this->id;
     }
 
-    public function getFirstname(): ?string
+    public function getName(): ?string
     {
-        return $this->firstname;
+        return $this->name;
     }
 
-    public function setFirstname(string $firstname): self
+    public function setName(string $name): self
     {
-        $this->firstname = $firstname;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getLastname(): ?string
+    public function getStartingDate(): ?\DateTimeInterface
     {
-        return $this->lastname;
+        return $this->startingDate;
     }
 
-    public function setLastname(string $lastname): self
+    public function setStartingDate(\DateTimeInterface $startingDate): self
     {
-        $this->lastname = $lastname;
+        $this->startingDate = $startingDate;
 
         return $this;
     }
 
-    public function getBirthdate(): ?\DateTimeInterface
+    public function getEndingDate(): ?\DateTimeInterface
     {
-        return $this->birthdate;
+        return $this->endingDate;
     }
 
-    public function setBirthdate(\DateTimeInterface $birthdate): self
+    public function setEndingDate(\DateTimeInterface $endingDate): self
     {
-        $this->birthdate = $birthdate;
-
-        return $this;
-    }
-
-    public function getLicenceNumber(): ?int
-    {
-        return $this->licenceNumber;
-    }
-
-    public function setLicenceNumber(int $licenceNumber): self
-    {
-        $this->licenceNumber = $licenceNumber;
-
-        return $this;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
+        $this->endingDate = $endingDate;
 
         return $this;
     }
@@ -131,7 +97,7 @@ class Subscriber
     {
         if (!$this->subscriptions->contains($subscriptions)) {
             $this->subscriptions[] = $subscriptions;
-            $subscriptions->setSubscriber($this);
+            $subscriptions->setSeason($this);
         }
 
         return $this;
@@ -141,8 +107,8 @@ class Subscriber
     {
         if ($this->subscriptions->removeElement($subscriptions)) {
             // set the owning side to null (unless already changed)
-            if ($subscriptions->getSubscriber() === $this) {
-                $subscriptions->setSubscriber(null);
+            if ($subscriptions->getSeason() === $this) {
+                $subscriptions->setSeason(null);
             }
         }
 
@@ -153,7 +119,7 @@ class Subscriber
     {
         if (!$this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
-            $subscription->setSubscriber($this);
+            $subscription->setSeason($this);
         }
 
         return $this;
@@ -163,8 +129,8 @@ class Subscriber
     {
         if ($this->subscriptions->removeElement($subscription)) {
             // set the owning side to null (unless already changed)
-            if ($subscription->getSubscriber() === $this) {
-                $subscription->setSubscriber(null);
+            if ($subscription->getSeason() === $this) {
+                $subscription->setSeason(null);
             }
         }
 
