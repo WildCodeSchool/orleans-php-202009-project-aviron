@@ -23,12 +23,15 @@
                         </thead>
                         <tbody>
                         {% for subscriber in subscribers %}
-                        {% for subscription in subscriber.subscription %}
+                        {{ dump(subscriber) }}
+                        {% for subscription in subscriber.subscriptions %}
                         <tr>
                             <td>{{ subscriber.licenceNumber}}</td>
                             <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
+                            <td>{{ subscription.subscriptionDate|date("m/d/Y") }}</td>
+
                         </tr>
                         </tbody>
                         {% endfor %}
