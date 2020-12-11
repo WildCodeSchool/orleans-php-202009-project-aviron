@@ -18,7 +18,7 @@ class SubscriberController extends AbstractController
 {
     /**
      * Correspond à la route /subscribers/ et au name "subscriber_index"
-     * @Route("/{display}", name="index")
+     * @Route("/{display}", methods={"GET"}, name="index")
      * @param string $display
      * @param LicenceRepository $licenceRepository
      * @param SubscriberRepository $subscriberRepository
@@ -35,7 +35,7 @@ class SubscriberController extends AbstractController
         $subscribers = $subscriberRepository->findAll();
         $seasons = $seasonRepository->findAll();
 
-        return $this->render('licence/index.html.twig', [
+        return $this->render('subscriber/index.html.twig', [
             'display' => $display,
             'licences' => $licences,
             'subscribers' => $subscribers,
