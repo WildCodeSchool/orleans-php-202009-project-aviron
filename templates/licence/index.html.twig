@@ -2,7 +2,9 @@
 {% block title %}{{ parent() }} - Types de licence{% endblock %}
 {% block body %}
     <div class="container-fluid">
-        <h1 class="text-center my-4">Récapitulatif des types de licences</h1>
+        <h1 class="text-center my-4">
+            {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
+        </h1>
         <div class="row">
             <div class="col-12">
                 <table class="table table-hover table-striped">
@@ -27,11 +29,13 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                    <td class="text-center">{{ subscription.licence.acronym }}</td>
-                                {% else %}
-                                    <td></td>
-                                {% endfor %}
+                                {% if display == 'licences' %}
+                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                        <td class="text-center">{{ subscription.licence.acronym }}</td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
