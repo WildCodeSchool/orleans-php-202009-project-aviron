@@ -127,7 +127,7 @@ class Subscriber
         return $this->subscriptions;
     }
 
-    public function addSubscriptions(Subscription $subscriptions): self
+    public function addSubscription(Subscription $subscriptions): self
     {
         if (!$this->subscriptions->contains($subscriptions)) {
             $this->subscriptions[] = $subscriptions;
@@ -137,34 +137,12 @@ class Subscriber
         return $this;
     }
 
-    public function removeSubscriptions(Subscription $subscriptions): self
+    public function removeSubscription(Subscription $subscriptions): self
     {
         if ($this->subscriptions->removeElement($subscriptions)) {
             // set the owning side to null (unless already changed)
             if ($subscriptions->getSubscriber() === $this) {
                 $subscriptions->setSubscriber(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function addSubscription(Subscription $subscription): self
-    {
-        if (!$this->subscriptions->contains($subscription)) {
-            $this->subscriptions[] = $subscription;
-            $subscription->setSubscriber($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubscription(Subscription $subscription): self
-    {
-        if ($this->subscriptions->removeElement($subscription)) {
-            // set the owning side to null (unless already changed)
-            if ($subscription->getSubscriber() === $this) {
-                $subscription->setSubscriber(null);
             }
         }
 

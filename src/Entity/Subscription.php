@@ -34,6 +34,12 @@ class Subscription
      */
     private ?Season $season;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Licence::class, inversedBy="subscriptions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Licence $licence;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +77,18 @@ class Subscription
     public function setSeason(?Season $season): self
     {
         $this->season = $season;
+
+        return $this;
+    }
+
+    public function getLicence(): ?Licence
+    {
+        return $this->licence;
+    }
+
+    public function setLicence(?Licence $licence): self
+    {
+        $this->licence = $licence;
 
         return $this;
     }
