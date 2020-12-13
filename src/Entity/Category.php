@@ -32,7 +32,7 @@ class Category
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="category")
      */
-    private ArrayCollection $subscriptions;
+    private Collection $subscriptions;
 
     public function __construct()
     {
