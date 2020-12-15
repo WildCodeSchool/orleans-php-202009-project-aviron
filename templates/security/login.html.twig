@@ -1,42 +1,99 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Log in{% endblock %}
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('login') }}
+    {% endblock %}
+{% block navbar %}{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col side-left d-flex align-content-center flex-wrap">
+                <div class="container">
+                    <div class="row mb-5">
+                        <div class="col-4 offset-4 mb-5">
+                            <img src="" alt="">
+                        </div>
+                    </div>
+                    <div class="row mt-5">
+                        <div class="col mt-5">
+                            <img src="" alt="" class="w-100">
+                        </div>
+                    </div>
+                </div>
 
-    {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+
+
+
+            </div>
+            <div class="col">
+                <div class="container">
+                    <div class="row side-right">
+                        <div class="col-md-8 offset-md-2 d-flex align-content-center flex-wrap">
+                            <form method="post">
+                                {% if error %}
+                                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                {% endif %}
+
+                                {% if app.user %}
+                                    <div class="mb-3">
+                                        Vous êtes identifié en tant que : {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                                    </div>
+                                {% endif %}
+
+                                <h1>Veuillez vous identifier</h1>
+
+                                <div class="form-row mt-3">
+                                    <label for="inputEmail">Email</label>
+                                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
+                                </div>
+
+                                <div class="form-row mt-3">
+                                    <label for="inputPassword">Mot de passe</label>
+                                    <input type="password" name="password" id="inputPassword" class="form-control" required>
+                                </div>
+                                <input type="hidden" name="_csrf_token"
+                                       value="{{ csrf_token('authenticate') }}"
+                                >
+                                <div class="form-row row mt-3">
+                                    <div class="left no-padding checkbox mb-3">
+                                        <label>
+                                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <button class="btn btn-lg btn-primary" type="submit">
+                                        Connexion
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
+    </div>
+    <!--
+    <div class="container-fluid pl-0">
+        <div class="side-left">
+                <div class="row">
+                        <h2>Manage Your orders</h2>
+                        <p>Add captions to your slides easily with the .carousel-caption element within any .carousel-item. They can be easily hidden on smaller viewports, as shown below, with optional display utilities. We hide them initially with .d-none and bring them back on medium-sized devices </p>
+                        <ul>
+                            <li>Ph :- +91 9756545434</li>
+                            <li>Fax :- (+7867 65 544)</li>
+                        </ul>
+                </div>
+            </div>
+        <div class="side-right">
+            <img class="logo" src="assets/images/logo.jpg" alt="">
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputEmail">Email</label>
-    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" required>
-
-    <input type="hidden" name="_csrf_token"
-           value="{{ csrf_token('authenticate') }}"
-    >
-
-    {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
-
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
         </div>
-    #}
+    </div>
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+
 {% endblock %}
