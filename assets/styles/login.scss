@@ -1,26 +1,26 @@
 @import 'variables';
 
 .side-left {
-  background-image: url(http://ana.faucheux.info/download/prise_d-eau_hollandais.JPG);
-  height: 100vh;
-  background-size: cover;
-  filter: brightness(80%);
+    background-image: url("http://ana.faucheux.info/download/prise_d-eau_hollandais.JPG");
+    height: 100vh;
+    background-size: cover;
+    filter: brightness(80%);
 }
 
 #content {
-  margin-left: 0;
+    margin-left: 0;
 }
 
 .side-right {
-  height: 100vh;
+    height: 100vh;
 }
 
 form {
-  align-self: center;
+    align-self: center;
 }
 
 @media screen and (max-width: 768px) {
-  .side-left {
-    display: none;
-  }
+    .side-left {
+        display: none;
+    }
 }
