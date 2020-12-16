@@ -32,7 +32,7 @@ class SubscriberController extends AbstractController
         LicenceRepository $licenceRepository,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
-        StatusCalculator $statusCalculator
+        StatusCalculator $statusCalculator,
         CategoryRepository $categoryRepository
     ): Response {
         $licences = $licenceRepository->findAll();
