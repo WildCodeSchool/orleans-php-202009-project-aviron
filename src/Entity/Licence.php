@@ -88,13 +88,7 @@ class Licence
 
     public function removeSubscription(Subscription $subscription): self
     {
-        if ($this->subscriptions->removeElement($subscription)) {
-            // set the owning side to null (unless already changed)
-            if ($subscription->getLicence() === $this) {
-                $subscription->setLicence(null);
-            }
-        }
-
+        $this->subscriptions->removeElement($subscription);
         return $this;
     }
 }
