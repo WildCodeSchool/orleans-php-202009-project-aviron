@@ -68,8 +68,7 @@
     color: $primary;
     left: $spacing;
     opacity: 80%;
-    position: absolute;
-    top: $spacing;
+    top: 0;
 
     &:hover {
         opacity: 100%;

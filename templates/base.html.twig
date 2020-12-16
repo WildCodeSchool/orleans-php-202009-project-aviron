@@ -12,7 +12,8 @@
     </head>
     <body>
         {% block navbar %} {% include '_includes/_navbar.html.twig' %} {% endblock %}
-        
+        {% block user %} {% include '_includes/_userbar.html.twig' %} {% endblock %}
+
         <div id="content" >
             {% block body %}{% endblock %}
         </div>
