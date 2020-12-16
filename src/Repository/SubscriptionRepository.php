@@ -19,6 +19,19 @@ class SubscriptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Subscription::class);
     }
 
+    public function subscribersByOneYearGroupByLicences(int $seasonId): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber)')
+            ->innerJoin('App\Entity\Season', 'season', 'WITH', 'season.id=subscription.season_id')
+            ->where('subscription.season_id = :seasonId')
+            ->setParameter('seasonId', $seasonId)
+            ->groupBy('subscription.licence_id')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */
