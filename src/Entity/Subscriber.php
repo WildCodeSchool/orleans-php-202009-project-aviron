@@ -95,7 +95,7 @@ class Subscriber
         return $this;
     }
 
-    public function getLicenceNumber(): ?int
+    public function getLicenceNumber(): int
     {
         return $this->licenceNumber;
     }
@@ -139,13 +139,7 @@ class Subscriber
 
     public function removeSubscription(Subscription $subscriptions): self
     {
-        if ($this->subscriptions->removeElement($subscriptions)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriptions->getSubscriber() === $this) {
-                $subscriptions->setSubscriber(null);
-            }
-        }
-
+        $this->subscriptions->removeElement($subscriptions);
         return $this;
     }
 }

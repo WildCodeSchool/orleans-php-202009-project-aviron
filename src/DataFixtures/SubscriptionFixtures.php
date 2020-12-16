@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Subscription;
+use App\Service\StatusCalculator;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -10,6 +11,13 @@ use Faker;
 
 class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
 {
+
+    private StatusCalculator $statusCalculator;
+
+    public function __construct(StatusCalculator $statusCalculator)
+    {
+        $this->statusCalculator = $statusCalculator;
+    }
 
     public function load(ObjectManager $manager)
     {
@@ -23,6 +31,7 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
                     $subscription->setSubscriber($this->getReference('subscriber_' . $i));
                     $subscription->setSeason($this->getReference('season_' . $j));
                     $subscription->setLicence($this->getReference('licence_' . rand(0, 5)));
+                    $subscription->setStatus('');
                     $manager->persist($subscription);
                     $this->addReference('subscription_' . $index, $subscription);
                     $index++;
