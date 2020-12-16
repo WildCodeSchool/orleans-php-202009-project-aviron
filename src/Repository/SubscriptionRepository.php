@@ -25,7 +25,7 @@ class SubscriptionRepository extends ServiceEntityRepository
      * @param string|null $seasonName
      * @return Subscription
      */
-    public function findAllSubscribersForActualSeason(?string $licenceAcronym, ?string $seasonName): Subscription
+    public function findAllSubscribersForActualSeason(?string $licenceAcronym, ?string $seasonName)
     {
         return $this->createQueryBuilder('sub')
             ->select('COUNT(sub.subscriber)')
