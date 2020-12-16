@@ -13,6 +13,9 @@
         <div class="row justify-content-center align-items-center p-4 box-shadow card-shadow">
             <div class="col-8 col-md-4 text-center py-2">
                 <h4>Total inscrits</h4>
+                {% for subscriberCount in actualSubscribers %}
+                <p class="subscribers-count">{{ subscriberCount.1 }}</p>
+                {% endfor %}
             </div>
             <div class="col-8 col-md-4 py-4 text-center py-2 divider-border">
                 <h4>Total nouveaux inscrits</h4>
