@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
@@ -23,6 +24,7 @@ class SubscriberController extends AbstractController
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @param StatusCalculator $statusCalculator
+     * @param CategoryRepository $categoryRepository
      * @return Response A response instance
      */
     public function index(
@@ -31,10 +33,12 @@ class SubscriberController extends AbstractController
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
         StatusCalculator $statusCalculator
+        CategoryRepository $categoryRepository
     ): Response {
         $licences = $licenceRepository->findAll();
         $subscribers = $subscriberRepository->findAll();
         $seasons = $seasonRepository->findAll();
+        $categories = $categoryRepository->findAll();
 
         $previousSeason = [];
         $currentSeason = [];
@@ -63,7 +67,8 @@ class SubscriberController extends AbstractController
             'display' => $display,
             'licences' => $licences,
             'subscribers' => $subscribers,
-            'seasons' => $seasons
+            'seasons' => $seasons,
+            'categories' => $categories
         ]);
     }
 }
