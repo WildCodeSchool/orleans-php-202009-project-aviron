@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Season;
 use App\Entity\Subscriber;
+use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
@@ -23,23 +24,27 @@ class SubscriberController extends AbstractController
      * @param LicenceRepository $licenceRepository
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
+     * @param CategoryRepository $categoryRepository
      * @return Response A response instance
      */
     public function index(
         string $display,
         LicenceRepository $licenceRepository,
         SubscriberRepository $subscriberRepository,
-        SeasonRepository $seasonRepository
+        SeasonRepository $seasonRepository,
+        CategoryRepository $categoryRepository
     ): Response {
         $licences = $licenceRepository->findAll();
         $subscribers = $subscriberRepository->findAll();
         $seasons = $seasonRepository->findAll();
+        $categories = $categoryRepository->findAll();
 
         return $this->render('subscriber/index.html.twig', [
             'display' => $display,
             'licences' => $licences,
             'subscribers' => $subscribers,
-            'seasons' => $seasons
+            'seasons' => $seasons,
+            'categories' => $categories
         ]);
     }
 }
