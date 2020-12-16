@@ -19,7 +19,7 @@ class SubscriptionRepository extends ServiceEntityRepository
         parent::__construct($registry, Subscription::class);
     }
 
-    public function subscribersByOneYearGroupByLicences(int $seasonId): array
+    public function subscribersByYearByLicences(?int $seasonId): array
     {
         return $this->createQueryBuilder('subscription')
             ->select('COUNT(subscription.subscriber)')
