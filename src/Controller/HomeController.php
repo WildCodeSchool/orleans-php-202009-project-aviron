@@ -19,11 +19,16 @@ class HomeController extends AbstractController
      */
     public function index(SeasonRepository $seasonRepository, SubscriptionRepository $subscriptionRepo): Response
     {
-        $currentSeason = $seasonRepository->findBy([], ['name' => 'DESC']);
-        $seasonId = $currentSeason[0]->getId();
-        $countByLicences = $subscriptionRepo->subscribersByYearByLicences($seasonId);
+        $season = $this->getCurrentSeason($seasonRepository);
+        $countByLicences = $subscriptionRepo->subscribersByYearByLicences($season);
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences
         ]);
+    }
+
+    private function getCurrentSeason(SeasonRepository $seasonRepository): ?string
+    {
+        $currentSeason = $seasonRepository->findBy([], ['name' => 'DESC']);
+        return $currentSeason[0]->getName();
     }
 }
