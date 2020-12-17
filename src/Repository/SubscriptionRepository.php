@@ -22,11 +22,12 @@ class SubscriptionRepository extends ServiceEntityRepository
     public function subscribersByYearByLicences(?int $seasonId): array
     {
         return $this->createQueryBuilder('subscription')
-            ->select('COUNT(subscription.subscriber)')
-            ->innerJoin('App\Entity\Season', 'season', 'WITH', 'season.id=subscription.season_id')
-            ->where('subscription.season_id = :seasonId')
+            ->select('COUNT(subscription.subscriber) as count, licence.name')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'licence.id=subscription.licence')
+            ->innerJoin('App\Entity\Season', 'season', 'WITH', 'season.id=subscription.season')
+            ->where('subscription.season = :seasonId')
             ->setParameter('seasonId', $seasonId)
-            ->groupBy('subscription.licence_id')
+            ->groupBy('licence.name')
             ->getQuery()
             ->getResult()
             ;

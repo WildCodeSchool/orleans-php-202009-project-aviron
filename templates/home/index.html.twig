@@ -38,6 +38,34 @@
                 <h4 class="mb-4">Évolution des inscriptions</h4>
             </div>
         </div>
+        <div class="row justify-content-between align-items-center mt-5">
+            <div class="row col-12 col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
+                <div class="col-12 mr-xl-2 mr-0">
+                    <h4 class="mb-4"></h4>
+                </div>
+            </div>
+            <div class="row col-12 col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
+                <div class="col-12 ml-xl-2 ml-0">
+                    <h4 class="mb-4">Total de licenciés par type de licence sur l'année en cours</h4>
+                    <table class="table table-hover table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for licence in subscribersByLicences %}
+                                    <th scope="col" class="text-center">{{ licence.name }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                                {% for licence in subscribersByLicences %}
+                                    <td>{{ licence.count }}</td>
+                                {% endfor %}
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </section>
 
 {% endblock %}
