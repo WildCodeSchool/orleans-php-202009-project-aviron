@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\AST\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -24,6 +25,7 @@ class SubscriptionRepository extends ServiceEntityRepository
      * @param string|null $licenceAcronym
      * @param string|null $seasonName
      * @return Subscription
+     * @throws NonUniqueResultException
      */
     public function findAllSubscribersForActualSeason(?string $licenceAcronym, ?string $seasonName)
     {
@@ -36,7 +38,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->andWhere('s.name = :seasonName')
             ->setParameter('seasonName', $seasonName)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
     // /**

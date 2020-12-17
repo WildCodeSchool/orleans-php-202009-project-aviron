@@ -2,15 +2,19 @@
 
 namespace App\Controller;
 
+use App\Entity\Season;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+
+    private const COMPETITION_LICENCE = 'A';
 
     /**
      * @var SubscriptionRepository
@@ -25,26 +29,21 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      * @param SeasonRepository $season
-     * @param LicenceRepository $licence
      * @return Response
+     * @throws NonUniqueResultException
      */
-    public function index(SeasonRepository $season, LicenceRepository $licence): Response
+    public function index(SeasonRepository $season): Response
     {
         $actualSeason = $this->getActualSeason($season);
-        $licenceAcronym = $this->getLicenceAcronym($licence);
-        $actualSubscribers = $this->repository->findAllSubscribersForActualSeason($licenceAcronym, $actualSeason);
+        $actualSubscribers = $this->repository->findAllSubscribersForActualSeason(
+            self::COMPETITION_LICENCE,
+            $actualSeason
+        );
         return $this->render('home/index.html.twig', ['actualSubscribers' => $actualSubscribers]);
     }
 
     private function getActualSeason(SeasonRepository $season): ?string
     {
-        $actualSeason = $season->findBy([], ['name' => 'DESC'], 1);
-        return $actualSeason[0]->getName();
-    }
-
-    private function getLicenceAcronym(LicenceRepository $licence): ?string
-    {
-        $competitionLicence = $licence->findBy(['acronym' => 'A']);
-        return $competitionLicence[0]->getAcronym();
+        return $season->findOneBy([], ['name' => 'DESC'])->getName();
     }
 }
