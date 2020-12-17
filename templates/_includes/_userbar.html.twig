@@ -1,0 +1,32 @@
+<div id="userBar">
+    <div class>
+        <nav class="navbar navbar-expand-md navbar-light spacenav userbar">
+            <button class="navbar-toggler ml-auto " type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <button onclick="openNav()" class="btn open-button navbar-brand">
+                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-arrow-right-square-fill" fill="#05445e"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2
+        2 0 0 0-2-2H2zm2.5 8.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1
+        0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto ">
+                    <li class="nav-item">
+                        {% if app.user %}
+                            <a class="nav-link text-dark mr-4" href="{{ path('app_logout') }}"> Se déconnecter <span class="glyphicon-glyphicon-log-out"></span></a>
+                        {% endif %}
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+</div>
