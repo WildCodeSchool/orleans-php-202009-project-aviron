@@ -6,7 +6,7 @@
 @import 'navbar';
 
 body {
-    background-color: $light;
+    color : $primary;
 }
 
 h1,
@@ -19,6 +19,16 @@ h4 {
 #content {
     margin-left: $navbar-width;
     transition: 0.5s;
+}
+
+#userBar {
+    transition: 0.5s;
+}
+
+.userbar {
+    padding: 0;
+    border-bottom: 1px solid darken($light, 5%);
+    background-color: $light;
 }
 
 .box-shadow {
