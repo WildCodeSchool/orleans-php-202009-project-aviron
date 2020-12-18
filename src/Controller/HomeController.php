@@ -24,7 +24,7 @@ class HomeController extends AbstractController
      * @param LicenceRepository $licenceRepository
      * @return Response
      * @throws NonUniqueResultException
-     * @SuppressWarnings(PHPMD)
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
     public function index(
         SubscribersCounter $countSubscribers,

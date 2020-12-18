@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 class SubscribersCounter
 {
     /**
-     * @SuppressWarnings(PHPMD)
+     * @SuppressWarnings(PHPMD.LongVariable)
      * @param array $subscriptions
      * @param ServiceEntityRepository $serviceEntityRepository
      * @return array
