@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,17 +14,35 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(SeasonRepository $seasonRepository, SubscriptionRepository $subscriptionRepo): Response
-    {
-        $season = $this->getCurrentSeason($seasonRepository);
-        $countByLicences = $subscriptionRepo->subscribersByYearByLicences($season);
+    public function index(
+        SeasonRepository $season,
+        SubscriptionRepository $subscriptionRepo,
+        LicenceRepository $licenceRepository
+    ): Response {
+        $licencesArray = [];
+        $currentLicences = [];
+        $currentSeason = $this->getCurrentSeason($season);
+        $countByLicences = $subscriptionRepo->subscribersByYearByLicences($currentSeason);
+        $licences = $licenceRepository->findAll();
+
+        foreach ($licences as $object) {
+            $licencesArray[] = $object->getAcronym();
+        }
+        for ($i = 0; $i < count($countByLicences); $i++) {
+            $currentLicences[] = $countByLicences[$i]['acronym'];
+        }
+        foreach ($licencesArray as $licence) {
+            if (!in_array($licence, $currentLicences)) {
+                $countByLicences[] = ['count' => '0', 'acronym' => $licence];
+            }
+        }
+
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences
         ]);
     }
-    private function getCurrentSeason(SeasonRepository $seasonRepository): ?string
+    private function getCurrentSeason(SeasonRepository $season): ?string
     {
-        $currentSeason = $seasonRepository->findBy([], ['name' => 'DESC']);
-        return $currentSeason[0]->getName();
+        return $season->findOneBy([], ['name' => 'DESC'])->getName();
     }
 }
