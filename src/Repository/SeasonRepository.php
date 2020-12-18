@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Filter;
 use App\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,6 +18,21 @@ class SeasonRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Season::class);
+    }
+
+    /**
+     * @param Filter $filter
+     * @return int|mixed|string
+     */
+    public function findByFilter(Filter $filter)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+        if (!empty($filter->getFromSeason()) && !empty($filter->getToSeason())) {
+            $queryBuilder = $queryBuilder->where('s.startingDate BETWEEN :fromSeason AND :toSeason')
+                ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
+                ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
+        }
+        return $queryBuilder->getQuery()->getResult();
     }
 
     // /**
