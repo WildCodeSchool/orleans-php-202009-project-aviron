@@ -29,13 +29,13 @@
                role="button" aria-controls="Récapitulatifs">Récapitulatifs</a>
             <ul class="collapse list-unstyled" id="recap">
                 <li>
-                    <a href="#">Inscriptions</a>
+                    <a href="{{ path('subscribers_index', { display : 'subscriptions' }) }}">Inscriptions</a>
                 </li>
                 <li>
                     <a href="#">Renouvellements</a>
                 </li>
                 <li>
-                    <a href="#">Types de licences</a>
+                    <a href="{{ path('subscribers_index', { display : 'licences' }) }}">Types de licences</a>
                 </li>
             </ul>
         </li>
