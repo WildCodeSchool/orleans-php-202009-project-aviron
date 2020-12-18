@@ -16,6 +16,16 @@ class HomeController extends AbstractController
     private const JUNIOR_CATEGORY = 'J';
 
     /**
+     * @var SubscriptionRepository
+     */
+    private SubscriptionRepository $repository;
+
+    public function __construct(SubscriptionRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
      * @Route("/", name="home")
      * @param SeasonRepository $season
      * @param SubscriptionRepository $subscription
@@ -25,12 +35,19 @@ class HomeController extends AbstractController
     public function index(SeasonRepository $season, SubscriptionRepository $subscription): Response
     {
         $actualSeason = $this->getActualSeason($season);
+        $actualSubscribers = $this->repository->findAllSubscribersForActualSeason(
+            self::COMPETITION_LICENCE,
+            $actualSeason
+        );
         $youngSubscribers = $subscription->findAllYoungSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
         );
-        return $this->render('home/index.html.twig', ['youngSubscribers' => $youngSubscribers]);
+        return $this->render(
+            'home/index.html.twig',
+            ['youngSubscribers' => $youngSubscribers, 'actualSubscribers' => $actualSubscribers]
+        );
     }
 
     private function getActualSeason(SeasonRepository $season): ?string
