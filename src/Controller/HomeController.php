@@ -6,14 +6,23 @@ use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
 use App\Service\CountSubscribers;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+
+    private const COMPETITION_LICENCE = 'A';
+    private const JUNIOR_CATEGORY = 'J';
+
     /**
      * @Route("/", name="home")
+     * @param SeasonRepository $season
+     * @param SubscriptionRepository $subscription
+     * @return Response
+     * @throws NonUniqueResultException
      */
     public function index(
         CountSubscribers $countSubscribers,
@@ -21,7 +30,19 @@ class HomeController extends AbstractController
         SubscriptionRepository $subscriptionRepo,
         LicenceRepository $licenceRepository
     ): Response {
-        $actualSeason = $this->getActualSeason($seasonRepo);
+        $actualSeason = $seasonRepo->findOneBy([], ['name' => 'DESC'])->getName();
+  
+        $actualSubscribers = $subscriptionRepo->findAllSubscribersForActualSeason(
+            self::COMPETITION_LICENCE,
+            $actualSeason
+        );
+  
+        $youngSubscribers = $subscriptionRepo->findAllYoungSubscribersForActualSeason(
+            self::COMPETITION_LICENCE,
+            $actualSeason,
+            self::JUNIOR_CATEGORY
+        );
+  
         $subscribersLicences = $subscriptionRepo->subscribersByYearByLicences($actualSeason);
 
         $countByLicences = $countSubscribers->countSubscribersWithLabel(
@@ -29,32 +50,10 @@ class HomeController extends AbstractController
             $licenceRepository
         );
 
-        /*
-        $licencesArray = [];
-        $currentLicences = [];
-        $currentSeason = $this->getCurrentSeason($season);
-        $countByLicences = $subscriptionRepo->subscribersByYearByLicences($currentSeason);
-        $licences = $licenceRepository->findAll();
-
-        foreach ($licences as $object) {
-            $licencesArray[] = $object->getAcronym();
-        }
-        for ($i = 0; $i < count($countByLicences); $i++) {
-            $currentLicences[] = $countByLicences[$i]['acronym'];
-        }
-        foreach ($licencesArray as $licence) {
-            if (!in_array($licence, $currentLicences)) {
-                $countByLicences[] = ['count' => '0', 'acronym' => $licence];
-            }
-        }
-        */
-
         return $this->render('home/index.html.twig', [
-            'subscribersByLicences' => $countByLicences
+            'subscribersByLicences' => $countByLicences, 
+            'youngSubscribers' => $youngSubscribers, 
+            'actualSubscribers' => $actualSubscribers,
         ]);
-    }
-    private function getActualSeason(SeasonRepository $seasonRepo): ?string
-    {
-        return $seasonRepo->findOneBy([], ['name' => 'DESC'])->getName();
     }
 }

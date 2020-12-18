@@ -4,7 +4,7 @@
     <div class="container-fluid">
         <h1 class="text-center my-4">
             {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-            {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
+            {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
         </h1>
         <div class="row">
             <div class="col-12">
@@ -36,7 +36,7 @@
                                     {% else %}
                                         <td></td>
                                     {% endfor %}
-                                {% elseif display == 'inscriptions' %}
+                                {% elseif display == 'subscriptions' %}
                                     {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
                                         <td class="text-center">{{ subscription.category.label }}</td>
                                     {% else %}

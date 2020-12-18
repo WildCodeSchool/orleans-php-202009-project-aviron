@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\AST\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -30,6 +32,53 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
             ;
+    }
+
+    /**
+     * @param string|null $licenceAcronym
+     * @param string|null $seasonName
+     * @return Subscription
+     * @throws NonUniqueResultException
+     */
+    public function findAllSubscribersForActualSeason(?string $licenceAcronym, ?string $seasonName)
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('COUNT(sub.subscriber)')
+            ->innerJoin('App\Entity\Licence', 'l', 'WITH', 'l.id = sub.licence')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->where('l.acronym = :licenceAcronym')
+            ->setParameter('licenceAcronym', $licenceAcronym)
+            ->andWhere('s.name = :seasonName')
+            ->setParameter('seasonName', $seasonName)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param string|null $licenceAcronym
+     * @param string|null $seasonName
+     * @param string|null $categoryName
+     * @return int|mixed|string|null
+     * @throws NonUniqueResultException
+     */
+    public function findAllYoungSubscribersForActualSeason(
+        ?string $licenceAcronym,
+        ?string $seasonName,
+        ?string $categoryName
+    ) {
+        return $this->createQueryBuilder('sub')
+            ->select('COUNT(sub.subscriber)')
+            ->innerJoin('App\Entity\Licence', 'l', 'WITH', 'l.id = sub.licence')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->innerJoin('App\Entity\Category', 'c', 'WITH', 'c.id = sub.category')
+            ->where('l.acronym = :licenceAcronym')
+            ->setParameter('licenceAcronym', $licenceAcronym)
+            ->andWhere('s.name = :seasonName')
+            ->setParameter('seasonName', $seasonName)
+            ->andWhere('c.label LIKE :categoryName')
+            ->setParameter('categoryName', $categoryName . '%')
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     // /**
