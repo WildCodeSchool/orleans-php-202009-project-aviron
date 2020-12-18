@@ -25,14 +25,11 @@ class HomeController extends AbstractController
     public function index(SeasonRepository $season, SubscriptionRepository $subscription): Response
     {
         $actualSeason = $this->getActualSeason($season);
-        dump($actualSeason);
         $youngSubscribers = $subscription->findAllYoungSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
         );
-        dump($actualSeason);
-        dump($youngSubscribers);
         return $this->render('home/index.html.twig', ['youngSubscribers' => $youngSubscribers]);
     }
 
