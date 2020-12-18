@@ -1,6 +1,7 @@
 @import 'variables';
 
 $spacing-form: $spacing * 3;
+$title-filter: 1.25rem;
 
 .filter, .form-group {
     display: flex;
@@ -18,5 +19,5 @@ $spacing-form: $spacing * 3;
 }
 
 .title-filter {
-    font-size: 1.25rem;
+    font-size: $title-filter;
 }
