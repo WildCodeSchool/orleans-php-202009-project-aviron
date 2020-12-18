@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\CountSubscribers;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,10 +16,20 @@ class HomeController extends AbstractController
      * @Route("/", name="home")
      */
     public function index(
-        SeasonRepository $season,
+        CountSubscribers $countSubscribers,
+        SeasonRepository $seasonRepo,
         SubscriptionRepository $subscriptionRepo,
         LicenceRepository $licenceRepository
     ): Response {
+        $actualSeason = $this->getActualSeason($seasonRepo);
+        $subscribersLicences = $subscriptionRepo->subscribersByYearByLicences($actualSeason);
+
+        $countByLicences = $countSubscribers->countSubscribersWithLabel(
+            $subscribersLicences,
+            $licenceRepository
+        );
+
+        /*
         $licencesArray = [];
         $currentLicences = [];
         $currentSeason = $this->getCurrentSeason($season);
@@ -36,13 +47,14 @@ class HomeController extends AbstractController
                 $countByLicences[] = ['count' => '0', 'acronym' => $licence];
             }
         }
+        */
 
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences
         ]);
     }
-    private function getCurrentSeason(SeasonRepository $season): ?string
+    private function getActualSeason(SeasonRepository $seasonRepo): ?string
     {
-        return $season->findOneBy([], ['name' => 'DESC'])->getName();
+        return $seasonRepo->findOneBy([], ['name' => 'DESC'])->getName();
     }
 }
