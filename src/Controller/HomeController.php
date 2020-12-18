@@ -13,14 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
 
     /**
      * @Route("/", name="home")
-     * @param SeasonRepository $season
-     * @param SubscriptionRepository $subscription
+     * @param CountSubscribers $countSubscribers
+     * @param SeasonRepository $seasonRepo
+     * @param SubscriptionRepository $subscriptionRepo
+     * @param LicenceRepository $licenceRepository
      * @return Response
      * @throws NonUniqueResultException
      */
@@ -31,18 +32,18 @@ class HomeController extends AbstractController
         LicenceRepository $licenceRepository
     ): Response {
         $actualSeason = $seasonRepo->findOneBy([], ['name' => 'DESC'])->getName();
-  
+
         $actualSubscribers = $subscriptionRepo->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason
         );
-  
+
         $youngSubscribers = $subscriptionRepo->findAllYoungSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
         );
-  
+
         $subscribersLicences = $subscriptionRepo->subscribersByYearByLicences($actualSeason);
 
         $countByLicences = $countSubscribers->countSubscribersWithLabel(
@@ -51,8 +52,8 @@ class HomeController extends AbstractController
         );
 
         return $this->render('home/index.html.twig', [
-            'subscribersByLicences' => $countByLicences, 
-            'youngSubscribers' => $youngSubscribers, 
+            'subscribersByLicences' => $countByLicences,
+            'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
         ]);
     }
