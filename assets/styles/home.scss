@@ -1,9 +1,5 @@
 @import 'variables';
 
-body {
-    background-color: $fourth;
-}
-
 .card-shadow {
     background-color: $light;
     border-radius: $border-radius;
@@ -21,4 +17,9 @@ body {
         border-inline-end: 0;
         border-inline-start: 0;
     }
+}
+
+.subscribers-count {
+    font-size: $font-size-totals;
+    font-weight: bold;
 }

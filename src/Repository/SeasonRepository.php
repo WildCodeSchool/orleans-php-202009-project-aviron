@@ -9,7 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Season|null find($id, $lockMode = null, $lockVersion = null)
- * @method Season|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Season findOneBy(array $criteria, array $orderBy = null)
  * @method Season[]    findAll()
  * @method Season[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

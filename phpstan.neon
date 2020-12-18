@@ -10,3 +10,4 @@ parameters:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+::findBy[A-Z][a-zA-Z]*\(\)#'
     reportUnmatchedIgnoredErrors: false
     checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
