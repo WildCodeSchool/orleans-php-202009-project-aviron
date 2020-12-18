@@ -8,12 +8,15 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 class SubscribersCounter
 {
+    /**
+     * @SuppressWarnings(PHPMD)
+     */
     public function countSubscribersWithLabel(
         array $subscriptions,
-        ServiceEntityRepository $serviceEntityRepo
+        ServiceEntityRepository $serviceEntityRepository
     ): array {
         $countedSubscribers = array_column($subscriptions, 'subscribersCount', 'acronym');
-        $allLabels = $serviceEntityRepo->findAll();
+        $allLabels = $serviceEntityRepository->findAll();
 
         $labels = [];
         foreach ($allLabels as $label) {
