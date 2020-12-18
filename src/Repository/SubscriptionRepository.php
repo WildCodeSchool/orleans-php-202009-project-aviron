@@ -41,6 +41,33 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @param string|null $licenceAcronym
+     * @param string|null $seasonName
+     * @param string|null $categoryName
+     * @return int|mixed|string|null
+     * @throws NonUniqueResultException
+     */
+    public function findAllYoungSubscribersForActualSeason(
+        ?string $licenceAcronym,
+        ?string $seasonName,
+        ?string $categoryName
+    ) {
+        return $this->createQueryBuilder('sub')
+            ->select('COUNT(sub.subscriber)')
+            ->innerJoin('App\Entity\Licence', 'l', 'WITH', 'l.id = sub.licence')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->innerJoin('App\Entity\Category', 'c', 'WITH', 'c.id = sub.category')
+            ->where('l.acronym = :licenceAcronym')
+            ->setParameter('licenceAcronym', $licenceAcronym)
+            ->andWhere('s.name = :seasonName')
+            ->setParameter('seasonName', $seasonName)
+            ->andWhere('c.label LIKE :categoryName')
+            ->setParameter('categoryName', $categoryName . '%')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */

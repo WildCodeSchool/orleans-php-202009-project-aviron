@@ -2,8 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Season;
-use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -15,6 +13,7 @@ class HomeController extends AbstractController
 {
 
     private const COMPETITION_LICENCE = 'A';
+    private const JUNIOR_CATEGORY = 'J';
 
     /**
      * @var SubscriptionRepository
@@ -29,21 +28,25 @@ class HomeController extends AbstractController
     /**
      * @Route("/", name="home")
      * @param SeasonRepository $season
+     * @param SubscriptionRepository $subscription
      * @return Response
      * @throws NonUniqueResultException
      */
-    public function index(SeasonRepository $season): Response
+    public function index(SeasonRepository $season, SubscriptionRepository $subscription): Response
     {
-        $actualSeason = $this->getActualSeason($season);
+        $actualSeason = $season->findOneBy([], ['name' => 'DESC'])->getName();
         $actualSubscribers = $this->repository->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason
         );
-        return $this->render('home/index.html.twig', ['actualSubscribers' => $actualSubscribers]);
-    }
-
-    private function getActualSeason(SeasonRepository $season): ?string
-    {
-        return $season->findOneBy([], ['name' => 'DESC'])->getName();
+        $youngSubscribers = $subscription->findAllYoungSubscribersForActualSeason(
+            self::COMPETITION_LICENCE,
+            $actualSeason,
+            self::JUNIOR_CATEGORY
+        );
+        return $this->render(
+            'home/index.html.twig',
+            ['youngSubscribers' => $youngSubscribers, 'actualSubscribers' => $actualSubscribers]
+        );
     }
 }
