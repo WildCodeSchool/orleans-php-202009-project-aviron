@@ -10,6 +10,9 @@ class SubscribersCounter
 {
     /**
      * @SuppressWarnings(PHPMD)
+     * @param array $subscriptions
+     * @param ServiceEntityRepository $serviceEntityRepository
+     * @return array
      */
     public function countSubscribersWithLabel(
         array $subscriptions,
