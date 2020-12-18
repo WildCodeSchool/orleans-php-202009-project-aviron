@@ -1,5 +1,14 @@
 @import 'variables';
 
+.container {
+    max-width: 1500px;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
+}
+
 .card-shadow {
     background-color: $light;
     border-radius: $border-radius;
