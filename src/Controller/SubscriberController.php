@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubscriberController extends AbstractController
 {
     /**
-     * Correspond à la route /subscribers/ et au name "subscriber_index"
+     * Correspond à la route /subscribers/ et au name "subscribers_index"
      * @Route("/{display}", methods={"GET"}, name="index")
      * @param string $display
      * @param LicenceRepository $licenceRepository
