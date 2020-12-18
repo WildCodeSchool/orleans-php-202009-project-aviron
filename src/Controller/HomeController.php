@@ -34,7 +34,7 @@ class HomeController extends AbstractController
      */
     public function index(SeasonRepository $season, SubscriptionRepository $subscription): Response
     {
-        $actualSeason = $this->getActualSeason($season);
+        $actualSeason = $season->findOneBy([], ['name' => 'DESC'])->getName();
         $actualSubscribers = $this->repository->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason
@@ -48,10 +48,5 @@ class HomeController extends AbstractController
             'home/index.html.twig',
             ['youngSubscribers' => $youngSubscribers, 'actualSubscribers' => $actualSubscribers]
         );
-    }
-
-    private function getActualSeason(SeasonRepository $season): ?string
-    {
-        return $season->findOneBy([], ['name' => 'DESC'])->getName();
     }
 }
