@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
-use App\Service\CountSubscribers;
+use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,33 +18,34 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="home")
-     * @param CountSubscribers $countSubscribers
-     * @param SeasonRepository $seasonRepo
-     * @param SubscriptionRepository $subscriptionRepo
+     * @param SubscribersCounter $countSubscribers
+     * @param SeasonRepository $seasonRepository
+     * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @return Response
      * @throws NonUniqueResultException
+     * @SuppressWarnings(PHPMD)
      */
     public function index(
-        CountSubscribers $countSubscribers,
-        SeasonRepository $seasonRepo,
-        SubscriptionRepository $subscriptionRepo,
+        SubscribersCounter $countSubscribers,
+        SeasonRepository $seasonRepository,
+        SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository
     ): Response {
-        $actualSeason = $seasonRepo->findOneBy([], ['name' => 'DESC'])->getName();
+        $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
 
-        $actualSubscribers = $subscriptionRepo->findAllSubscribersForActualSeason(
+        $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason
         );
 
-        $youngSubscribers = $subscriptionRepo->findAllYoungSubscribersForActualSeason(
+        $youngSubscribers = $subscriptionRepository->findAllYoungSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
         );
 
-        $subscribersLicences = $subscriptionRepo->subscribersByYearByLicences($actualSeason);
+        $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
 
         $countByLicences = $countSubscribers->countSubscribersWithLabel(
             $subscribersLicences,

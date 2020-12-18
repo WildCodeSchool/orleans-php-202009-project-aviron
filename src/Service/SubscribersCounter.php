@@ -6,7 +6,7 @@ use App\Entity\Subscription;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
-class CountSubscribers
+class SubscribersCounter
 {
     public function countSubscribersWithLabel(
         array $subscriptions,
