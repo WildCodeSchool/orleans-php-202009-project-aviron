@@ -3,20 +3,20 @@
 $spacing-form: $spacing * 3;
 
 .filter, .form-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .form-group label, .form-control {
-  margin-bottom: 0;
-  margin-right: $spacing-form;
+    margin-bottom: 0;
+    margin-right: $spacing-form;
 }
 
 .form-control, .btn {
-  border-radius: $spacing;
+    border-radius: $spacing;
 }
 
 .title-filter {
-  font-size: 1.25rem;
+    font-size: 1.25rem;
 }
