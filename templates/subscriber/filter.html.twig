@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} - Filtrer{% endblock %}
+{% block stylesheets %}
+    {{ encore_entry_link_tags('filter') }}
+{% endblock %}
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="text-center my-4">Filtres de sélection</h1>
+        {{ form_start(form) }}
+        <h2 class="title-filter mb-3">Saison</h2>
+        <div class="row">
+            <div class="col-2 filter">
+                {{ form_row(form.fromSeason) }}
+            </div>
+            <div class="col filter">
+                {{ form_row(form.toSeason) }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Appliquer</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
