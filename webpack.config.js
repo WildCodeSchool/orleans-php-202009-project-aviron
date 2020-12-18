@@ -38,6 +38,7 @@ Encore
     .addEntry('navbar', './assets/js/navbar.js')
     .addEntry('home', './assets/styles/home.scss')
     .addEntry('filter', './assets/styles/filter.scss')
+    .addEntry('login', './assets/styles/login.scss')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
