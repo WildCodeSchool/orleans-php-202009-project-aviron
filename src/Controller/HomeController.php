@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,42 +13,49 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
 
     /**
-     * @var SubscriptionRepository
-     */
-    private SubscriptionRepository $repository;
-
-    public function __construct(SubscriptionRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
      * @Route("/", name="home")
-     * @param SeasonRepository $season
-     * @param SubscriptionRepository $subscription
+     * @param SubscribersCounter $countSubscribers
+     * @param SeasonRepository $seasonRepository
+     * @param SubscriptionRepository $subscriptionRepository
+     * @param LicenceRepository $licenceRepository
      * @return Response
      * @throws NonUniqueResultException
+     * @SuppressWarnings(PHPMD.LongVariable)
      */
-    public function index(SeasonRepository $season, SubscriptionRepository $subscription): Response
-    {
-        $actualSeason = $season->findOneBy([], ['name' => 'DESC'])->getName();
-        $actualSubscribers = $this->repository->findAllSubscribersForActualSeason(
+    public function index(
+        SubscribersCounter $countSubscribers,
+        SeasonRepository $seasonRepository,
+        SubscriptionRepository $subscriptionRepository,
+        LicenceRepository $licenceRepository
+    ): Response {
+        $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
+
+        $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason
         );
-        $youngSubscribers = $subscription->findAllYoungSubscribersForActualSeason(
+
+        $youngSubscribers = $subscriptionRepository->findAllYoungSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
         );
-        return $this->render(
-            'home/index.html.twig',
-            ['youngSubscribers' => $youngSubscribers, 'actualSubscribers' => $actualSubscribers]
+
+        $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
+
+        $countByLicences = $countSubscribers->countSubscribersWithLabel(
+            $subscribersLicences,
+            $licenceRepository
         );
+
+        return $this->render('home/index.html.twig', [
+            'subscribersByLicences' => $countByLicences,
+            'youngSubscribers' => $youngSubscribers,
+            'actualSubscribers' => $actualSubscribers,
+        ]);
     }
 }
