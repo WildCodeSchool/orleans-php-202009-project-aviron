@@ -47,7 +47,10 @@ class SubscriberController extends AbstractController
             foreach ($seasons as $season) {
                 foreach ($season->getSubscriptions() as $subscriptionSeason) {
                     asort($previousSeason);
-                    $subscriptionSeason->setStatus($statusCalculator->calculateNew($subscriptionSeason, $previousSeason));
+                    $subscriptionSeason->setStatus($statusCalculator->calculateNew(
+                        $subscriptionSeason,
+                        $previousSeason
+                    ));
                     $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
                 }
                 $previousSeason = [];
