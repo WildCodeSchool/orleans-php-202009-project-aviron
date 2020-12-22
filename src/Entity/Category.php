@@ -2,35 +2,35 @@
 
 namespace App\Entity;
 
-use App\Repository\LicenceRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=LicenceRepository::class)
+ * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
-class Licence
+class Category
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private string $name;
+    private ?string $name;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=20)
      */
-    private string $acronym;
+    private ?string $label;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="licence")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="category")
      */
     private Collection $subscriptions;
 
@@ -56,14 +56,14 @@ class Licence
         return $this;
     }
 
-    public function getAcronym(): ?string
+    public function getLabel(): ?string
     {
-        return $this->acronym;
+        return $this->label;
     }
 
-    public function setAcronym(string $acronym): self
+    public function setLabel(string $label): self
     {
-        $this->acronym = $acronym;
+        $this->label = $label;
 
         return $this;
     }
@@ -80,7 +80,7 @@ class Licence
     {
         if (!$this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
-            $subscription->setLicence($this);
+            $subscription->setCategory($this);
         }
 
         return $this;
@@ -88,7 +88,13 @@ class Licence
 
     public function removeSubscription(Subscription $subscription): self
     {
-        $this->subscriptions->removeElement($subscription);
+        if ($this->subscriptions->removeElement($subscription)) {
+            // set the owning side to null (unless already changed)
+            if ($subscription->getCategory() === $this) {
+                $subscription->setCategory(null);
+            }
+        }
+
         return $this;
     }
 }

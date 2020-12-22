@@ -3,11 +3,9 @@
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center my-4">
-            {% if display == 'licences' %}
-                Récapitulatif des types de licences
-            {% elseif display == 'renewal'%}
-                Récapitulatif des renouvellements
-            {% endif %}
+            {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
+            {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
+            {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
         </h1>
         <div class="row">
             <div class="col-12">
@@ -38,6 +36,8 @@
                                             <td class="text-center">{{ subscription.licence.acronym }}</td>
                                         {% elseif display == 'renewal'%}
                                             <td class="text-center">{{ subscription.status }}</td>
+                                        {% elseif display == 'inscriptions' %}
+                                            <td class="text-center">{{ subscription.category.label }}</td>
                                         {% endif %}
                                     {% else %}
                                         <td></td>

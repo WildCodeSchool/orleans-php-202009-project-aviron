@@ -33,6 +33,7 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
                     $subscription->setSeason($this->getReference('season_' . $j));
                     $subscription->setLicence($this->getReference('licence_' . rand(0, 5)));
                     $subscription->setStatus('');
+                    $subscription->setCategory($this->getReference('category_' . rand(0, 11)));
                     $manager->persist($subscription);
                     $this->addReference('subscription_' . $index, $subscription);
                     $index++;
@@ -62,6 +63,6 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [SubscriberFixtures::class, SeasonFixtures::class, LicenceFixtures::class];
+        return [SubscriberFixtures::class, SeasonFixtures::class, LicenceFixtures::class, CategoryFixtures::class];
     }
 }

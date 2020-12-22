@@ -45,6 +45,12 @@ class Subscription
      */
     private ?string $status;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subscriptions")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Category $category;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,7 +112,17 @@ class Subscription
     public function setStatus(?string $status): self
     {
         $this->status = $status;
+        return $this;
+    }
 
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
         return $this;
     }
 }
