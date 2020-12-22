@@ -27,7 +27,7 @@ class StatusCalculator
         ) {
             $status = self::NEW;
         } elseif (
-            $subscription->getSubscriber()->getLicenceNumber() > $previousSeason[count($previousSeason) - 1]
+            $subscription->getSubscriber()->getLicenceNumber() < $previousSeason[count($previousSeason) - 1]
             && $subscription->getStatus() === ''
         ) {
             $status = self::TRANSFER;
@@ -48,6 +48,9 @@ class StatusCalculator
         return $status;
     }
 
+    /*
+    * Vérifie si le rameur a été inscrit dans ce club à la saison n-1
+    */
     private function hasPreviousYear(Subscription $presentSubscription, Collection $subscriptions): bool
     {
         $hasNextYear = false;
@@ -70,9 +73,8 @@ class StatusCalculator
         $hasPreviousSeason = false;
         foreach ($subscriptions as $subscription) {
             if (
-                (int) ($presentSubscription->getSeason()->getEndingDate()->format('Y')) + 1
-                <= $subscription->getSeason()->getEndingDate()->format('Y')
-                && $subscription->getStatus() === ''
+                (int) ($presentSubscription->getSeason()->getStartingDate()->format('Y'))
+                >= $subscription->getSeason()->getEndingDate()->format('Y') + 1
             ) {
                 $hasPreviousSeason = true;
             }
