@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
-use App\Repository\CategoryRepository;
-use App\Repository\LicenceRepository;
+use App\Entity\Filter;
+use App\Form\FilterType;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
 use App\Service\StatusCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,58 +18,60 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubscriberController extends AbstractController
 {
     /**
-     * Correspond à la route /subscribers/ et au name "subscriber_index"
-     * @Route("/{display}", methods={"GET"}, name="index")
+     * @Route("/{display}/filter", name="filter")
      * @param string $display
-     * @param LicenceRepository $licenceRepository
+     * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @param StatusCalculator $statusCalculator
-     * @param CategoryRepository $categoryRepository
      * @return Response A response instance
      */
-    public function index(
+    public function filter(
         string $display,
-        LicenceRepository $licenceRepository,
+        Request $request,
         SubscriberRepository $subscriberRepository,
-        SeasonRepository $seasonRepository,
         StatusCalculator $statusCalculator,
-        CategoryRepository $categoryRepository
+        SeasonRepository $seasonRepository
     ): Response {
-        $licences = $licenceRepository->findAll();
-        $subscribers = $subscriberRepository->findAll();
-        $seasons = $seasonRepository->findAll();
-        $categories = $categoryRepository->findAll();
+        $filter = new Filter();
+        $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
+        $form->handleRequest($request);
 
-        $previousSeason = [];
-        $currentSeason = [];
-        foreach ($seasons as $season) {
-            foreach ($season->getSubscriptions() as $subscriptionSeason) {
-                asort($previousSeason);
-                $subscriptionSeason->setStatus($statusCalculator->calculateNew($subscriptionSeason, $previousSeason));
-                $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filters = $form->getData();
+            $seasons = $seasonRepository->findByFilter($filters);
+            $subscribers = $subscriberRepository->findByFilter($filters);
+
             $previousSeason = [];
-            $previousSeason = $currentSeason;
             $currentSeason = [];
-        }
-        foreach ($subscribers as $subscriber) {
-            foreach ($subscriber->getSubscriptions() as $subscription) {
-                if ($subscription->getSeason() !== $seasons[0]) {
-                    $subscription->setStatus($statusCalculator->calculate(
-                        $subscription,
-                        $subscriber->getSubscriptions()
-                    ));
+            foreach ($seasons as $season) {
+                foreach ($season->getSubscriptions() as $subscriptionSeason) {
+                    asort($previousSeason);
+                    $subscriptionSeason->setStatus($statusCalculator->calculateNew($subscriptionSeason, $previousSeason));
+                    $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
+                }
+                $previousSeason = [];
+                $previousSeason = $currentSeason;
+                $currentSeason = [];
+            }
+            foreach ($subscribers as $subscriber) {
+                foreach ($subscriber->getSubscriptions() as $subscription) {
+                    if ($subscription->getSeason() !== $seasons[0]) {
+                        $subscription->setStatus($statusCalculator->calculate(
+                            $subscription,
+                            $subscriber->getSubscriptions()
+                        ));
+                    }
                 }
             }
+
+            return $this->render('subscriber/index.html.twig', [
+                'display' => $display,
+                'subscribers' => $subscribers,
+                'seasons' => $seasons
+            ]);
         }
 
-        return $this->render('subscriber/index.html.twig', [
-            'display' => $display,
-            'licences' => $licences,
-            'subscribers' => $subscribers,
-            'seasons' => $seasons,
-            'categories' => $categories
-        ]);
+        return $this->render('subscriber/filter.html.twig', ['form' => $form->createView()]);
     }
 }

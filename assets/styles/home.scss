@@ -1,7 +1,12 @@
 @import 'variables';
 
-body {
-    background-color: $fourth;
+.container {
+    max-width: 1500px;
+}
+
+.row {
+    margin-right: 0;
+    margin-left: 0;
 }
 
 .card-shadow {
@@ -21,4 +26,9 @@ body {
         border-inline-end: 0;
         border-inline-start: 0;
     }
+}
+
+.subscribers-count {
+    font-size: $font-size-totals;
+    font-weight: bold;
 }
