@@ -2,8 +2,9 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Season;
+use App\Entity\Subscriber;
 use App\Entity\Subscription;
-use App\Repository\SeasonRepository;
 use App\Service\StatusCalculator;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -42,12 +43,8 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
         }
         $manager->flush();
 
-        $previousSeason = $this->getReference('season_0')->getSubscriptions();
-        $numberPrevious = [];
-        foreach ($previousSeason as $subscriptionSeason) {
-            $numberPrevious[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
-        }
-        asort($numberPrevious);
+        $seasons = $manager->getRepository(Season::class)->findAll();
+        $subscribers = $manager->getRepository(Subscriber::class)->findAll();
 
         //Subscription avec statut transfert
         $subscription = new Subscription();
@@ -55,8 +52,8 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
         $subscription->setSubscriber($this->getReference('subscriber_100'));
         $subscription->setSeason($this->getReference('season_1'));
         $subscription->setLicence($this->getReference('licence_' . rand(0, 5)));
-        $subscription->setStatus('');
-        $subscription->setStatus($this->statusCalculator->calculateNew($subscription, $numberPrevious));
+        $subscription->setStatus($this->statusCalculator->calculate($seasons, $subscribers));
+        $subscription->setCategory($this->getReference('category_' . rand(0, 11)));
         $manager->persist($subscription);
         $manager->flush();
     }

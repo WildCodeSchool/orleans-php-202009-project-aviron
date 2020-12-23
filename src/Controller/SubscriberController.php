@@ -42,31 +42,7 @@ class SubscriberController extends AbstractController
             $seasons = $seasonRepository->findByFilter($filters);
             $subscribers = $subscriberRepository->findByFilter($filters);
 
-            $previousSeason = [];
-            $currentSeason = [];
-            foreach ($seasons as $season) {
-                foreach ($season->getSubscriptions() as $subscriptionSeason) {
-                    asort($previousSeason);
-                    $subscriptionSeason->setStatus($statusCalculator->calculateNew(
-                        $subscriptionSeason,
-                        $previousSeason
-                    ));
-                    $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
-                }
-                $previousSeason = [];
-                $previousSeason = $currentSeason;
-                $currentSeason = [];
-            }
-            foreach ($subscribers as $subscriber) {
-                foreach ($subscriber->getSubscriptions() as $subscription) {
-                    if ($subscription->getSeason() !== $seasons[0]) {
-                        $subscription->setStatus($statusCalculator->calculate(
-                            $subscription,
-                            $subscriber->getSubscriptions()
-                        ));
-                    }
-                }
-            }
+            $statusCalculator->calculate($seasons, $subscribers);
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,

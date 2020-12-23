@@ -2,7 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\Season;
+use App\Entity\Subscriber;
 use App\Entity\Subscription;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 class StatusCalculator
@@ -36,16 +39,39 @@ class StatusCalculator
         return $status;
     }
 
-    public function calculate(Subscription $subscription, Collection $subscriptions): ?string
+    /**
+     * @param array<Season> $seasons
+     * @param array<Subscriber> $subscribers
+     */
+    public function calculate(array $seasons, array $subscribers): void
     {
-        $status = $subscription->getStatus();
-        if ($this->hasPreviousYear($subscription, $subscriptions)) {
-            $status = self::RENEWAL;
-        } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
-            $status = self::RESUMED;
+        $previousSeason = [];
+        $currentSeason = [];
+        foreach ($seasons as $season) {
+            foreach ($season->getSubscriptions() as $subscriptionSeason) {
+                asort($previousSeason);
+                $subscriptionSeason->setStatus($this->calculateNew(
+                    $subscriptionSeason,
+                    $previousSeason
+                ));
+                $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
+            }
+            $previousSeason = [];
+            $previousSeason = $currentSeason;
+            $currentSeason = [];
         }
-
-        return $status;
+        foreach ($subscribers as $subscriber) {
+            $subscriptions = $subscriber->getSubscriptions();
+            foreach ($subscriptions as $subscription) {
+                if ($subscription->getSeason() !== $seasons[0]) {
+                    if ($this->hasPreviousYear($subscription, $subscriptions)) {
+                        $subscription->setStatus(self::RENEWAL);
+                    } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
+                        $subscription->setStatus(self::RESUMED);
+                    }
+                }
+            }
+        }
     }
 
     /*
