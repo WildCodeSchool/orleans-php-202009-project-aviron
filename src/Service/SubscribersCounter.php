@@ -18,12 +18,12 @@ class SubscribersCounter
         array $subscriptions,
         ServiceEntityRepository $serviceEntityRepository
     ): array {
-        $countedSubscribers = array_column($subscriptions, 'subscribersCount', 'acronym');
+        $countedSubscribers = array_column($subscriptions, 'subscribersCount', 'label');
         $allLabels = $serviceEntityRepository->findAll();
 
         $labels = [];
         foreach ($allLabels as $label) {
-            $labels[] = $label->getAcronym();
+            $labels[] = $label->getLabel();
         }
         $labels = array_fill_keys($labels, 0);
         return array_merge($labels, $countedSubscribers);

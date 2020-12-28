@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LicenceRepository;
+use App\Service\LabelInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=LicenceRepository::class)
  */
-class Licence
+class Licence implements LabelInterface
 {
     /**
      * @ORM\Id
@@ -57,6 +58,11 @@ class Licence
     }
 
     public function getAcronym(): ?string
+    {
+        return $this->acronym;
+    }
+
+    public function getLabel(): ?string
     {
         return $this->acronym;
     }
