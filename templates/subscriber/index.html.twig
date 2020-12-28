@@ -4,6 +4,7 @@
     <div class="container-fluid">
         <h1 class="text-center my-4">
             {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
+            {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
             {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
         </h1>
         <div class="row">
@@ -30,22 +31,19 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                {% if display == 'licences' %}
                                     {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                        <td class="text-center">{{ subscription.licence.acronym }}</td>
+                                        {% if display == 'licences' %}
+                                            <td class="text-center">{{ subscription.licence.acronym }}</td>
+                                        {% elseif display == 'renewal'%}
+                                            <td class="text-center">{{ subscription.status }}</td>
+                                        {% elseif display == 'subscriptions' %}
+                                            <td class="text-center">{{ subscription.category.label }}</td>
+                                        {% endif %}
                                     {% else %}
                                         <td></td>
                                     {% endfor %}
-                                {% elseif display == 'subscriptions' %}
-                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                        <td class="text-center">{{ subscription.category.label }}</td>
-                                    {% else %}
-                                        <td></td>
-                                    {% endfor %}
-                                {% endif %}
                             {% endfor %}
                         </tr>
-
                     {% endfor %}
                     </tbody>
                 </table>
