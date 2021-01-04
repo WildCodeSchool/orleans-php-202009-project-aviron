@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
@@ -22,6 +23,7 @@ class HomeController extends AbstractController
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
+     * @param CategoryRepository $categoryRepository
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -30,7 +32,8 @@ class HomeController extends AbstractController
         SubscribersCounter $countSubscribers,
         SeasonRepository $seasonRepository,
         SubscriptionRepository $subscriptionRepository,
-        LicenceRepository $licenceRepository
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
     ): Response {
         $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
 
@@ -46,14 +49,20 @@ class HomeController extends AbstractController
         );
 
         $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
-
         $countByLicences = $countSubscribers->countSubscribersWithLabel(
             $subscribersLicences,
             $licenceRepository
         );
 
+        $subscribersCategories = $subscriptionRepository->subscribersByYearByCategories($actualSeason);
+        $countByCategories = $countSubscribers->countSubscribersWithLabel(
+            $subscribersCategories,
+            $categoryRepository
+        );
+
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences,
+            'subscribersByCategories' => $countByCategories,
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
         ]);

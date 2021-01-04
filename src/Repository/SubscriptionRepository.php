@@ -23,7 +23,7 @@ class SubscriptionRepository extends ServiceEntityRepository
     public function subscribersByYearByLicences(?string $season): array
     {
         return $this->createQueryBuilder('subscription')
-            ->select('licence.acronym, COUNT(subscription.subscriber) as subscribersCount')
+            ->select('licence.acronym as label, COUNT(subscription.subscriber) as subscribersCount')
             ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'licence.id=subscription.licence')
             ->innerJoin('App\Entity\Season', 'season', 'WITH', 'season.id=subscription.season')
             ->where('season.name = :season')
@@ -33,6 +33,21 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+    public function subscribersByYearByCategories(?string $season): array
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('c.label as label, COUNT(sub.category) as subscribersCount')
+            ->leftJoin('App\Entity\Category', 'c', 'WITH', 'c.id = sub.category')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->where('s.name = :season')
+            ->setParameter('season', $season)
+            ->groupBy('sub.category')
+            ->orderBy('c.id')
+            ->getQuery()
+            ->getResult();
+    }
+
 
     /**
      * @param string|null $licenceAcronym
