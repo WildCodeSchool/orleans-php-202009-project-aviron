@@ -6,37 +6,28 @@
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center my-4">Filtres de sélection</h1>
+        {% if not form.vars.valid %}
+            <ul class="alert alert-danger list-unstyled">
+                {% for error in form.vars.errors %}
+                    <li>{{error.message}}</li>
+                {% endfor %}
+                {% for child in form.children %}
+                    {% if child.vars.errors is defined %}
+                        {% for error in child.vars.errors %}
+                            <li>{{error.message}} </li>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
         {{ form_start(form) }}
         <h2 class="title-filter mb-3">Saison</h2>
         <div class="row">
             <div class="col-2 filter">
                 {{ form_row(form.fromSeason) }}
             </div>
-            <div class="col flex-column align-items-start justify-content-end">
-                {% set class = '' %}
-                {% if not form.toSeason.vars.valid %}
-                    {% set class = 'is-invalid' %}
-                {% endif %}
-                <div class="form-group {{ class }}">
-                    <div class="filter">
-                        <label class="control-label" for="{{ form.toSeason.vars.id }}">à</label>
-                        <select class="form-control" id="{{ form.toSeason.vars.id }}"
-                                name="{{ form.toSeason.vars.full_name }}">
-                            {% for choice in form.toSeason.vars.choices %}
-                                <option value="{{ choice.value }}">{{ choice.label }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                {% do form.toSeason.setRendered %}
-                {% if not form.toSeason.vars.valid %}
-                    <div class="invalid-feedback">
-                        {% for error in form.toSeason.vars.errors %}
-                            <span class="badge badge-pill badge-danger">Erreur</span>
-                            <span>{{ error.message }}</span>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            <div class="col filter">
+                {{ form_row(form.toSeason) }}
             </div>
         </div>
         <button type="submit" class="btn btn-primary mt-3">Appliquer</button>

@@ -17,12 +17,14 @@ class FilterType extends AbstractType
             ->add('fromSeason', EntityType::class, [
                 'class' => Season::class,
                 'choice_label' => 'name',
-                'label' => 'form.filter.fromSeason'
+                'label' => 'form.filter.fromSeason',
+                'error_bubbling' => true
             ])
             ->add('toSeason', EntityType::class, [
                 'class' => Season::class,
                 'choice_label' => 'name',
-                'label' => 'form.filter.toSeason'
+                'label' => 'form.filter.toSeason',
+                'error_bubbling' => true
             ]);
     }
 

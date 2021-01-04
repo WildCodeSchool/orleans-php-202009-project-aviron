@@ -17,7 +17,7 @@ class Filter
     /**
      * @Assert\NotBlank()
      * @Assert\GreaterThanOrEqual(propertyPath="fromSeason",
-     *     message="Cette valeur doit être supérieure ou égale à la saison de départ")
+     *     message="La saison de fin doit être supérieure ou égale à la saison de début")
      */
     private Season $toSeason;
 
