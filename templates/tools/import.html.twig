@@ -3,14 +3,6 @@
 {% block stylesheets %}{% endblock %}
 {% block body %}
 
-    {% for category, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ category }} text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
     <div class="container">
         <h1 class="text-center my-5">Importer une saison</h1>
 

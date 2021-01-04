@@ -15,6 +15,15 @@
         {% block user %} {% include '_includes/_userbar.html.twig' %} {% endblock %}
 
         <div id="content" >
+
+            {% for category, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ category }} text-center rounded-0">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {% block body %}{% endblock %}
         </div>
 
