@@ -15,7 +15,10 @@ class ImportType extends AbstractType
     {
         $builder
             ->add('seasonName', TextType::class, [
-                'label' => 'Saison :'
+                'label' => 'Saison :',
+                'attr' => [
+                    'placeholder' => '2020-2021'
+                ]
             ])
             ->add('file', FileType::class, [
                 'label' => 'Fichier :'
