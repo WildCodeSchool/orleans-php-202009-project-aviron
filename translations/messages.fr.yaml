@@ -1,2 +1,4 @@
 form.filter.fromSeason: 'De'
 form.filter.toSeason: 'à'
+form.filter.fromAdherent: 'De'
+form.filter.toAdherent: 'à'

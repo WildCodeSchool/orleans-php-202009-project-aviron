@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\FilterRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class Filter
 {
@@ -11,6 +10,14 @@ class Filter
     private Season $fromSeason;
 
     private Season $toSeason;
+
+    private ?int $fromAdherent = null;
+
+    /**
+     * @Assert\GreaterThanOrEqual(propertyPath="fromAdherent",
+     *     message="Le numéro d'adhérent de fin doit être supérieur ou égal au numéro de début")
+     */
+    private ?int $toAdherent = null;
 
     /**
      * @return Season
@@ -42,5 +49,37 @@ class Filter
     public function setToSeason(Season $toSeason): void
     {
         $this->toSeason = $toSeason;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFromAdherent(): ?int
+    {
+        return $this->fromAdherent;
+    }
+
+    /**
+     * @param int|null $fromAdherent
+     */
+    public function setFromAdherent(?int $fromAdherent): void
+    {
+        $this->fromAdherent = $fromAdherent;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getToAdherent(): ?int
+    {
+        return $this->toAdherent;
+    }
+
+    /**
+     * @param int|null $toAdherent
+     */
+    public function setToAdherent(?int $toAdherent): void
+    {
+        $this->toAdherent = $toAdherent;
     }
 }
