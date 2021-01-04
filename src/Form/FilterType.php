@@ -27,12 +27,12 @@ class FilterType extends AbstractType
                 'label' => 'form.filter.toSeason'
             ])
             ->add('fromAdherent', NumberType::class, [
-                'label' => 'form.filter.fromAdherent',
+                'label' => 'De',
                 'required' => false,
                 'error_bubbling' => true
             ])
             ->add('toAdherent', NumberType::class, [
-                'label' => 'form.filter.toAdherent',
+                'label' => 'à',
                 'required' => false,
                 'error_bubbling' => true
             ]);
