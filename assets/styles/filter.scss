@@ -9,16 +9,6 @@ $title-filter: 1.25rem;
     align-items: center;
 }
 
-.invalid-feedback {
-    display: block;
-    font-size: 100%;
-}
-
-.is-invalid {
-    margin-bottom: 0;
-    margin-top: $title-filter - 0.5;
-}
-
 .form-group label, .form-control {
     margin-bottom: 0;
     margin-right: $spacing-form;
