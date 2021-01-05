@@ -6,6 +6,7 @@ use App\Entity\Filter;
 use App\Entity\Season;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,6 +25,17 @@ class FilterType extends AbstractType
                 'class' => Season::class,
                 'choice_label' => 'name',
                 'label' => 'à',
+                'error_bubbling' => true
+            ])
+            ->add('gender', ChoiceType::class, [
+                'choices' => [
+                    'Homme' => 'H',
+                    'Femme' => 'F'
+                ],
+                'expanded' => true,
+                'label' => false,
+                'required' => false,
+                'placeholder' => false,
                 'error_bubbling' => true
             ]);
     }

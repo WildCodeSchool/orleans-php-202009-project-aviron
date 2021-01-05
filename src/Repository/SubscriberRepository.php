@@ -35,6 +35,10 @@ class SubscriberRepository extends ServiceEntityRepository
             ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
             ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
         }
+        if (!empty($filter->getGender())) {
+            $queryBuilder = $queryBuilder->andWhere('sr.gender = :gender')
+                ->setParameter('gender', $filter->getGender());
+        }
         return $queryBuilder->getQuery()->getResult();
     }
 

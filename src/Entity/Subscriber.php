@@ -44,6 +44,8 @@ class Subscriber
      */
     private string $gender;
 
+    public const GENDER = ['H', 'F'];
+
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="subscriber")
      */

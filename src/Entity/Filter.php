@@ -2,8 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\FilterRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Filter
@@ -20,6 +18,12 @@ class Filter
      *     message="La saison de fin doit être supérieure ou égale à la saison de début")
      */
     private Season $toSeason;
+
+    /**
+     * @Assert\Choice(choices=Subscriber::GENDER,
+     *     message="Le sexe choisi n'est pas une valeur valide")
+     */
+    private ?string $gender;
 
     /**
      * @return Season
@@ -51,5 +55,21 @@ class Filter
     public function setToSeason(Season $toSeason): void
     {
         $this->toSeason = $toSeason;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param string|null $gender
+     */
+    public function setGender(?string $gender): void
+    {
+        $this->gender = $gender;
     }
 }
