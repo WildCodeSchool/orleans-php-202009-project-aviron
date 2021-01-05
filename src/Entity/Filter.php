@@ -96,7 +96,7 @@ class Filter
     {
         $this->toAdherent = $toAdherent;
     }
-  
+
     /**
      * @return string|null
      */
