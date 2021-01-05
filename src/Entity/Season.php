@@ -61,7 +61,7 @@ class Season
         return $this;
     }
 
-    public function getStartingDate(): ?\DateTimeInterface
+    public function getStartingDate(): \DateTimeInterface
     {
         return $this->startingDate;
     }
@@ -73,7 +73,7 @@ class Season
         return $this;
     }
 
-    public function getEndingDate(): ?\DateTimeInterface
+    public function getEndingDate(): \DateTimeInterface
     {
         return $this->endingDate;
     }
@@ -105,13 +105,7 @@ class Season
 
     public function removeSubscription(Subscription $subscriptions): self
     {
-        if ($this->subscriptions->removeElement($subscriptions)) {
-            // set the owning side to null (unless already changed)
-            if ($subscriptions->getSeason() === $this) {
-                $subscriptions->setSeason(null);
-            }
-        }
-
+        $this->subscriptions->removeElement($subscriptions);
         return $this;
     }
 }

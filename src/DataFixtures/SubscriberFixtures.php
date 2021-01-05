@@ -25,11 +25,22 @@ class SubscriberFixtures extends Fixture
             $subscriber->setFirstname($faker->firstName($gender));
             $subscriber->setLastname($faker->lastName);
             $subscriber->setBirthdate($faker->dateTimeThisCentury());
-            $subscriber->setLicenceNumber($faker->randomNumber(5, false));
+            $subscriber->setLicenceNumber($i + 1);
 
             $manager->persist($subscriber);
             $this->addReference('subscriber_' . $i, $subscriber);
         }
+
+        $subscriber = new Subscriber();
+        $gender = array_rand(self::GENDER, 1);
+        $subscriber->setGender(self::GENDER[$gender]);
+        $subscriber->setFirstname($faker->firstName($gender));
+        $subscriber->setLastname('Test');
+        $subscriber->setBirthdate($faker->dateTimeThisCentury());
+        $subscriber->setLicenceNumber(0);
+        $manager->persist($subscriber);
+        $this->addReference('subscriber_100', $subscriber);
+
         $manager->flush();
     }
 }

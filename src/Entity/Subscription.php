@@ -26,19 +26,24 @@ class Subscription
      * @ORM\ManyToOne(targetEntity=Subscriber::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Subscriber $subscriber;
+    private Subscriber $subscriber;
 
     /**
      * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Season $season;
+    private Season $season;
 
     /**
      * @ORM\ManyToOne(targetEntity=Licence::class, inversedBy="subscriptions")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Licence $licence;
+    private Licence $licence;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private ?string $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="subscriptions")
@@ -63,39 +68,50 @@ class Subscription
         return $this;
     }
 
-    public function getSubscriber(): ?Subscriber
+    public function getSubscriber(): Subscriber
     {
         return $this->subscriber;
     }
 
-    public function setSubscriber(?Subscriber $subscriber): self
+    public function setSubscriber(Subscriber $subscriber): self
     {
         $this->subscriber = $subscriber;
 
         return $this;
     }
 
-    public function getSeason(): ?Season
+    public function getSeason(): Season
     {
         return $this->season;
     }
 
-    public function setSeason(?Season $season): self
+    public function setSeason(Season $season): self
     {
         $this->season = $season;
 
         return $this;
     }
 
-    public function getLicence(): ?Licence
+    public function getLicence(): Licence
     {
         return $this->licence;
     }
 
-    public function setLicence(?Licence $licence): self
+    public function setLicence(Licence $licence): self
     {
         $this->licence = $licence;
 
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -107,7 +123,6 @@ class Subscription
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
-
         return $this;
     }
 }

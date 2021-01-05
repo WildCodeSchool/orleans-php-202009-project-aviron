@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\LicenceRepository;
+use App\Service\LabelInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=LicenceRepository::class)
  */
-class Licence
+class Licence implements LabelInterface
 {
     /**
      * @ORM\Id
@@ -61,6 +62,11 @@ class Licence
         return $this->acronym;
     }
 
+    public function getLabel(): ?string
+    {
+        return $this->acronym;
+    }
+
     public function setAcronym(string $acronym): self
     {
         $this->acronym = $acronym;
@@ -88,13 +94,7 @@ class Licence
 
     public function removeSubscription(Subscription $subscription): self
     {
-        if ($this->subscriptions->removeElement($subscription)) {
-            // set the owning side to null (unless already changed)
-            if ($subscription->getLicence() === $this) {
-                $subscription->setLicence(null);
-            }
-        }
-
+        $this->subscriptions->removeElement($subscription);
         return $this;
     }
 }

@@ -3,19 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
-use App\Entity\Subscriber;
 use App\Form\FilterType;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
-use App\Service\Export;
+use App\Service\StatusCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/subscribers", name="subscribers_")
@@ -28,12 +23,14 @@ class SubscriberController extends AbstractController
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
-     * @return Response
+     * @param StatusCalculator $statusCalculator
+     * @return Response A response instance
      */
     public function filter(
         string $display,
         Request $request,
         SubscriberRepository $subscriberRepository,
+        StatusCalculator $statusCalculator,
         SeasonRepository $seasonRepository
     ): Response {
         $filter = new Filter();
@@ -44,6 +41,8 @@ class SubscriberController extends AbstractController
             $filters = $form->getData();
             $seasons = $seasonRepository->findByFilter($filters);
             $subscribers = $subscriberRepository->findByFilter($filters);
+
+            $statusCalculator->calculate($seasons, $subscribers);
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
