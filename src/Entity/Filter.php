@@ -23,7 +23,7 @@ class Filter
      * @Assert\Choice(choices=Subscriber::GENDER,
      *     message="Le sexe choisi n'est pas une valeur valide")
      */
-    private ?string $gender;
+    private ?string $gender = null;
 
     /**
      * @return Season
