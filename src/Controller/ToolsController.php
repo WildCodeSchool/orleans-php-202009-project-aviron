@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ToolsController extends AbstractController
 {
     /**
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @Route("/import", name="import", methods={"GET", "POST"})
      * @param Request $request
      * @param CsvImport $csvImport
@@ -34,10 +35,8 @@ class ToolsController extends AbstractController
             $newImport = $form->getData();
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
-            dump($season);
-            dump($csvData);
 
-            /*            return $this->redirectToRoute('tools_import');*/
+            return $this->redirectToRoute('tools_import');
         }
 
         return $this->render('tools/import.html.twig', [
