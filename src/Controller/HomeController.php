@@ -21,6 +21,19 @@ class HomeController extends AbstractController
 {
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
+    private const CATEGORIES_PALETTE = ['#004C6D',
+        '#135B79',
+        '#256985',
+        '#387892',
+        '#4A869E',
+        '#5D95AA',
+        '#70A3B6',
+        '#82B2C2',
+        '#95C0CE',
+        '#A7CFDB',
+        '#BADDE7',
+        '#CCECF3',
+    ];
 
     /**
      * @Route("/", name="home")
@@ -72,7 +85,7 @@ class HomeController extends AbstractController
         $builder
             ->query($querySubscribersCategories)
             ->addDataSet('subscribersCount', 'Subscribers', [
-                "backgroundColor" => RandomColorFactory::getRandomRGBAColors(12)
+                "backgroundColor" => self::CATEGORIES_PALETTE
             ])
             ->labels('label')
         ;
