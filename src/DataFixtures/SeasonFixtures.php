@@ -27,7 +27,7 @@ class SeasonFixtures extends Fixture
         ],
         '2018-2019' => [
             'startingDate' => '2018-09-01',
-            'endingDate' => '2020-06-30',
+            'endingDate' => '2019-06-30',
         ],
         '2019-2020' => [
             'startingDate' => '2019-09-01',
