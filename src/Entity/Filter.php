@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Service\StatusCalculator;
 
 class Filter
 {
@@ -27,11 +28,14 @@ class Filter
      */
     private ?int $toAdherent = null;
 
-    /**
-     * @Assert\Choice(choices=Subscriber::GENDER,
-     *     message="Le sexe choisi n'est pas une valeur valide")
-     */
     private ?string $gender = null;
+
+    private ?array $status = [];
+
+    /**
+     * @Assert\NotBlank()
+     */
+    private Season $seasonStatus;
 
     /**
      * @return Season
@@ -111,5 +115,37 @@ class Filter
     public function setGender(?string $gender): void
     {
         $this->gender = $gender;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getStatus(): ?array
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array|null $status
+     */
+    public function setStatus(?array $status): void
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return Season
+     */
+    public function getSeasonStatus(): Season
+    {
+        return $this->seasonStatus;
+    }
+
+    /**
+     * @param Season $seasonStatus
+     */
+    public function setSeasonStatus(Season $seasonStatus): void
+    {
+        $this->seasonStatus = $seasonStatus;
     }
 }

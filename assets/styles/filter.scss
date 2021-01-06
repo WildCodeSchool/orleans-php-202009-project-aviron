@@ -3,7 +3,7 @@
 $spacing-form: $spacing * 3;
 $title-filter: 1.25rem;
 
-.filter, .form-group {
+.filter, .form-group, #filter_status {
     display: flex;
     flex-direction: row;
     align-items: center;

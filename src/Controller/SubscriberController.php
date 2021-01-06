@@ -34,6 +34,7 @@ class SubscriberController extends AbstractController
         SeasonRepository $seasonRepository
     ): Response {
         $filter = new Filter();
+        $filter->setSeasonStatus($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
