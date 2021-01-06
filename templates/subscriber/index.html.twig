@@ -37,7 +37,7 @@
                                         {% elseif display == 'renewal'%}
                                             <td class="text-center">{{ subscription.status }}</td>
                                         {% elseif display == 'subscriptions' %}
-                                            <td class="text-center">{{ subscription.category.label }}</td>
+                                            <td class="text-center {{ subscription.category.label }}">{{ subscription.category.label }}</td>
                                         {% endif %}
                                     {% else %}
                                         <td></td>

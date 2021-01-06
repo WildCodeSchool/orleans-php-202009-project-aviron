@@ -34,3 +34,27 @@ h4 {
 .box-shadow {
     box-shadow: 5px 5px 15px -10px $dark-shadow;
 }
+
+@for $i from 9 through 12 {
+    .J#{$i} {
+        background-color: #37cf9bff;
+    }
+}
+
+@for $i from 13 through 14 {
+    .J#{$i} {
+        background-color: #f2c950ff;
+    }
+}
+
+@for $i from 15 through 16 {
+    .J#{$i} {
+        background-color: #e69138ff;
+    }
+}
+
+@for $i from 17 through 18 {
+    .J#{$i} {
+        background-color: #d56741ff;
+    }
+}
