@@ -7,6 +7,7 @@ use App\Form\FilterType;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
 use App\Service\StatusCalculator;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,8 @@ class SubscriberController extends AbstractController
         Request $request,
         SubscriberRepository $subscriberRepository,
         StatusCalculator $statusCalculator,
-        SeasonRepository $seasonRepository
+        SeasonRepository $seasonRepository,
+        PaginatorInterface $paginator
     ): Response {
         $filter = new Filter();
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
@@ -40,9 +42,14 @@ class SubscriberController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $filters = $form->getData();
             $seasons = $seasonRepository->findByFilter($filters);
-            $subscribers = $subscriberRepository->findByFilter($filters);
+            $subscribersData = $subscriberRepository->findByFilter($filters);
+            $subscribers = $paginator->paginate(
+                $subscribersData,
+                $request->query->getint('page', 1),
+                12
+            );
 
-            $statusCalculator->calculate($seasons, $subscribers);
+            $statusCalculator->calculate($seasons, $subscribersData);
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,

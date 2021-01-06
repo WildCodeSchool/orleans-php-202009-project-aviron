@@ -47,6 +47,16 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <nav aria-label="pagination">
+                    {% do subscribers.setPageRange(3) %}
+                        {{ knp_pagination_render(subscribers,
+                            '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
+                            {},
+                            {
+                            'align': 'center',
+                            })
+                        }}
+                </nav>
             </div>
         </div>
     </div>
