@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SubscriberController extends AbstractController
 {
+    private const PAGINATION_LIMIT = 12;
     /**
      * @Route("/{display}/filter", name="filter")
      * @param string $display
@@ -46,7 +47,7 @@ class SubscriberController extends AbstractController
             $subscribers = $paginator->paginate(
                 $subscribersData,
                 $request->query->getint('page', 1),
-                12
+                self::PAGINATION_LIMIT
             );
 
             $statusCalculator->calculate($seasons, $subscribersData);
