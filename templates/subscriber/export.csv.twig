@@ -1,0 +1,7 @@
+N° Licence,Prénom,Nom,Date de naissance,Genre{% for season in seasons %},{{ season.name }}{% endfor %},
+{% for subscriber in subscribers %}
+{{ subscriber.licenceNumber }},{{ subscriber.firstname }},{{ subscriber.lastname }},{{ subscriber.birthdate|date("m/d/Y") }},{{ subscriber.gender }},{% for season in seasons %}{% if display == 'licences' %}{% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}{{ subscription.licence.acronym }},{% endfor %}
+{% endif %}
+{% endfor %}
+
+{% endfor %}
