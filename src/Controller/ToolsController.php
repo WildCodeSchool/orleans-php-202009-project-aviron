@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Import;
 use App\Form\ImportType;
-use App\Service\CsvParser;
+use App\Service\CsvImport;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +18,13 @@ class ToolsController extends AbstractController
     /**
      * @Route("/import", name="import", methods={"GET", "POST"})
      * @param Request $request
+     * @param CsvImport $csvImport
      * @return Response
      */
-    public function newSeason(Request $request, CsvParser $csvParser): Response
-    {
+    public function newSeason(
+        Request $request,
+        CsvImport $csvImport
+    ): Response {
         $seasonImport = new Import();
         $form = $this->createForm(ImportType::class, $seasonImport);
         $form->handleRequest($request);
@@ -29,10 +32,12 @@ class ToolsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->addFlash('success', 'Le fichier est en cours de traitement');
             $newImport = $form->getData();
-            $fileData = $csvParser->getDataFromCsv($newImport->getFile());
-            dump($fileData);
+            $csvData = $csvImport->getDataFromCsv($newImport->getFile());
+            $season = $csvImport->createSeason($newImport->getSeasonName());
+            dump($season);
+            dump($csvData);
 
-            return $this->redirectToRoute('tools_import');
+            /*            return $this->redirectToRoute('tools_import');*/
         }
 
         return $this->render('tools/import.html.twig', [
