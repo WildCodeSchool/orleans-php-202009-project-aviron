@@ -35,6 +35,31 @@ class SubscriberRepository extends ServiceEntityRepository
             ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
             ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
         }
+        if (!empty($filter->getFromAdherent()) || $filter->getFromAdherent() === 0) {
+            if (!empty($filter->getToAdherent())) {
+                $queryBuilder = $queryBuilder->andWhere(
+                    'sr.licenceNumber BETWEEN :fromAdherent AND :toAdherent'
+                )
+                    ->setParameter('fromAdherent', $filter->getFromAdherent())
+                    ->setParameter('toAdherent', $filter->getToAdherent());
+            } else {
+                $queryBuilder = $queryBuilder->andWhere(
+                    'sr.licenceNumber >= :fromAdherent'
+                )
+                    ->setParameter('fromAdherent', $filter->getFromAdherent());
+            }
+        } elseif (!empty($filter->getToAdherent())) {
+            $queryBuilder = $queryBuilder->andWhere(
+                'sr.licenceNumber <= :toAdherent'
+            )
+                ->setParameter('toAdherent', $filter->getToAdherent());
+        }
+        if (!empty($filter->getGender())) {
+            $queryBuilder = $queryBuilder->andWhere('sr.gender = :gender')
+                ->setParameter('gender', $filter->getGender());
+        }
+        $queryBuilder = $queryBuilder->orderBy('sr.licenceNumber');
+
         return $queryBuilder->getQuery()->getResult();
     }
 

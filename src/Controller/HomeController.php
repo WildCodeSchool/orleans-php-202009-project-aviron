@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Subscription;
+use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
@@ -27,6 +28,7 @@ class HomeController extends AbstractController
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
+     * @param CategoryRepository $categoryRepository
      * @param Builder $builder
      * @return Response
      * @throws NonUniqueResultException
@@ -37,6 +39,7 @@ class HomeController extends AbstractController
         SeasonRepository $seasonRepository,
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository,
         Builder $builder
     ): Response {
         $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
@@ -53,23 +56,21 @@ class HomeController extends AbstractController
         );
 
         $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
-
         $countByLicences = $countSubscribers->countSubscribersWithLabel(
             $subscribersLicences,
             $licenceRepository
         );
 
+        $subscribersCategories = $subscriptionRepository->subscribersByYearByCategories($actualSeason);
+        $countByCategories = $countSubscribers->countSubscribersWithLabel(
+            $subscribersCategories,
+            $categoryRepository
+        );
+
+        $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
 
         $builder
-            ->query('SELECT COUNT(sub.category) as subscribersCount, c.label as label 
-                    FROM \App\Entity\Subscription sub
-                    JOIN \App\Entity\Category c
-                    WITH c.id = sub.category
-                    JOIN \App\Entity\Season s
-                    WITH s.id = sub.season
-                    WHERE s.name = \'2018-2019\'
-                    GROUP BY sub.category
-                    ORDER BY c.id ASC')
+            ->query($querySubscribersCategories)
             ->addDataSet('subscribersCount', 'Subscribers', [
                 "backgroundColor" => RandomColorFactory::getRandomRGBAColors(12)
             ])
@@ -80,24 +81,21 @@ class HomeController extends AbstractController
             'legend' => ([
                 'position' => 'bottom',
             ]),
-            'yAxes' => ([
-                'gridLines' => ([
-                    'drawBorder' => 'false',
-                ]),
-            ]),
-            'xAxes' => ([
-                'gridLines' => ([
-                    'display' => 'false'
-                    ]),
-            ]),
+            'scales' => ([
+                'xAxes' => ([
+                    'gridLines' => ([
+                        'display' => 'false'
+                    ])
+                ])
+            ])
         ]);
 
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences,
+            'subscribersByCategories' => $countByCategories,
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
             'chart' => $chart,
-/*            'query' => $query,*/
         ]);
     }
 }
