@@ -54,6 +54,10 @@ class SubscriberRepository extends ServiceEntityRepository
             )
                 ->setParameter('toAdherent', $filter->getToAdherent());
         }
+        if (!empty($filter->getGender())) {
+            $queryBuilder = $queryBuilder->andWhere('sr.gender = :gender')
+                ->setParameter('gender', $filter->getGender());
+        }
         $queryBuilder = $queryBuilder->orderBy('sr.licenceNumber');
 
         return $queryBuilder->getQuery()->getResult();

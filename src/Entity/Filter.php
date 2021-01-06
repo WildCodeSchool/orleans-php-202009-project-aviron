@@ -28,6 +28,12 @@ class Filter
     private ?int $toAdherent = null;
 
     /**
+     * @Assert\Choice(choices=Subscriber::GENDER,
+     *     message="Le sexe choisi n'est pas une valeur valide")
+     */
+    private ?string $gender = null;
+
+    /**
      * @return Season
      */
     public function getFromSeason(): Season
@@ -89,5 +95,21 @@ class Filter
     public function setToAdherent(?int $toAdherent): void
     {
         $this->toAdherent = $toAdherent;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param string|null $gender
+     */
+    public function setGender(?string $gender): void
+    {
+        $this->gender = $gender;
     }
 }
