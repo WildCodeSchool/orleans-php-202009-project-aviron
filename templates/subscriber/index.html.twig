@@ -33,9 +33,9 @@
                             {% for season in seasons %}
                                     {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
                                         {% if display == 'licences' %}
-                                            <td class="text-center">{{ subscription.licence.acronym }}</td>
+                                            <td class="text-center {{ subscription.licence.acronym }}">{{ subscription.licence.acronym }}</td>
                                         {% elseif display == 'renewal'%}
-                                            <td class="text-center">{{ subscription.status }}</td>
+                                            <td class="text-center {{ subscription.status }}">{{ subscription.status }}</td>
                                         {% elseif display == 'subscriptions' %}
                                             <td class="text-center {{ subscription.category.label }}">{{ subscription.category.label }}</td>
                                         {% endif %}
