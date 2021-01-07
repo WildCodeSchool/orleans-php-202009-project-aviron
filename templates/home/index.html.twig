@@ -14,7 +14,7 @@
             <div class="col-8 col-md-4 text-center py-2">
                 <h4>Total inscrits</h4>
                 {% for subscriberCount in actualSubscribers %}
-                <p class="subscribers-count">{{ subscriberCount }}</p>
+                    <p class="subscribers-count">{{ subscriberCount }}</p>
                 {% endfor %}
             </div>
             <div class="col-8 col-md-4 py-4 text-center py-2 divider-border">
@@ -29,10 +29,11 @@
         </div>
         <div class="row justify-content-between align-items-center mt-5">
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                    <h4 class="mb-4">Répartition par catégories (%)</h4>
+                <h4 class="mb-4">Répartition par catégories (%)</h4>
+                {{ mukadi_chart(chart) }}
             </div>
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                    <h4 class="mb-4">Répartition par licences (%)</h4>
+                <h4 class="mb-4">Répartition par licences (%)</h4>
             </div>
         </div>
         <div class="row justify-content-between align-items-center mt-5">
@@ -42,26 +43,26 @@
         </div>
         <div class="row justify-content-between align-items-center mt-5">
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                    <h4 class="mb-4"></h4>
+                <h4 class="mb-4"></h4>
             </div>
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                    <h4 class="mb-4">Total de licenciés par type de licence sur l'année en cours</h4>
-                    <table class="table table-hover table-striped">
-                        <thead class="thead-dark">
-                        <tr>
-                            {% for licence,count in subscribersByLicences %}
-                                <th scope="col" class="text-center"> {{ licence }}</th>
-                            {% endfor %}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            {% for licence,count in subscribersByLicences %}
-                                <td>{{ count }}</td>
-                            {% endfor %}
-                        </tr>
-                        </tbody>
-                    </table>
+                <h4 class="mb-4">Total de licenciés par type de licence sur l'année en cours</h4>
+                <table class="table table-hover table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        {% for licence,count in subscribersByLicences %}
+                            <th scope="col" class="text-center"> {{ licence }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        {% for licence,count in subscribersByLicences %}
+                            <td>{{ count }}</td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -87,4 +88,10 @@
             </div>
         </div>
     </section>
+{% endblock %}
+{% block javascripts %}
+    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
+    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('navbar') }}
 {% endblock %}
