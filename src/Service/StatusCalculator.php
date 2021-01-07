@@ -10,10 +10,10 @@ use Doctrine\Common\Collections\Collection;
 
 class StatusCalculator
 {
-    private const TRANSFER = 'T';
-    private const NEW = 'N';
-    private const RENEWAL = 'R';
-    private const RESUMED = 'P';
+    public const TRANSFER = ['Transfert' => 'T'];
+    public const NEW = ['Nouveau' => 'N'];
+    public const RENEWAL = ['Renouvellement' => 'R'];
+    public const RESUMED = ['Reprise' => 'P'];
 
     /**
      * @param Subscription $subscription
@@ -28,12 +28,12 @@ class StatusCalculator
             empty($previousSeason)
             || $subscription->getSubscriber()->getLicenceNumber() > $previousSeason[count($previousSeason) - 1]
         ) {
-            $status = self::NEW;
+            $status = current(self::NEW);
         } elseif (
             $subscription->getSubscriber()->getLicenceNumber() < $previousSeason[count($previousSeason) - 1]
             && $subscription->getStatus() === ''
         ) {
-            $status = self::TRANSFER;
+            $status = current(self::TRANSFER);
         }
 
         return $status;
@@ -65,9 +65,9 @@ class StatusCalculator
             foreach ($subscriptions as $subscription) {
                 if ($subscription->getSeason() !== $seasons[0]) {
                     if ($this->hasPreviousYear($subscription, $subscriptions)) {
-                        $subscription->setStatus(self::RENEWAL);
+                        $subscription->setStatus(current(self::RENEWAL));
                     } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
-                        $subscription->setStatus(self::RESUMED);
+                        $subscription->setStatus(current(self::RESUMED));
                     }
                 }
             }
