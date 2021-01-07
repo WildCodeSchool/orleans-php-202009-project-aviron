@@ -39,7 +39,11 @@ class CsvImport
      */
     public function getDataFromCsv(File $import): array
     {
-        $csvString = file_get_contents($import);
+        $csvString = iconv(
+            'ISO-8859-1',
+            'UTF-8//TRANSLIT//IGNORE',
+            (string)file_get_contents($import)
+        );
 
         return $this->csvEncoder->decode((string) $csvString, 'csv', [
             'csv_delimiter' => ';',
@@ -89,16 +93,8 @@ class CsvImport
                 // Si le numéro de licence n'existe pas, recherche par nom/prénom/date de naissance (cas licence D)
 
                 $subscriber = $this->subscriberRepository->findOneBy([
-                    'firstname' => iconv(
-                        'ISO-8859-1',
-                        'UTF-8//TRANSLIT//IGNORE',
-                        $subscription['PRENOM']
-                    ),
-                    'lastname' => iconv(
-                        'ISO-8859-1',
-                        'UTF-8//TRANSLIT//IGNORE',
-                        $subscription['NOM']
-                    ),
+                    'firstname' => $subscription['PRENOM'],
+                    'lastname' => $subscription['NOM'],
                     'birthdate' => (new DateTime())
                         ->setDate(
                             (int)$subscriberBirthdate[2],
@@ -109,24 +105,14 @@ class CsvImport
                 ]);
 
                 // Si on ne le trouve toujours pas, on crée un nouveau subscriber
-                // Sinon on met à jour le num de licence à condition qu'il' soit supérieur donc plus récent
-                // (à voir si on change la condition une fois le reste de la subscription) géré
+                // Si on l'a trouvé on modifie le numéro de licence si plus récent pour le subscriber récupéré
                 if ($subscriber == null) {
                     $subscriber = new Subscriber();
+                    $this->entityManager->persist($subscriber);
                     $subscriber
                         ->setLicenceNumber($subscription['NO ADHERENT'])
-                        ->setFirstname(
-                            (string)iconv(
-                                'ISO-8859-1',
-                                'UTF-8//TRANSLIT//IGNORE',
-                                $subscription['PRENOM']
-                            )
-                        )
-                        ->setLastname((string)iconv(
-                            'ISO-8859-1',
-                            'UTF-8//TRANSLIT//IGNORE',
-                            $subscription['NOM']
-                        ))
+                        ->setFirstname($subscription['PRENOM'])
+                        ->setLastname($subscription['NOM'])
                         ->setGender($subscription['SEXE'])
                         ->setBirthdate((new DateTime())
                             ->setDate(
@@ -135,11 +121,9 @@ class CsvImport
                                 (int)$subscriberBirthdate[0]
                             )
                             ->setTime(0, 0, 0));
-                    $this->entityManager->persist($subscriber);
                     $total++;
                 } elseif ($subscriber->getLicenceNumber() < $subscription['NO ADHERENT']) {
                     $subscriber->setLicenceNumber($subscription['NO ADHERENT']);
-                    $this->entityManager->persist($subscriber);
                 }
             }
         }
