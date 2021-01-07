@@ -18,6 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FilterType extends AbstractType
 {
+    /**
+     * @SuppressWarnings(PHPMD)
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
