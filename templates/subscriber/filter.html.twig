@@ -43,6 +43,15 @@
                 {{ form_row(form.seasonStatus) }}
             </div>
         </div>
+        <h2 class="title-filter my-3">Type de licence</h2>
+        <div class="row">
+            <div class="col-5 d-flex align-items-center">
+                {{ form_row(form.licences) }}
+            </div>
+            <div class="col-2">
+                {{ form_row(form.seasonLicence) }}
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary mt-3">Appliquer</button>
         {{ form_end(form) }}
     </div>
