@@ -48,6 +48,18 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getQueryForSubscribersByYearByCategories(?string $actualSeason): string
+    {
+        return 'SELECT COUNT(sub.category) as subscribersCount, c.label as label 
+                    FROM \App\Entity\Subscription sub
+                    JOIN \App\Entity\Category c
+                    WITH c.id = sub.category
+                    JOIN \App\Entity\Season s
+                    WITH s.id = sub.season
+                    WHERE s.name = \'' . $actualSeason . '\'
+                    GROUP BY sub.category
+                    ORDER BY c.id ASC';
+    }
 
     /**
      * @param string|null $licenceAcronym

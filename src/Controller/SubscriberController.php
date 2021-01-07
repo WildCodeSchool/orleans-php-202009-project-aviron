@@ -37,6 +37,7 @@ class SubscriberController extends AbstractController
         PaginatorInterface $paginator
     ): Response {
         $filter = new Filter();
+        $filter->setSeasonStatus($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
