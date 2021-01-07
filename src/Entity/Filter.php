@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Service\StatusCalculator;
 
 class Filter
 {
@@ -36,6 +35,13 @@ class Filter
      * @Assert\NotBlank()
      */
     private Season $seasonStatus;
+
+    private ?array $licences = [];
+
+    /**
+     * @Assert\NotBlank()
+     */
+    private Season $seasonLicence;
 
     private ?Category $fromCategory = null;
 
@@ -156,6 +162,38 @@ class Filter
     public function setSeasonStatus(Season $seasonStatus): void
     {
         $this->seasonStatus = $seasonStatus;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getLicences(): ?array
+    {
+        return $this->licences;
+    }
+
+    /**
+     * @param array|null $licences
+     */
+    public function setLicences(?array $licences): void
+    {
+        $this->licences = $licences;
+    }
+
+    /**
+     * @return Season
+     */
+    public function getSeasonLicence(): Season
+    {
+        return $this->seasonLicence;
+    }
+
+    /**
+     * @param Season $seasonLicence
+     */
+    public function setSeasonLicence(Season $seasonLicence): void
+    {
+        $this->seasonLicence = $seasonLicence;
     }
 
     /**

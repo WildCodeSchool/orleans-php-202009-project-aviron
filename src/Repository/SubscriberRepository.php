@@ -53,6 +53,9 @@ class SubscriberRepository extends ServiceEntityRepository
         if (!empty($filter->getStatus())) {
             $queryBuilder = $this->filterByStatus($filter->getStatus(), $filter->getSeasonStatus(), $queryBuilder);
         }
+        if (!empty($filter->getLicences())) {
+            $queryBuilder = $this->filterByLicence($filter->getLicences(), $filter->getSeasonLicence(), $queryBuilder);
+        }
         if (!empty($filter->getFromCategory()) || !empty($filter->getToCategory())) {
             $queryBuilder = $this->filterByCategory(
                 $filter->getFromCategory(),
@@ -103,6 +106,15 @@ class SubscriberRepository extends ServiceEntityRepository
             ->andWhere('sn.season = :season')
             ->setParameter('status', $status)
             ->setParameter('season', $seasonStatus);
+        return $queryBuilder;
+    }
+
+    private function filterByLicence(?array $licences, Season $seasonLicence, QueryBuilder $queryBuilder): QueryBuilder
+    {
+        $queryBuilder = $queryBuilder->andWhere('sn.licence IN (:licences)')
+            ->andWhere('sn.season = :season')
+            ->setParameter('licences', $licences)
+            ->setParameter('season', $seasonLicence);
         return $queryBuilder;
     }
 
