@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
+use App\Entity\Season;
 use App\Form\FilterType;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
@@ -56,7 +57,6 @@ class SubscriberController extends AbstractController
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
-                'filters' => $filters
             ]);
         }
 
@@ -64,19 +64,30 @@ class SubscriberController extends AbstractController
     }
 
     /**
-     * @Route("/export/{display}", name="export")
+     * @Route("/export/{display}/{query}", name="export")
      * @param string $display
+     * @param string $query
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @return Response
      */
     public function export(
         string $display,
+        string $query,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository
     ) {
-        $subscribers = $subscriberRepository->findAll();
-        $seasons = $seasonRepository->findAll();
+        $filtersArray = json_decode($query, true);
+        $filters = new Filter();
+        $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
+        $toSeason = $seasonRepository->find($filtersArray['toSeason']);
+        $filters->setFromSeason($fromSeason);
+        $filters->setToSeason($toSeason);
+        $filters->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null);
+        $filters->setToAdherent((int)$filtersArray['toAdherent'] ?? null);
+        $filters->setGender($filtersArray['gender'] ?? '');
+        $subscribers = $subscriberRepository->findByFilter($filters);
+        $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
             'subscribers' => $subscribers,
             'seasons' => $seasons,
