@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Filter;
+use App\Entity\Season;
 use App\Entity\Subscriber;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -29,66 +30,68 @@ class SubscriberRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('sr');
         if (!empty($filter->getFromSeason()) && !empty($filter->getToSeason())) {
-            $queryBuilder = $queryBuilder->join('sr.subscriptions', 'sn')
-            ->join('sn.season', 's')
-            ->where('s.startingDate BETWEEN :fromSeason AND :toSeason')
-            ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
-            ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
+            $queryBuilder = $this->filterBySeason($filter->getFromSeason(), $filter->getToSeason(), $queryBuilder);
         }
-        if (!empty($filter->getFromAdherent()) || $filter->getFromAdherent() === 0) {
-            if (!empty($filter->getToAdherent())) {
-                $queryBuilder = $queryBuilder->andWhere(
-                    'sr.licenceNumber BETWEEN :fromAdherent AND :toAdherent'
-                )
-                    ->setParameter('fromAdherent', $filter->getFromAdherent())
-                    ->setParameter('toAdherent', $filter->getToAdherent());
-            } else {
-                $queryBuilder = $queryBuilder->andWhere(
-                    'sr.licenceNumber >= :fromAdherent'
-                )
-                    ->setParameter('fromAdherent', $filter->getFromAdherent());
-            }
-        } elseif (!empty($filter->getToAdherent())) {
-            $queryBuilder = $queryBuilder->andWhere(
-                'sr.licenceNumber <= :toAdherent'
-            )
-                ->setParameter('toAdherent', $filter->getToAdherent());
+        if (
+            !empty($filter->getFromAdherent())
+            || $filter->getFromAdherent() === 0
+            || !empty($filter->getToAdherent())
+        ) {
+            $queryBuilder = $this->filterByNumberAdherent(
+                $filter->getFromAdherent(),
+                $filter->getToAdherent(),
+                $queryBuilder
+            );
         }
         if (!empty($filter->getGender())) {
             $queryBuilder = $queryBuilder->andWhere('sr.gender = :gender')
                 ->setParameter('gender', $filter->getGender());
+        }
+        if (!empty($filter->getStatus())) {
+            $queryBuilder = $this->filterByStatus($filter->getStatus(), $filter->getSeasonStatus(), $queryBuilder);
         }
         $queryBuilder = $queryBuilder->orderBy('sr.licenceNumber');
 
         return $queryBuilder->getQuery()->getResult();
     }
 
-    // /**
-    //  * @return Subscriber[] Returns an array of Subscriber objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    private function filterBySeason(Season $fromSeason, Season $toSeason, QueryBuilder $queryBuilder): QueryBuilder
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $queryBuilder = $queryBuilder->join('sr.subscriptions', 'sn')
+            ->join('sn.season', 's')
+            ->where('s.startingDate BETWEEN :fromSeason AND :toSeason')
+            ->setParameter('fromSeason', $fromSeason->getStartingDate())
+            ->setParameter('toSeason', $toSeason->getStartingDate());
+        return $queryBuilder;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Subscriber
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+    private function filterByNumberAdherent(
+        ?int $fromAdherent,
+        ?int $toAdherent,
+        QueryBuilder $queryBuilder
+    ): QueryBuilder {
+        if (!empty($fromAdherent) || $fromAdherent === 0) {
+            if (!empty($toAdherent)) {
+                $queryBuilder = $queryBuilder->andWhere('sr.licenceNumber BETWEEN :fromAdherent AND :toAdherent')
+                    ->setParameter('fromAdherent', $fromAdherent)
+                    ->setParameter('toAdherent', $toAdherent);
+            } else {
+                $queryBuilder = $queryBuilder->andWhere('sr.licenceNumber >= :fromAdherent')
+                    ->setParameter('fromAdherent', $fromAdherent);
+            }
+        } elseif (!empty($toAdherent)) {
+            $queryBuilder = $queryBuilder->andWhere('sr.licenceNumber <= :toAdherent')
+                ->setParameter('toAdherent', $toAdherent);
+        }
+        return $queryBuilder;
     }
-    */
+
+    private function filterByStatus(?array $status, Season $seasonStatus, QueryBuilder $queryBuilder): QueryBuilder
+    {
+        $queryBuilder = $queryBuilder->andWhere('sn.status IN (:status)')
+            ->andWhere('sn.season = :season')
+            ->setParameter('status', $status)
+            ->setParameter('season', $seasonStatus);
+        return $queryBuilder;
+    }
 }
