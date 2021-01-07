@@ -1,6 +1,6 @@
 @import 'variables';
 
-a[aria-expanded="true"] {
+.userBar, a[aria-expanded="true"] {
     background: darken($light, 3%);
 }
 
