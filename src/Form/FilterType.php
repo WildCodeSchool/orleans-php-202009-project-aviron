@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Filter;
 use App\Entity\Season;
 use App\Entity\Subscriber;
@@ -64,12 +65,50 @@ class FilterType extends AbstractType
                 'error_bubbling' => true,
                 'invalid_message' => "Le statut choisi n'est pas une valeur valide"
             ])
-        ->add('seasonStatus', EntityType::class, [
-            'class' => Season::class,
-            'choice_label' => 'name',
-            'label' => 'Saison',
-            'error_bubbling' => true
-        ]);
+            ->add('seasonStatus', EntityType::class, [
+                'class' => Season::class,
+                'choice_label' => 'name',
+                'label' => 'Saison',
+                'error_bubbling' => true
+            ])
+            ->add('fromCategory', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => function ($category) {
+                    return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
+                },
+                'choice_value' => function (?Category $entity) {
+                    return $entity ? $entity->getLabel() : '';
+                },
+                'group_by' => function ($choice, $key, $value) {
+                    return $choice->getNewGroup();
+                },
+                'placeholder' => '',
+                'label' => 'De',
+                'required' => false,
+                'error_bubbling' => true
+            ])
+            ->add('toCategory', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => function ($category) {
+                    return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
+                },
+                'choice_value' => function (?Category $entity) {
+                    return $entity ? $entity->getLabel() : '';
+                },
+                'group_by' => function ($choice, $key, $value) {
+                    return $choice->getNewGroup();
+                },
+                'placeholder' => '',
+                'label' => 'à',
+                'required' => false,
+                'error_bubbling' => true
+            ])
+            ->add('seasonCategory', EntityType::class, [
+                'class' => Season::class,
+                'choice_label' => 'name',
+                'label' => 'Saison',
+                'error_bubbling' => true
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

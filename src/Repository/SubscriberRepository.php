@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\DataFixtures\CategoryFixtures;
+use App\Entity\Category;
 use App\Entity\Filter;
 use App\Entity\Season;
 use App\Entity\Subscriber;
@@ -23,6 +25,7 @@ class SubscriberRepository extends ServiceEntityRepository
     }
 
     /**
+     * @SuppressWarnings(PHPMD)
      * @param Filter $filter
      * @return int|mixed|string
      */
@@ -49,6 +52,14 @@ class SubscriberRepository extends ServiceEntityRepository
         }
         if (!empty($filter->getStatus())) {
             $queryBuilder = $this->filterByStatus($filter->getStatus(), $filter->getSeasonStatus(), $queryBuilder);
+        }
+        if (!empty($filter->getFromCategory()) || !empty($filter->getToCategory())) {
+            $queryBuilder = $this->filterByCategory(
+                $filter->getFromCategory(),
+                $filter->getToCategory(),
+                $filter->getSeasonCategory(),
+                $queryBuilder
+            );
         }
         $queryBuilder = $queryBuilder->orderBy('sr.licenceNumber');
 
@@ -92,6 +103,37 @@ class SubscriberRepository extends ServiceEntityRepository
             ->andWhere('sn.season = :season')
             ->setParameter('status', $status)
             ->setParameter('season', $seasonStatus);
+        return $queryBuilder;
+    }
+
+    private function filterByCategory(
+        ?Category $fromCategory,
+        ?Category $toCategory,
+        Season $seasonCategory,
+        QueryBuilder $queryBuilder
+    ): QueryBuilder {
+        $categoryRepository = $this->getEntityManager()->getRepository(Category::class);
+        $categories = $categoryRepository->findAll();
+
+        $firstCategory = 0;
+        $lastCategory = 0;
+        foreach ($categories as $key => $value) {
+            $labelFirst = !is_null($fromCategory) ? $fromCategory->getLabel() : ' ';
+            $labelLast = !is_null($toCategory) ? $toCategory->getLabel() : ' ';
+            if ($value->getLabel() === $labelFirst) {
+                $firstCategory = $key;
+            }
+            if ($value->getLabel() === $labelLast) {
+                $lastCategory = $key;
+            }
+        }
+
+        $categoriesSelected = array_slice($categories, $firstCategory, $lastCategory - $firstCategory + 1);
+
+        $queryBuilder = $queryBuilder->andWhere('sn.category IN (:categories)')
+            ->andWhere('sn.season = :season')
+            ->setParameter('categories', $categoriesSelected)
+            ->setParameter('season', $seasonCategory);
         return $queryBuilder;
     }
 }

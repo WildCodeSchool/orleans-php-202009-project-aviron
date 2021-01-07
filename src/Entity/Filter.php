@@ -37,6 +37,15 @@ class Filter
      */
     private Season $seasonStatus;
 
+    private ?Category $fromCategory = null;
+
+    private ?Category $toCategory = null;
+
+    /**
+     * @Assert\NotBlank()
+     */
+    private Season $seasonCategory;
+
     /**
      * @return Season
      */
@@ -147,5 +156,53 @@ class Filter
     public function setSeasonStatus(Season $seasonStatus): void
     {
         $this->seasonStatus = $seasonStatus;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getFromCategory(): ?Category
+    {
+        return $this->fromCategory;
+    }
+
+    /**
+     * @param Category|null $fromCategory
+     */
+    public function setFromCategory(?Category $fromCategory): void
+    {
+        $this->fromCategory = $fromCategory;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getToCategory(): ?Category
+    {
+        return $this->toCategory;
+    }
+
+    /**
+     * @param Category|null $toCategory
+     */
+    public function setToCategory(?Category $toCategory): void
+    {
+        $this->toCategory = $toCategory;
+    }
+
+    /**
+     * @return Season
+     */
+    public function getSeasonCategory(): Season
+    {
+        return $this->seasonCategory;
+    }
+
+    /**
+     * @param Season $seasonCategory
+     */
+    public function setSeasonCategory(Season $seasonCategory): void
+    {
+        $this->seasonCategory = $seasonCategory;
     }
 }
