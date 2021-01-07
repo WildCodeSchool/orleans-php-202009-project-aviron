@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Filter;
+use App\Entity\Licence;
 use App\Entity\Season;
 use App\Entity\Subscriber;
 use App\Service\StatusCalculator;
@@ -64,12 +65,27 @@ class FilterType extends AbstractType
                 'error_bubbling' => true,
                 'invalid_message' => "Le statut choisi n'est pas une valeur valide"
             ])
-        ->add('seasonStatus', EntityType::class, [
-            'class' => Season::class,
-            'choice_label' => 'name',
-            'label' => 'Saison',
-            'error_bubbling' => true
-        ]);
+            ->add('seasonStatus', EntityType::class, [
+                'class' => Season::class,
+                'choice_label' => 'name',
+                'label' => 'Saison',
+                'error_bubbling' => true
+            ])
+            ->add('licences', EntityType::class, [
+                'class' => Licence::class,
+                'choice_label' => 'acronym',
+                'expanded' => true,
+                'multiple' => true,
+                'label' => false,
+                'error_bubbling' => true,
+                'invalid_message' => "Le type de licence choisi n'est pas une valeur valide"
+            ])
+            ->add('seasonLicence', EntityType::class, [
+                'class' => Season::class,
+                'choice_label' => 'name',
+                'label' => 'Saison',
+                'error_bubbling' => true
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
