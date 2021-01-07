@@ -1,0 +1,9 @@
+@import 'variables';
+
+a[aria-expanded="true"] {
+    background: darken($light, 3%);
+}
+
+.dropdown-menu {
+    width: $navbar-width;
+}
