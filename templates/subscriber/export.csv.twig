@@ -2,19 +2,17 @@ N° Licence,Prénom,Nom,Date de naissance,Genre{% for season in seasons %},{{ se
 {% for subscriber in subscribers -%}
     {{- subscriber.licenceNumber }},{{ subscriber.firstname }},{{ subscriber.lastname }},{{ subscriber.birthdate|date("m/d/Y") }},{{- subscriber.gender -}},
     {%- for season in seasons -%}
+    {%- for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) -%}
         {%- if display == 'licences' -%}
-            {%- for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) -%}
                 {{- subscription.licence.acronym -}},
-            {%- endfor -%}
         {%- elseif display == 'subscriptions' -%}
-            {%- for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) -%}
                 {{- subscription.category.label -}},
-            {%- endfor -%}
         {%- elseif display == 'renewal' -%}
-            {%- for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) -%}
                 {{- subscription.status -}},
-            {%- endfor -%}
         {%- endif -%}
+        {%- else -%}
+        {{- ' ' -}},
+    {%- endfor -%}
     {%- endfor %}
 
 {% endfor %}
