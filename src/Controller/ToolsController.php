@@ -31,10 +31,12 @@ class ToolsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->addFlash('success', 'Le fichier est en cours de traitement');
             $newImport = $form->getData();
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
+
+            $subscriberTotal = $csvImport->createSubscribers($csvData);
+            $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
 
             return $this->redirectToRoute('tools_import');
         }
