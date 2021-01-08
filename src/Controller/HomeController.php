@@ -21,7 +21,8 @@ class HomeController extends AbstractController
 {
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
-    private const CATEGORIES_PALETTE = ['#004C6D',
+    private const CATEGORIES_PALETTE = [
+        '#004C6D',
         '#135B79',
         '#256985',
         '#387892',
@@ -34,6 +35,14 @@ class HomeController extends AbstractController
         '#BADDE7',
         '#CCECF3',
     ];
+    private const LICENCES_PALETTE = [
+        '#F6246A',
+        '#F74B75',
+        '#F87380',
+        '#F99A8A',
+        '#FAC295',
+        '#FBE9A0',
+    ];
 
     /**
      * @Route("/", name="home")
@@ -42,7 +51,8 @@ class HomeController extends AbstractController
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
-     * @param Builder $builder
+     * @param Builder $categoriesBuilder
+     * @param Builder $licencesBuilder
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -53,7 +63,8 @@ class HomeController extends AbstractController
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository,
-        Builder $builder
+        Builder $categoriesBuilder,
+        Builder $licencesBuilder
     ): Response {
         $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
 
@@ -82,15 +93,14 @@ class HomeController extends AbstractController
 
         $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
 
-        $builder
+        $categoriesBuilder
             ->query($querySubscribersCategories)
             ->addDataSet('subscribersCount', 'Subscribers', [
                 "backgroundColor" => self::CATEGORIES_PALETTE
             ])
-            ->labels('label')
-        ;
-        $chart = $builder->buildChart('my_chart', Chart::DOUGHNUT);
-        $chart->pushOptions([
+            ->labels('label');
+        $categoriesChart = $categoriesBuilder->buildChart('categories-chart', Chart::DOUGHNUT);
+        $categoriesChart->pushOptions([
             'legend' => ([
                 'position' => 'bottom',
             ]),
@@ -103,12 +113,34 @@ class HomeController extends AbstractController
             ])
         ]);
 
+        $querySubscribersLicences = $subscriptionRepository->getQueryForSubscribersByYearByLicences($actualSeason);
+
+        $licencesBuilder
+            ->query($querySubscribersLicences)
+            ->addDataSet('subscribersCount', 'Subscribers', [
+                "backgroundColor" => self::LICENCES_PALETTE
+            ])
+            ->labels('label');
+        $licencesChart = $licencesBuilder->buildChart('licences-chart', Chart::DOUGHNUT);
+        $licencesChart->pushOptions([
+            'legend' => ([
+                'position' => 'bottom',
+            ]),
+            'scales' => ([
+                'xAxes' => ([
+                    'gridLines' => ([
+                        'display' => 'false'
+                    ])
+                ])
+            ])
+        ]);
         return $this->render('home/index.html.twig', [
             'subscribersByLicences' => $countByLicences,
             'subscribersByCategories' => $countByCategories,
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
-            'chart' => $chart,
+            'categoriesChart' => $categoriesChart,
+            'licencesChart' => $licencesChart,
         ]);
     }
 }

@@ -35,6 +35,16 @@ class Category implements LabelInterface
      */
     private Collection $subscriptions;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $newGroup;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $oldGroup;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -95,6 +105,30 @@ class Category implements LabelInterface
                 $subscription->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNewGroup(): ?string
+    {
+        return $this->newGroup;
+    }
+
+    public function setNewGroup(string $newGroup): self
+    {
+        $this->newGroup = $newGroup;
+
+        return $this;
+    }
+
+    public function getOldGroup(): ?string
+    {
+        return $this->oldGroup;
+    }
+
+    public function setOldGroup(string $oldGroup): self
+    {
+        $this->oldGroup = $oldGroup;
 
         return $this;
     }
