@@ -64,20 +64,21 @@ class SubscriberController extends AbstractController
     }
 
     /**
-     * @Route("/export/{display}/{query}", name="export")
+     * @Route("/export/{display}", name="export")
      * @param string $display
-     * @param string $query
+     * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @return Response
      */
     public function export(
         string $display,
-        string $query,
+        Request $request,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository
     ) {
-        $filtersArray = json_decode($query, true);
+        /** @var array $filtersArray */
+        $filtersArray = $request->query->get('filter');
         $filters = new Filter();
         $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
         $toSeason = $seasonRepository->find($filtersArray['toSeason']);
@@ -85,7 +86,7 @@ class SubscriberController extends AbstractController
         $filters->setToSeason($toSeason);
         $filters->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null);
         $filters->setToAdherent((int)$filtersArray['toAdherent'] ?? null);
-        $filters->setGender($filtersArray['gender'] ?? '');
+        $filters->setGender($filtersArray['gender'] ?? null);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
