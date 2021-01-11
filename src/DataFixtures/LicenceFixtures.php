@@ -23,7 +23,7 @@ class LicenceFixtures extends Fixture
             ],
         'D30' => [
             'name' => 'Découverte',
-            'color' => '37cf9baa'
+            'color' => '#37cf9baa'
             ],
         'D90' => [
             'name' => 'Découverte',
