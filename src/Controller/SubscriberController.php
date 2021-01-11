@@ -90,6 +90,13 @@ class SubscriberController extends AbstractController
         $filters->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null);
         $filters->setToAdherent((int)$filtersArray['toAdherent'] ?? null);
         $filters->setGender($filtersArray['gender'] ?? null);
+        $filters->setStatus($filtersArray['status'][0] ?? null);
+        $filters->setSeasonStatus($filtersArray['seasonStatus'] ?? null);
+        $filters->setLicences($filtersArray['licences'][0] ?? null);
+        $filters->setSeasonLicence($filtersArray['seasonLicence'] ?? null);
+        $filters->setFromCategory($filtersArray['fromCategory'] ?? null);
+        $filters->setToCategory($filtersArray['toCategory'] ?? null);
+        $filters->setSeasonCategory($filtersArray['seasonCategory'] ?? null);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
