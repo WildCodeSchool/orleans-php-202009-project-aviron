@@ -35,6 +35,11 @@ class Licence implements LabelInterface
      */
     private Collection $subscriptions;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $color;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -95,6 +100,18 @@ class Licence implements LabelInterface
     public function removeSubscription(Subscription $subscription): self
     {
         $this->subscriptions->removeElement($subscription);
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+
         return $this;
     }
 }
