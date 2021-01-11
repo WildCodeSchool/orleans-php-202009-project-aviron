@@ -4,11 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Filter;
 use App\Entity\Season;
-use DateTime;
-use DateInterval;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Exception;
 
 /**
  * @method Season find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +15,7 @@ use Exception;
  */
 class SeasonRepository extends ServiceEntityRepository
 {
-    private const NUMBER_SEASONS = 15;
+    public const LIMIT_NUMBER_SEASONS = 15;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -37,21 +34,6 @@ class SeasonRepository extends ServiceEntityRepository
                 ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
                 ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
         }
-        return $queryBuilder->getQuery()->getResult();
-    }
-
-    /**
-     * @return int|mixed|string
-     * @throws Exception
-     */
-    public function findUmpteenth()
-    {
-        $now = new DateTime('now');
-        $interval = new DateInterval('P' . self::NUMBER_SEASONS . 'Y');
-        $startingDate = $now->sub($interval)->format('Y');
-        $queryBuilder = $this->createQueryBuilder('s')
-            ->where('s.name LIKE :start')
-            ->setParameter('start', $startingDate . '%');
         return $queryBuilder->getQuery()->getResult();
     }
 }
