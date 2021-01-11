@@ -41,6 +41,10 @@ class SubscriberController extends AbstractController
         $filter->setSeasonStatus($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $filter->setSeasonCategory($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $filter->setSeasonLicence($seasonRepository->findOneBy([], ['id' => 'DESC']));
+        $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
+        $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
+        $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        $filter->setToSeason($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
