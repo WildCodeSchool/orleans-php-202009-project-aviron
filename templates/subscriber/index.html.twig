@@ -7,9 +7,9 @@
             {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
             {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
         </h1>
-        <div class="mb-4 bg-primary text-light">
+        <div class="mb-4 filters">
             <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
-            <div class="row p-4 filters">
+            <div class="row p-4">
                 <div class="col-3">
                     Saisons : de <strong>{{ filters.fromSeason.name }}</strong>
                     à <strong>{{ filters.toSeason.name }}</strong>
@@ -33,7 +33,7 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="row px-4 pb-4 bg-primary text-light filters">
+            <div class="row pb-4 pl-4">
                 {% if filters.status %}
                     <div class="col-6">
                         Statut :
@@ -63,8 +63,8 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="bg-primary text-center filters">
-                <button onClick="window.history.back();" type="button" class="btn btn-light mb-4">
+            <div class="text-center filters">
+                <button onClick="window.history.back();" type="button" class="btn btn-primary mb-4">
                     Modifier la recherche
                 </button>
             </div>
