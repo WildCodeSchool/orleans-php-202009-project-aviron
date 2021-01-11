@@ -85,18 +85,19 @@ class SubscriberController extends AbstractController
         $filters = new Filter();
         $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
         $toSeason = $seasonRepository->find($filtersArray['toSeason']);
-        $filters->setFromSeason($fromSeason);
-        $filters->setToSeason($toSeason);
-        $filters->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null);
-        $filters->setToAdherent((int)$filtersArray['toAdherent'] ?? null);
-        $filters->setGender($filtersArray['gender'] ?? null);
-        $filters->setStatus($filtersArray['status'][0] ?? null);
-        $filters->setSeasonStatus($filtersArray['seasonStatus'] ?? null);
-        $filters->setLicences($filtersArray['licences'][0] ?? null);
-        $filters->setSeasonLicence($filtersArray['seasonLicence'] ?? null);
-        $filters->setFromCategory($filtersArray['fromCategory'] ?? null);
-        $filters->setToCategory($filtersArray['toCategory'] ?? null);
-        $filters->setSeasonCategory($filtersArray['seasonCategory'] ?? null);
+        $filters
+            ->setFromSeason($fromSeason)
+            ->setToSeason($toSeason)
+            ->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null)
+            ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
+            ->setGender($filtersArray['gender'] ?? null)
+            ->setStatus($filtersArray['status'][0] ?? null)
+            ->setSeasonStatus($filtersArray['seasonStatus'] ?? null)
+            ->setLicences($filtersArray['licences'][0] ?? null)
+            ->setSeasonLicence($filtersArray['seasonLicence'] ?? null)
+            ->setFromCategory($filtersArray['fromCategory'] ?? null)
+            ->setToCategory($filtersArray['toCategory'] ?? null)
+            ->setSeasonCategory($filtersArray['seasonCategory'] ?? null);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
