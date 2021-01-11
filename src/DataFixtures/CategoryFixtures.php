@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use App\Service\ColorCalculator;
 
 class CategoryFixtures extends Fixture
 {
@@ -80,6 +81,9 @@ class CategoryFixtures extends Fixture
             $category->setLabel($label);
             $category->setNewGroup($data['newGroup']);
             $category->setOldGroup($data['oldGroup']);
+            $color = '';
+            $color->defineColor($label);
+            $category->setColor($color);
             $manager->persist($category);
             $this->addReference('category_' . $index, $category);
             $index++;
