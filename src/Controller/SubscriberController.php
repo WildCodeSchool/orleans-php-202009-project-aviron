@@ -60,6 +60,7 @@ class SubscriberController extends AbstractController
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
+                'filters' => $filters
             ]);
         }
 

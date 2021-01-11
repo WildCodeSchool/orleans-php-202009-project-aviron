@@ -20,6 +20,8 @@ class FilterType extends AbstractType
 {
     /**
      * @SuppressWarnings(PHPMD)
+     * @param FormBuilderInterface $builder
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -47,7 +49,7 @@ class FilterType extends AbstractType
                 'error_bubbling' => true
             ])
             ->add('gender', ChoiceType::class, [
-                'choices' => Subscriber::GENDER,
+                'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
                 'label' => false,
                 'required' => false,
@@ -57,10 +59,10 @@ class FilterType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'choices' => [
-                    StatusCalculator::NEW,
-                    StatusCalculator::TRANSFER,
-                    StatusCalculator::RESUMED,
-                    StatusCalculator::RENEWAL
+                    array_flip(StatusCalculator::NEW),
+                    array_flip(StatusCalculator::TRANSFER),
+                    array_flip(StatusCalculator::RESUMED),
+                    array_flip(StatusCalculator::RENEWAL)
                 ],
                 'expanded' => true,
                 'multiple' => true,

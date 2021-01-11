@@ -7,6 +7,68 @@
             {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
             {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
         </h1>
+        <div class="mb-4 bg-primary text-light">
+            <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
+            <div class="row p-4 filters">
+                <div class="col-3">
+                    Saisons : de <strong>{{ filters.fromSeason.name }}</strong>
+                    à <strong>{{ filters.toSeason.name }}</strong>
+                </div>
+                {% if filters.fromAdherent or filters.toAdherent %}
+                    <div class="col-3">
+                        Numéro adhérent : de <strong>{{ filters.fromAdherent ? filters.fromAdherent : '-' }}</strong>
+                        à <strong>{{ filters.toAdherent ? filters.toAdherent : '-' }}</strong>
+                    </div>
+                {% endif %}
+                {% if filters.gender %}
+                    <div class="col-2">
+                        Sexe : <strong>{{ constant('App\\Entity\\Subscriber::GENDER')[filters.gender] }}</strong>
+                    </div>
+                {% endif %}
+                {% if filters.fromCategory or filters.toCategory %}
+                    <div class="col-4">
+                        Catégorie : de <strong>{{ filters.fromCategory ? filters.fromCategory.label : '-' }}</strong>
+                        à <strong>{{ filters.toCategory ? filters.toCategory.label : '-' }}</strong>
+                        (pour la saison <strong>{{ filters.seasonCategory.name }}</strong>)
+                    </div>
+                {% endif %}
+            </div>
+            <div class="row px-4 pb-4 bg-primary text-light filters">
+                {% if filters.status %}
+                    <div class="col-6">
+                        Statut :
+                        {% set status = '' %}
+                        {% for filter in filters.status %}
+                            {% set current = constant('App\\Service\\StatusCalculator::TRANSFER')[filter] ??
+                                constant('App\\Service\\StatusCalculator::NEW')[filter] ??
+                                constant('App\\Service\\StatusCalculator::RENEWAL')[filter] ??
+                                constant('App\\Service\\StatusCalculator::RESUMED')[filter] ??
+                                '' %}
+                            {% set status = loop.last ? status ~ current : status ~ current ~ ', ' %}
+                        {% endfor %}
+                        <strong>{{ status }}</strong>
+                        (pour la saison <strong>{{ filters.seasonStatus.name }}</strong>)
+                    </div>
+                {% endif %}
+                {% if filters.licences %}
+                    <div class="col-6">
+                        Type de licence :
+                        {% set licences = '' %}
+                        {% for licence in filters.licences %}
+                            {% set licences =
+                                loop.last ? licences ~ licence.acronym : licences ~ licence.acronym ~ ', ' %}
+                        {% endfor %}
+                        <strong>{{ licences }}</strong>
+                        (pour la saison <strong>{{ filters.seasonLicence.name }}</strong>)
+                    </div>
+                {% endif %}
+            </div>
+            <div class="bg-primary text-center filters">
+                <button onClick="window.history.back();" type="button" class="btn btn-light mb-4">
+                    Modifier la recherche
+                </button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12">
                 <table class="table table-hover table-striped">
@@ -31,17 +93,17 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                        {% if display == 'licences' %}
-                                            <td class="text-center {{ subscription.licence.acronym }}">{{ subscription.licence.acronym }}</td>
-                                        {% elseif display == 'renewal'%}
-                                            <td class="text-center {{ subscription.status }}">{{ subscription.status }}</td>
-                                        {% elseif display == 'subscriptions' %}
-                                            <td class="text-center {{ subscription.category.label }}">{{ subscription.category.label }}</td>
-                                        {% endif %}
-                                    {% else %}
-                                        <td></td>
-                                    {% endfor %}
+                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                    {% if display == 'licences' %}
+                                        <td class="text-center {{ subscription.licence.acronym }}">{{ subscription.licence.acronym }}</td>
+                                    {% elseif display == 'renewal'%}
+                                        <td class="text-center {{ subscription.status }}">{{ subscription.status }}</td>
+                                    {% elseif display == 'subscriptions' %}
+                                        <td class="text-center {{ subscription.category.label }}">{{ subscription.category.label }}</td>
+                                    {% endif %}
+                                {% else %}
+                                    <td></td>
+                                {% endfor %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
@@ -49,13 +111,13 @@
                 </table>
                 <nav aria-label="pagination">
                     {% do subscribers.setPageRange(3) %}
-                        {{ knp_pagination_render(subscribers,
-                            '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
-                            {},
-                            {
+                    {{ knp_pagination_render(subscribers,
+                        '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
+                        {},
+                        {
                             'align': 'center',
-                            })
-                        }}
+                        })
+                    }}
                 </nav>
                 <div class="row">
                     <div class="col">
