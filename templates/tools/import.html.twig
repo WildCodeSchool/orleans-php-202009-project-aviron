@@ -1,16 +1,54 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }} - Import{% endblock %}
 {% block stylesheets %}{% endblock %}
+
+
+{% form_theme form _self %}
+
 {% block body %}
 
     <div class="container">
         <h1 class="text-center my-5">Importer une saison</h1>
 
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+
+        {{ form_row(form.seasonName) }}
+
+        {{ form_row(form.file, {
+            attr: {
+                'placeholder': 'Sélectionnez un fichier'
+            }
+        }) }}
+
         <div class="text-center">
             <button class="btn btn-primary mt-5">Importer</button>
         </div>
         {{ form_end(form) }}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+/*
+        $("input[type=file]").change(function (e){$(this).next('.custom-file-label').text(e.target.files[0].name);})
+*/
+/*        $(document).on('change', '.custom-file-input', function () {
+            let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
+            $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
+        });*/
+
+/*                $('.custom-file-input').on('click', function(event) {
+                    let inputFile = event.currentTarget;
+                    $(inputFile).parent()
+                        .find('.custom-file-label')
+                        .html($(this));
+                })*/
+
+/*                $('input[type=file]').change(function () {
+                    const fieldVal = $(this).val();
+                    if (fieldVal !== undefined || fieldVal !== '') {
+                        $(this).next('.custom-file-label').text(fieldVal);
+                    }
+                });*/
+    </script>
 {% endblock %}

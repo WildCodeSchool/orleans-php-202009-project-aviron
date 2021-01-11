@@ -66,3 +66,7 @@ h4 {
 .S, .N, .A {
     background-color: #66b5c3ff;
 }
+
+.custom-file-input ~ .custom-file-label:lang(fr)::after {
+    content: "Parcourir...";
+}
