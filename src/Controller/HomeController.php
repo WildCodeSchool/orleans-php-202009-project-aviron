@@ -142,6 +142,7 @@ class HomeController extends AbstractController
             ])
         ]);
         return $this->render('home/index.html.twig', [
+            'currentSeason' => $actualSeason,
             'subscribersByLicences' => $countByLicences,
             'subscribersByCategories' => $countByCategories,
             'youngSubscribers' => $youngSubscribers,
