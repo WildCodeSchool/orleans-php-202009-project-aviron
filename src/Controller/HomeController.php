@@ -66,7 +66,14 @@ class HomeController extends AbstractController
         Builder $categoriesBuilder,
         Builder $licencesBuilder
     ): Response {
-        $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
+
+        // Si aucune saison en db, redirection automatique vers l'import
+        if ($seasonRepository->findOneBy([], ['name' => 'DESC']) == null) {
+            $this->addFlash('warning', 'Importez votre première saison pour accéder aux statistiques');
+            return $this->redirectToRoute('tools_import');
+        } else {
+            $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
+        }
 
         $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
             self::COMPETITION_LICENCE,
