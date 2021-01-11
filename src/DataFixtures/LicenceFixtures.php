@@ -41,7 +41,7 @@ class LicenceFixtures extends Fixture
         foreach (self::LICENCES as $acronym => $data) {
             $licence = new Licence();
             $licence->setName($data['name']);
-            $licence->setNColor($data['color']);
+            $licence->setColor($data['color']);
             $licence->setAcronym($acronym);
             $manager->persist($licence);
             $this->addReference('licence_' . $index, $licence);
