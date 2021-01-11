@@ -45,6 +45,11 @@ class Category implements LabelInterface
      */
     private string $oldGroup;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $color;
+
     public function __construct()
     {
         $this->subscriptions = new ArrayCollection();
@@ -129,6 +134,18 @@ class Category implements LabelInterface
     public function setOldGroup(string $oldGroup): self
     {
         $this->oldGroup = $oldGroup;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }
