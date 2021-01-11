@@ -51,6 +51,11 @@ class Subscription
      */
     private ?Category $category;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $color;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -123,6 +128,18 @@ class Subscription
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+
         return $this;
     }
 }
