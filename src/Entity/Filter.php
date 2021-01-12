@@ -63,9 +63,11 @@ class Filter
     /**
      * @param Season $fromSeason
      */
-    public function setFromSeason(Season $fromSeason): void
+    public function setFromSeason(Season $fromSeason): self
     {
         $this->fromSeason = $fromSeason;
+
+        return $this;
     }
 
     /**
@@ -79,9 +81,11 @@ class Filter
     /**
      * @param Season $toSeason
      */
-    public function setToSeason(Season $toSeason): void
+    public function setToSeason(Season $toSeason): self
     {
         $this->toSeason = $toSeason;
+
+        return $this;
     }
 
     /**
@@ -95,9 +99,11 @@ class Filter
     /**
      * @param int|null $fromAdherent
      */
-    public function setFromAdherent(?int $fromAdherent): void
+    public function setFromAdherent(?int $fromAdherent): self
     {
         $this->fromAdherent = $fromAdherent;
+
+        return $this;
     }
 
     /**
@@ -111,9 +117,11 @@ class Filter
     /**
      * @param int|null $toAdherent
      */
-    public function setToAdherent(?int $toAdherent): void
+    public function setToAdherent(?int $toAdherent): self
     {
         $this->toAdherent = $toAdherent;
+
+        return $this;
     }
 
     /**
@@ -127,9 +135,11 @@ class Filter
     /**
      * @param string|null $gender
      */
-    public function setGender(?string $gender): void
+    public function setGender(?string $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
     }
 
     /**
@@ -143,9 +153,11 @@ class Filter
     /**
      * @param array|null $status
      */
-    public function setStatus(?array $status): void
+    public function setStatus(?array $status): self
     {
         $this->status = $status;
+
+        return $this;
     }
 
     /**
@@ -159,9 +171,11 @@ class Filter
     /**
      * @param Season $seasonStatus
      */
-    public function setSeasonStatus(Season $seasonStatus): void
+    public function setSeasonStatus(Season $seasonStatus): self
     {
         $this->seasonStatus = $seasonStatus;
+
+        return $this;
     }
 
     /**
@@ -175,9 +189,11 @@ class Filter
     /**
      * @param array|null $licences
      */
-    public function setLicences(?array $licences): void
+    public function setLicences(?array $licences): self
     {
         $this->licences = $licences;
+
+        return $this;
     }
 
     /**
@@ -191,9 +207,11 @@ class Filter
     /**
      * @param Season $seasonLicence
      */
-    public function setSeasonLicence(Season $seasonLicence): void
+    public function setSeasonLicence(Season $seasonLicence): self
     {
         $this->seasonLicence = $seasonLicence;
+
+        return $this;
     }
 
     /**
@@ -207,9 +225,11 @@ class Filter
     /**
      * @param Category|null $fromCategory
      */
-    public function setFromCategory(?Category $fromCategory): void
+    public function setFromCategory(?Category $fromCategory): self
     {
         $this->fromCategory = $fromCategory;
+
+        return $this;
     }
 
     /**
@@ -223,9 +243,11 @@ class Filter
     /**
      * @param Category|null $toCategory
      */
-    public function setToCategory(?Category $toCategory): void
+    public function setToCategory(?Category $toCategory): self
     {
         $this->toCategory = $toCategory;
+
+        return $this;
     }
 
     /**
@@ -239,8 +261,10 @@ class Filter
     /**
      * @param Season $seasonCategory
      */
-    public function setSeasonCategory(Season $seasonCategory): void
+    public function setSeasonCategory(Season $seasonCategory): self
     {
         $this->seasonCategory = $seasonCategory;
+
+        return $this;
     }
 }

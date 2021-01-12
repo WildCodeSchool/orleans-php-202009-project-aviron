@@ -7,6 +7,7 @@ use App\Service\LabelInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=LicenceRepository::class)
@@ -34,6 +35,12 @@ class Licence implements LabelInterface
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="licence")
      */
     private Collection $subscriptions;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Regex("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3}|[a-fA-F0-9]{8})$")
+     */
+    private ?string $color;
 
     public function __construct()
     {
@@ -95,6 +102,18 @@ class Licence implements LabelInterface
     public function removeSubscription(Subscription $subscription): self
     {
         $this->subscriptions->removeElement($subscription);
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
+
         return $this;
     }
 }
