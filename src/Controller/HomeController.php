@@ -46,6 +46,7 @@ class HomeController extends AbstractController
 
     /**
      * @Route("/", name="home")
+     * @SuppressWarnings(PHPMD)
      * @param SubscribersCounter $countSubscribers
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
