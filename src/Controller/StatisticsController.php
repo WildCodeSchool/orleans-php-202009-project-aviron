@@ -25,26 +25,26 @@ class StatisticsController extends AbstractController
      * @return Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-//    public function generalStatistics(
-//        SeasonRepository $seasonRepository,
-//        SubscriptionRepository $subscriptionRepository,
-//        LicenceRepository $licenceRepository,
-//        CategoryRepository $categoryRepository
-//    ): Response {
-//        $categories = $categoryRepository->findAll();
-//        $licences = $licenceRepository->findAll();
-//        $seasons = $seasonRepository->findAll();
-//        $i = 0;
-//        foreach ($categories as $category) {
-//            foreach ($licences as $licence) {
-//                $subscribersPerCategoryPerLicencePerSeason[$i] =
-//                    $subscriptionRepository->findSubscribersByCategoryByLicenceBySeason(
-//                        $category->getLabel(),
-//                        $licence->getAcronym()
-//                    );
-//                $i++;
-//            }
-//            dd($subscribersPerCategoryPerLicencePerSeason);
-//        }
-//    }
+    public function generalStatistics(
+        SeasonRepository $seasonRepository,
+        SubscriptionRepository $subscriptionRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
+    ): Response {
+        $subscribersPerCategoryPerLicencePerSeason = [];
+        $categories = $categoryRepository->findAll();
+        $licences = $licenceRepository->findAll();
+        foreach ($categories as $category) {
+            foreach ($licences as $licence) {
+                $subscribersPerCategoryPerLicencePerSeason[] =
+                    $subscriptionRepository->findSubscribersByCategoryByLicenceBySeason(
+                        $category->getLabel(),
+                        $licence->getAcronym()
+                    );
+            }
+        }
+        return $this->render('statistics/general.html.twig', [
+            'statistics' => $subscribersPerCategoryPerLicencePerSeason,
+        ]);
+    }
 }

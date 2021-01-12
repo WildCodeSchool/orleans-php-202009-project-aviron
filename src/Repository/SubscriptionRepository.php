@@ -38,6 +38,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->andWhere('category.label = :categoryLabel')
             ->setParameter('categoryLabel', $categoryLabel)
             ->groupBy('season.name')
+            ->orderBy('season.name')
             ->getQuery()
             ->getResult();
     }
