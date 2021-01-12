@@ -34,3 +34,8 @@ h4 {
 .box-shadow {
     box-shadow: 5px 5px 15px -10px $dark-shadow;
 }
+
+.custom-file-input ~ .custom-file-label:lang(fr)::after {
+    content: "Parcourir...";
+}
+
