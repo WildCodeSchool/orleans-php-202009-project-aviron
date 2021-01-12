@@ -29,7 +29,7 @@ class SubscriptionRepository extends ServiceEntityRepository
     public function findSubscribersByCategoryByLicenceBySeason(?string $categoryLabel, ?string $licenceAcronym)
     {
         return $this->createQueryBuilder('subscription')
-            ->select('COUNT(subscription.subscriber) AS total, season.name, licence.acronym, category.label')
+            ->select('COUNT(subscription.subscriber) AS total, season.name')
             ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
             ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
             ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
