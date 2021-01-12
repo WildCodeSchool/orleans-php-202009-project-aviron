@@ -20,6 +20,28 @@ class SubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subscription::class);
     }
+
+    /**
+     * @param string|null $categoryLabel
+     * @param string|null $licenceAcronym
+     * @return Subscription
+     * @throws NonUniqueResultException
+     */
+    public function findSubscribersByCategoryByLicenceBySeason(?string $categoryLabel, ?string $licenceAcronym)
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('COUNT(sub.subscriber)')
+            ->leftJoin('App\Entity\Category', 'c', 'WITH', 'c.id = sub.category')
+            ->leftJoin('App\Entity\Licence', 'l', 'WITH', 'l.id = sub.licence')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->where('l.acronym = :licenceAcronym')
+            ->setParameter('licenceAcronym', $licenceAcronym)
+            ->andWhere('c.label = :categoryLabel')
+            ->setParameter('categoryLabel', $categoryLabel)
+            ->groupBy('s.name')
+            ->getQuery()
+            ->getResult();
+    }
     public function subscribersByYearByLicences(?string $season): array
     {
         return $this->createQueryBuilder('subscription')
