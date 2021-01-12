@@ -93,17 +93,17 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                    {% if display == 'licences' %}
-                                        <td class="text-center {{ subscription.licence.acronym }}">{{ subscription.licence.acronym }}</td>
-                                    {% elseif display == 'renewal'%}
-                                        <td class="text-center {{ subscription.status }}">{{ subscription.status }}</td>
-                                    {% elseif display == 'subscriptions' %}
-                                        <td class="text-center {{ subscription.category.label }}">{{ subscription.category.label }}</td>
-                                    {% endif %}
-                                {% else %}
-                                    <td></td>
-                                {% endfor %}
+                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                        {% if display == 'licences' %}
+                                            <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
+                                        {% elseif display == 'renewal'%}
+                                            <td class="text-center">{{ subscription.status }}</td>
+                                        {% elseif display == 'subscriptions' %}
+                                            <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label }}</td>
+                                        {% endif %}
+                                    {% else %}
+                                        <td></td>
+                                    {% endfor %}
                             {% endfor %}
                         </tr>
                     {% endfor %}

@@ -15,6 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SeasonRepository extends ServiceEntityRepository
 {
+    public const LIMIT_NUMBER_SEASONS = 15;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Season::class);
@@ -34,33 +36,4 @@ class SeasonRepository extends ServiceEntityRepository
         }
         return $queryBuilder->getQuery()->getResult();
     }
-
-    // /**
-    //  * @return Season[] Returns an array of Season objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Season
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
