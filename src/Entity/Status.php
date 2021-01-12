@@ -37,7 +37,7 @@ class Status
     /**
      * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="seasonStatus")
      */
-    private ArrayCollection $subscriptions;
+    private Collection $subscriptions;
 
     public function __construct()
     {

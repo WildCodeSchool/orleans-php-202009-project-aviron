@@ -33,7 +33,6 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
                     $subscription->setSubscriber($this->getReference('subscriber_' . $i));
                     $subscription->setSeason($this->getReference('season_' . $j));
                     $subscription->setLicence($this->getReference('licence_' . rand(0, 5)));
-                    $subscription->setStatus('');
                     $subscription->setCategory($this->getReference('category_' . rand(0, 11)));
                     $manager->persist($subscription);
                     $this->addReference('subscription_' . $index, $subscription);
@@ -41,20 +40,6 @@ class SubscriptionFixtures extends Fixture implements DependentFixtureInterface
                 }
             }
         }
-        $manager->flush();
-
-        $seasons = $manager->getRepository(Season::class)->findAll();
-        $subscribers = $manager->getRepository(Subscriber::class)->findAll();
-
-        //Subscription avec statut transfert
-        $subscription = new Subscription();
-        $subscription->setSubscriptionDate($faker->dateTimeThisDecade('now'));
-        $subscription->setSubscriber($this->getReference('subscriber_100'));
-        $subscription->setSeason($this->getReference('season_1'));
-        $subscription->setLicence($this->getReference('licence_' . rand(0, 5)));
-        $subscription->setStatus($this->statusCalculator->calculate($seasons, $subscribers));
-        $subscription->setCategory($this->getReference('category_' . rand(0, 11)));
-        $manager->persist($subscription);
         $manager->flush();
     }
 
