@@ -88,7 +88,7 @@ class CsvImport
     {
         $season = $this->seasonRepository->findOneBy(['name' => $seasonName]);
 
-        if ($season == null) {
+        if (!$season instanceof Season) {
             $season = new Season();
             $seasonStartYear = (int)substr($seasonName, 0, 4);
             $seasonEndYear = (int)substr($seasonName, 5, 4);
@@ -123,7 +123,7 @@ class CsvImport
             // Recherche du subscriber par numéro de licence
             $subscriber = $this->subscriberRepository->findOneBy(['licenceNumber' => $csvLine['NO ADHERENT']]);
 
-            if ($subscriber == null) {
+            if (!$subscriber instanceof Subscriber) {
                 // Si le numéro de licence n'existe pas, recherche par nom/prénom/date de naissance (cas licence D)
 
                 $subscriber = $this->subscriberRepository->findOneBy([
@@ -134,7 +134,7 @@ class CsvImport
 
                 // Si on ne le trouve toujours pas, on crée un nouveau subscriber
                 // Si on l'a trouvé on modifie le numéro de licence si plus récent pour le subscriber récupéré
-                if ($subscriber == null) {
+                if (!$subscriber instanceof Subscriber) {
                     $subscriber = new Subscriber();
                     $this->entityManager->persist($subscriber);
                     $subscriber
@@ -165,7 +165,7 @@ class CsvImport
             // Si on ne trouve pas le subscriber pour la saison, on crée une nouvelle subscription
             // Si on l'a trouvé on vérifie que la date de saisie est la même, si ce n'est pas le cas, on met à jour
             // la catégorie et le type de licence
-            if ($subscription == null) {
+            if (!$subscription instanceof Subscription) {
                 $subscription = new Subscription();
                 $this->entityManager->persist($subscription);
                 $subscription
@@ -174,7 +174,7 @@ class CsvImport
                     ->setSubscriptionDate($subscriptionDate)
                     ->setLicence($licence)
                     ->setCategory($this->categoryRepository->findOneBy(['label' => $csvLine['CATEGORIE AGE']]));
-            } elseif ($subscriptionDate !== $subscription->getSubscriptionDate()) {
+            } elseif ($subscriptionDate > $subscription->getSubscriptionDate()) {
                 $subscription
                     ->setSubscriptionDate($subscriptionDate)
                     ->setLicence($licence)
