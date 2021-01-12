@@ -42,9 +42,9 @@ class StatisticsController extends AbstractController
 //                        $category->getLabel(),
 //                        $licence->getAcronym()
 //                    );
-//                dd($subscribersPerCategoryPerLicencePerSeason);
 //                $i++;
 //            }
+//            dd($subscribersPerCategoryPerLicencePerSeason);
 //        }
 //    }
 }

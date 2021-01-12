@@ -25,20 +25,19 @@ class SubscriptionRepository extends ServiceEntityRepository
      * @param string|null $categoryLabel
      * @param string|null $licenceAcronym
      * @return Subscription
-     * @throws NonUniqueResultException
      */
     public function findSubscribersByCategoryByLicenceBySeason(?string $categoryLabel, ?string $licenceAcronym)
     {
-        return $this->createQueryBuilder('sub')
-            ->select('COUNT(sub.subscriber)')
-            ->leftJoin('App\Entity\Category', 'c', 'WITH', 'c.id = sub.category')
-            ->leftJoin('App\Entity\Licence', 'l', 'WITH', 'l.id = sub.licence')
-            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
-            ->where('l.acronym = :licenceAcronym')
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, season.name, licence.acronym, category.label')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
+            ->innerJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
+            ->where('licence.acronym = :licenceAcronym')
             ->setParameter('licenceAcronym', $licenceAcronym)
-            ->andWhere('c.label = :categoryLabel')
+            ->andWhere('category.label = :categoryLabel')
             ->setParameter('categoryLabel', $categoryLabel)
-            ->groupBy('s.name')
+            ->groupBy('season.name')
             ->getQuery()
             ->getResult();
     }
