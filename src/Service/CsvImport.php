@@ -124,20 +124,12 @@ class CsvImport
             $subscriber = $this->subscriberRepository->findOneBy(['licenceNumber' => $csvLine['NO ADHERENT']]);
 
             if ($subscriber == null) {
-                $subscriberBirthdate = explode('/', $csvLine['DATE NAISSANCE']);
-
                 // Si le numéro de licence n'existe pas, recherche par nom/prénom/date de naissance (cas licence D)
 
                 $subscriber = $this->subscriberRepository->findOneBy([
                     'firstname' => $csvLine['PRENOM'],
                     'lastname' => $csvLine['NOM'],
-                    'birthdate' => (new DateTime())
-                        ->setDate(
-                            (int)$subscriberBirthdate[2],
-                            (int)$subscriberBirthdate[1],
-                            (int)$subscriberBirthdate[0]
-                        )
-                        ->setTime(0, 0, 0)
+                    'birthdate' => $this->stringToDatetime($csvLine['DATE NAISSANCE'])
                 ]);
 
                 // Si on ne le trouve toujours pas, on crée un nouveau subscriber
@@ -150,13 +142,7 @@ class CsvImport
                         ->setFirstname($csvLine['PRENOM'])
                         ->setLastname($csvLine['NOM'])
                         ->setGender($csvLine['SEXE'])
-                        ->setBirthdate((new DateTime())
-                            ->setDate(
-                                (int)$subscriberBirthdate[2],
-                                (int)$subscriberBirthdate[1],
-                                (int)$subscriberBirthdate[0]
-                            )
-                            ->setTime(0, 0, 0));
+                        ->setBirthdate($this->stringToDatetime($csvLine['DATE NAISSANCE']));
                     $total++;
                 } elseif ($subscriber->getLicenceNumber() < $csvLine['NO ADHERENT']) {
                     $subscriber->setLicenceNumber($csvLine['NO ADHERENT']);
@@ -170,20 +156,13 @@ class CsvImport
             ]);
 
             // Conversion date de saisie en DateTime
-            $subscriptionDateArray = explode('/', $csvLine['DATE DE SAISIE']);
-            $subscriptionDate = (new DateTime())
-                ->setDate(
-                    (int)$subscriptionDateArray[2],
-                    (int)$subscriptionDateArray[1],
-                    (int)$subscriptionDateArray[0]
-                )
-                ->setTime(0, 0, 0);
+            $subscriptionDate = $this->stringToDatetime($csvLine['DATE DE SAISIE']);
 
             // Recherche de la licence dans la table licence par le label
             /** @var Licence $licence */
             $licence = $this->licenceRepository->findOneBy(['acronym' => $csvLine['CATEGORIE LICENCE']]);
 
-            // Si on ne le trouve pas, on crée une nouvelle subscription
+            // Si on ne trouve pas le subscriber pour la saison, on crée une nouvelle subscription
             // Si on l'a trouvé on vérifie que la date de saisie est la même, si ce n'est pas le cas, on met à jour
             // la catégorie et le type de licence
             if ($subscription == null) {
@@ -205,5 +184,17 @@ class CsvImport
         $this->entityManager->flush();
 
         return $total;
+    }
+
+    private function stringToDatetime(string $date): DateTime
+    {
+        $dateArray = explode('/', $date);
+        return (new DateTime())
+            ->setDate(
+                (int)$dateArray[2],
+                (int)$dateArray[1],
+                (int)$dateArray[0]
+            )
+            ->setTime(0, 0, 0);
     }
 }
