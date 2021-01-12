@@ -20,6 +20,25 @@ class SubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subscription::class);
     }
+
+    /**
+     * @param string|null $status
+     * @param string|null $seasonName
+     * @return Subscription
+     * @throws NonUniqueResultException
+     */
+    public function findSubscribersForActualSeasonPerStatus(?string $status, ?string $seasonName)
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('COUNT(sub.subscriber)')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->andWhere('s.name = :seasonName')
+            ->andWhere('sub.status = :status')
+            ->setParameter('seasonName', $seasonName)
+            ->setParameter('status', $status)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
     public function subscribersByYearByLicences(?string $season): array
     {
         return $this->createQueryBuilder('subscription')

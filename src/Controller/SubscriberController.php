@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
+use App\Entity\Season;
 use App\Form\FilterType;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
@@ -40,6 +41,10 @@ class SubscriberController extends AbstractController
         $filter->setSeasonStatus($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $filter->setSeasonCategory($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $filter->setSeasonLicence($seasonRepository->findOneBy([], ['id' => 'DESC']));
+        $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
+        $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
+        $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        $filter->setToSeason($seasonRepository->findOneBy([], ['id' => 'DESC']));
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
@@ -59,7 +64,6 @@ class SubscriberController extends AbstractController
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
-                'filters' => $filters
             ]);
         }
 
@@ -69,17 +73,37 @@ class SubscriberController extends AbstractController
     /**
      * @Route("/export/{display}", name="export")
      * @param string $display
+     * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @return Response
      */
     public function export(
         string $display,
+        Request $request,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository
     ) {
-        $subscribers = $subscriberRepository->findAll();
-        $seasons = $seasonRepository->findAll();
+        /** @var array $filtersArray */
+        $filtersArray = $request->query->get('filter');
+        $filters = new Filter();
+        $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
+        $toSeason = $seasonRepository->find($filtersArray['toSeason']);
+        $filters
+            ->setFromSeason($fromSeason)
+            ->setToSeason($toSeason)
+            ->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null)
+            ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
+            ->setGender($filtersArray['gender'] ?? null)
+            ->setStatus($filtersArray['status'][0] ?? null)
+            ->setSeasonStatus($filtersArray['seasonStatus'] ?? null)
+            ->setLicences($filtersArray['licences'][0] ?? null)
+            ->setSeasonLicence($filtersArray['seasonLicence'] ?? null)
+            ->setFromCategory($filtersArray['fromCategory'] ?? null)
+            ->setToCategory($filtersArray['toCategory'] ?? null)
+            ->setSeasonCategory($filtersArray['seasonCategory'] ?? null);
+        $subscribers = $subscriberRepository->findByFilter($filters);
+        $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
             'subscribers' => $subscribers,
             'seasons' => $seasons,
