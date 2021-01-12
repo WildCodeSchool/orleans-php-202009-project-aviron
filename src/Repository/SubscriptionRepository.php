@@ -32,7 +32,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->select('COUNT(subscription.subscriber) AS total, season.name, licence.acronym, category.label')
             ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
             ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
-            ->innerJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
             ->where('licence.acronym = :licenceAcronym')
             ->setParameter('licenceAcronym', $licenceAcronym)
             ->andWhere('category.label = :categoryLabel')

@@ -34,9 +34,11 @@ class StatisticsController extends AbstractController
         $subscribersPerCategoryPerLicencePerSeason = [];
         $categories = $categoryRepository->findAll();
         $licences = $licenceRepository->findAll();
+        $seasons = $seasonRepository->findAll();
+
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
-                $subscribersPerCategoryPerLicencePerSeason[] =
+                $subscribersPerCategoryPerLicencePerSeason[$category->getLabel()][$licence->getAcronym()] =
                     $subscriptionRepository->findSubscribersByCategoryByLicenceBySeason(
                         $category->getLabel(),
                         $licence->getAcronym()
@@ -45,6 +47,9 @@ class StatisticsController extends AbstractController
         }
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscribersPerCategoryPerLicencePerSeason,
+            'seasons' => $seasons,
+            'categories' => $categories,
+            'licences' => $licences
         ]);
     }
 }
