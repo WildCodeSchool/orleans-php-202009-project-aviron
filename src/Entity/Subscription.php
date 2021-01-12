@@ -115,12 +115,12 @@ class Subscription
         return $this;
     }
 
-    public function getSeasonStatus(): ?Status
+    public function getStatus(): ?Status
     {
         return $this->status;
     }
 
-    public function setSeasonStatus(?Status $status): self
+    public function setStatus(?Status $status): self
     {
         $this->status = $status;
 

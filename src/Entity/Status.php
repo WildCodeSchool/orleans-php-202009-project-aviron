@@ -35,7 +35,7 @@ class Status
     private ?string $color;
 
     /**
-     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="seasonStatus")
+     * @ORM\OneToMany(targetEntity=Subscription::class, mappedBy="status")
      */
     private Collection $subscriptions;
 
@@ -97,7 +97,7 @@ class Status
     {
         if (!$this->subscriptions->contains($subscription)) {
             $this->subscriptions[] = $subscription;
-            $subscription->setSeasonStatus($this);
+            $subscription->setStatus($this);
         }
 
         return $this;
@@ -107,8 +107,8 @@ class Status
     {
         if ($this->subscriptions->removeElement($subscription)) {
             // set the owning side to null (unless already changed)
-            if ($subscription->getSeasonStatus() === $this) {
-                $subscription->setSeasonStatus(null);
+            if ($subscription->getStatus() === $this) {
+                $subscription->setStatus(null);
             }
         }
 
