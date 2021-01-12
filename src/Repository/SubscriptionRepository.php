@@ -41,6 +41,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->orderBy('season.name')
             ->getQuery()
             ->getResult();
+    }
     /**
      * @param string|null $status
      * @param string|null $seasonName
