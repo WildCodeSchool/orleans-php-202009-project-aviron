@@ -38,7 +38,7 @@ class Licence implements LabelInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Regex("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")
+     * @Assert\Regex("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3}|[a-fA-F0-9]{8})$")
      */
     private ?string $color;
 
