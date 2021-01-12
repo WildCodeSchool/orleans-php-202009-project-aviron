@@ -21,10 +21,7 @@ class ImportType extends AbstractType
                 ]
             ])
             ->add('file', FileType::class, [
-                'label' => 'Fichier :',
-                'attr' => [
-                    'placeholder' => 'Sélectionnez un fichier',
-                ]
+                'label' => 'Fichier :'
         ]);
     }
 

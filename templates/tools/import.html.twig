@@ -26,29 +26,3 @@
         {{ form_end(form) }}
     </div>
 {% endblock %}
-
-{% block javascripts %}
-    <script>
-/*
-        $("input[type=file]").change(function (e){$(this).next('.custom-file-label').text(e.target.files[0].name);})
-*/
-/*        $(document).on('change', '.custom-file-input', function () {
-            let fileName = $(this).val().replace(/\\/g, '/').replace(/.*\//, '');
-            $(this).parent('.custom-file').find('.custom-file-label').text(fileName);
-        });*/
-
-/*                $('.custom-file-input').on('click', function(event) {
-                    let inputFile = event.currentTarget;
-                    $(inputFile).parent()
-                        .find('.custom-file-label')
-                        .html($(this));
-                })*/
-
-/*                $('input[type=file]').change(function () {
-                    const fieldVal = $(this).val();
-                    if (fieldVal !== undefined || fieldVal !== '') {
-                        $(this).next('.custom-file-label').text(fieldVal);
-                    }
-                });*/
-    </script>
-{% endblock %}
