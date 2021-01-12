@@ -38,3 +38,7 @@ h4 {
 .filters {
     background-color: lighten($dark, 82%);
 }
+
+.custom-file-input ~ .custom-file-label:lang(fr)::after {
+    content: "Parcourir...";
+}
