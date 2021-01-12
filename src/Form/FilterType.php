@@ -55,7 +55,7 @@ class FilterType extends AbstractType
                 'error_bubbling' => true,
                 'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
             ])
-            ->add('status', ChoiceType::class, [
+/*            ->add('status', ChoiceType::class, [
                 'choices' => [
                     StatusCalculator::NEW,
                     StatusCalculator::TRANSFER,
@@ -68,7 +68,7 @@ class FilterType extends AbstractType
                 'required' => false,
                 'error_bubbling' => true,
                 'invalid_message' => "Le statut choisi n'est pas une valeur valide"
-            ])
+            ])*/
             ->add('seasonStatus', EntityType::class, [
                 'class' => Season::class,
                 'choice_label' => 'name',
