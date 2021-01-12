@@ -111,6 +111,8 @@ class StatusCalculator
                             $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'R']));
                         } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
                             $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'P']));
+                        } else {
+                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'N']));
                         }
                     }
                 }
