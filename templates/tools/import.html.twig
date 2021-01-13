@@ -1,13 +1,25 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ parent() }} - Import{% endblock %}
 {% block stylesheets %}{% endblock %}
+
+
+{% form_theme form _self %}
+
 {% block body %}
 
     <div class="container">
         <h1 class="text-center my-5">Importer une saison</h1>
 
         {{ form_start(form) }}
-        {{ form_widget(form) }}
+
+        {{ form_row(form.seasonName) }}
+
+        {{ form_row(form.file, {
+            attr: {
+                'placeholder': 'Sélectionnez un fichier'
+            }
+        }) }}
+
         <div class="text-center">
             <button class="btn btn-primary mt-5">Importer</button>
         </div>
