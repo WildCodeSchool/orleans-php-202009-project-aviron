@@ -6,6 +6,7 @@ use App\Repository\StatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=StatusRepository::class)
@@ -20,16 +21,19 @@ class Status
     private ?int $id;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=100)
      */
     private ?string $name;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string", length=20)
      */
     private ?string $label;
 
     /**
+     * @Assert\Regex("^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3}|[a-fA-F0-9]{8})$")
      * @ORM\Column(type="string", length=20)
      */
     private ?string $color;
