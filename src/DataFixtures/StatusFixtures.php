@@ -9,11 +9,6 @@ use Doctrine\Persistence\ObjectManager;
 
 class StatusFixtures extends Fixture
 {
-
-/*    public const TRANSFER = ['Transfert' => 'T'];
-    public const NEW = ['Nouveau' => 'N'];
-    public const RENEWAL = ['Renouvellement' => 'R'];
-    public const RESUMED = ['Reprise' => 'P'];*/
     private const STATUS = [
         'T' => [
             'name' => 'Transfert',
