@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Filter;
 use App\Entity\Season;
 use App\Form\FilterType;
+use App\Repository\CategoryRepository;
+use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
 use App\Service\StatusCalculator;
@@ -82,13 +84,21 @@ class SubscriberController extends AbstractController
         string $display,
         Request $request,
         SubscriberRepository $subscriberRepository,
-        SeasonRepository $seasonRepository
+        SeasonRepository $seasonRepository,
+        CategoryRepository $categoryRepository
     ) {
         /** @var array $filtersArray */
         $filtersArray = $request->query->get('filter');
         $filters = new Filter();
         $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
         $toSeason = $seasonRepository->find($filtersArray['toSeason']);
+        $seasonStatus = $seasonRepository->find($filtersArray['seasonStatus']);
+        $seasonLicence = $seasonRepository->find($filtersArray['seasonLicence']);
+        $fromCategory = $categoryRepository->find($filtersArray['fromCategory']);
+        $toCategory = $categoryRepository->find($filtersArray['toCategory']);
+        $seasonCategory = $seasonRepository->find($filtersArray['seasonCategory']);
+
+
         $filters
             ->setFromSeason($fromSeason)
             ->setToSeason($toSeason)
@@ -96,12 +106,12 @@ class SubscriberController extends AbstractController
             ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
             ->setGender($filtersArray['gender'] ?? null)
             ->setStatus($filtersArray['status'][0] ?? null)
-            ->setSeasonStatus($filtersArray['seasonStatus'] ?? null)
-            ->setLicences($filtersArray['licences'][0] ?? null)
-            ->setSeasonLicence($filtersArray['seasonLicence'] ?? null)
-            ->setFromCategory($filtersArray['fromCategory'] ?? null)
-            ->setToCategory($filtersArray['toCategory'] ?? null)
-            ->setSeasonCategory($filtersArray['seasonCategory'] ?? null);
+            ->setSeasonStatus($seasonStatus ?? null)
+            ->setLicences($filtersArray['licences'] ?? null)
+            ->setSeasonLicence($seasonLicence ?? null)
+            ->setFromCategory($fromCategory ?? null)
+            ->setToCategory($toCategory ?? null)
+            ->setSeasonCategory($seasonCategory ?? null);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
