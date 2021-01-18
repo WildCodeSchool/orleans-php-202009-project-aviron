@@ -39,9 +39,11 @@ class FirstSubscription
         foreach ($subscribers as $subscriber) {
             $firstSubscription = $this->getFirstSubscription($subscriber);
             $isRegistered = $this->isRegisteredLastSeason($subscriber);
-            if ($firstSubscription->getCategory()->getLabel() === $category->getLabel()) {
-                if (($stillRegistered && $isRegistered) || !$stillRegistered) {
-                    $subscribersFiltered[] = $subscriber;
+            if (!is_null($firstSubscription->getCategory())) {
+                if ($firstSubscription->getCategory()->getLabel() === $category->getLabel()) {
+                    if (($stillRegistered && $isRegistered) || !$stillRegistered) {
+                        $subscribersFiltered[] = $subscriber;
+                    }
                 }
             }
         }
