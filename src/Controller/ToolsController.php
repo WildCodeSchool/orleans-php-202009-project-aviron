@@ -35,7 +35,7 @@ class ToolsController extends AbstractController
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
 
-            $subscriberTotal = $csvImport->createSubscribers($csvData);
+            $subscriberTotal = $csvImport->createSubscriptions($csvData, $season);
             $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
 
             return $this->redirectToRoute('tools_import');

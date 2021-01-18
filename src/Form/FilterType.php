@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Filter;
 use App\Entity\Licence;
 use App\Entity\Season;
+use App\Entity\Status;
 use App\Entity\Subscriber;
 use App\Service\StatusCalculator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -57,13 +58,9 @@ class FilterType extends AbstractType
                 'error_bubbling' => true,
                 'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
             ])
-            ->add('status', ChoiceType::class, [
-                'choices' => [
-                    StatusCalculator::NEW,
-                    StatusCalculator::TRANSFER,
-                    StatusCalculator::RESUMED,
-                    StatusCalculator::RENEWAL
-                ],
+            ->add('status', EntityType::class, [
+                'class' => Status::class,
+                'choice_label' => 'name',
                 'expanded' => true,
                 'multiple' => true,
                 'label' => false,

@@ -35,9 +35,9 @@
                                         {% if display == 'licences' %}
                                             <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
                                         {% elseif display == 'renewal'%}
-                                            <td class="text-center">{{ subscription.status }}</td>
+                                            <td class="text-center" style="background-color:{{ subscription.status.color }}">{{ subscription.status.label}}</td>
                                         {% elseif display == 'subscriptions' %}
-                                            <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label }}</td>
+                                            <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
                                         {% endif %}
                                     {% else %}
                                         <td></td>
