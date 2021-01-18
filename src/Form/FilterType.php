@@ -41,7 +41,7 @@ class FilterType extends AbstractType
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', 'DESC');
                 },
                 'choice_label' => 'name',
                 'label' => 'à',
@@ -84,7 +84,7 @@ class FilterType extends AbstractType
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', 'DESC');
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
@@ -103,7 +103,7 @@ class FilterType extends AbstractType
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', 'DESC');
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
@@ -145,7 +145,7 @@ class FilterType extends AbstractType
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.name', 'DESC');
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
