@@ -64,6 +64,18 @@
                 {{ form_row(form.seasonCategory) }}
             </div>
         </div>
+        <h2 class="title-filter my-3">Première inscription</h2>
+        <div class="row">
+            <div class="col-3">
+                {{ form_row(form.firstLicence) }}
+            </div>
+            <div class="col-3">
+                {{ form_row(form.firstCategory) }}
+            </div>
+            <div class="col-2 d-flex align-items-center">
+                {{ form_row(form.stillRegistered) }}
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary mt-3">Appliquer</button>
         {{ form_end(form) }}
     </div>
