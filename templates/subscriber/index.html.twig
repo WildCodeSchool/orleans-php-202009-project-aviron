@@ -64,9 +64,9 @@
                 {% endif %}
             </div>
             <div class="text-center filters">
-                <button onClick="window.history.back();" type="button" class="btn btn-primary mb-4">
-                    Modifier la recherche
-                </button>
+                <a href="{{ path('subscribers_filter', {display : display}) }}" type="button" class="btn btn-primary mb-4">
+                    Faire une nouvelle recherche
+                </a>
             </div>
         </div>
         <div class="row">
