@@ -26,7 +26,7 @@ class SubscriptionRepository extends ServiceEntityRepository
      * @param string|null $licenceAcronym
      * @return Subscription
      */
-    public function findSubscribersByCategoryByLicenceBySeasonByGender(
+    public function findSubscriptionsBySeason(
         ?string $categoryLabel,
         ?string $licenceAcronym
     ) {

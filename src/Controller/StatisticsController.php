@@ -30,22 +30,22 @@ class StatisticsController extends AbstractController
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository
     ): Response {
-        $subscribersPerCategoryPerLicencePerSeason = [];
+        $subscriptions = [];
         $categories = $categoryRepository->findAll();
         $licences = $licenceRepository->findAll();
         $seasons = $seasonRepository->findAll();
 
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
-                $subscribersPerCategoryPerLicencePerSeason[$category->getLabel()][$licence->getAcronym()] =
-                    $subscriptionRepository->findSubscribersByCategoryByLicenceBySeasonByGender(
+                $subscriptions[$category->getLabel()][$licence->getAcronym()] =
+                    $subscriptionRepository->findSubscriptionsBySeason(
                         $category->getLabel(),
                         $licence->getAcronym()
                     );
             }
         }
         return $this->render('statistics/general.html.twig', [
-            'statistics' => $subscribersPerCategoryPerLicencePerSeason,
+            'statistics' => $subscriptions,
             'seasons' => $seasons,
             'categories' => $categories,
             'licences' => $licences
