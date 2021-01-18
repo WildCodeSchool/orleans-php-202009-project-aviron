@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Filter;
 use App\Form\FilterType;
+use App\Repository\CategoryRepository;
+use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
 use App\Service\FirstSubscription;
@@ -94,19 +96,25 @@ class SubscriberController extends AbstractController
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
+     * @param CategoryRepository $categoryRepository
+     * @param LicenceRepository $licenceRepository
      * @return Response
      */
     public function export(
         string $display,
         Request $request,
         SubscriberRepository $subscriberRepository,
-        SeasonRepository $seasonRepository
+        SeasonRepository $seasonRepository,
+        CategoryRepository $categoryRepository,
+        LicenceRepository $licenceRepository
     ) {
         /** @var array $filtersArray */
         $filtersArray = $request->query->get('filter');
         $filters = new Filter();
         $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
         $toSeason = $seasonRepository->find($filtersArray['toSeason']);
+        $firstCategory = $categoryRepository->find($filtersArray['firstCategory']);
+        $firstLicence = $licenceRepository->find($filtersArray['firstLicence']);
         $filters
             ->setFromSeason($fromSeason)
             ->setToSeason($toSeason)
@@ -120,8 +128,8 @@ class SubscriberController extends AbstractController
             ->setFromCategory($filtersArray['fromCategory'] ?? null)
             ->setToCategory($filtersArray['toCategory'] ?? null)
             ->setSeasonCategory($filtersArray['seasonCategory'] ?? null)
-            ->setFirstCategory($filtersArray['firstCategory'] ?? null)
-            ->setFirstLicence($filtersArray['firstLicence'] ?? null)
+            ->setFirstCategory($firstCategory ?? null)
+            ->setFirstLicence($firstLicence ?? null)
             ->setStillRegistered($filtersArray['stillRegistered']);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
