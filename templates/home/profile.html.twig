@@ -13,7 +13,7 @@
                         <p class="card-text">Mon type d'accès :
                             {% if app.user.roles.0 == 'ROLE_ADMIN' %}
                                 Administrateur
-                            {% elseif pp.user.roles.0  == 'ROLE_USER' %}
+                            {% elseif app.user.roles.0  == 'ROLE_USER' %}
                                 Utilisateur
                             {% endif %}</p>
                         <a href="{{ path('app_logout') }}" class="btn btn-primary">Se déconnecter</a>
