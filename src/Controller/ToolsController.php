@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Import;
 use App\Form\ImportType;
+use App\Repository\SeasonRepository;
+use App\Repository\SubscriberRepository;
 use App\Service\CsvImport;
+use App\Service\StatusCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,11 +23,17 @@ class ToolsController extends AbstractController
      * @Route("/import", name="import", methods={"GET", "POST"})
      * @param Request $request
      * @param CsvImport $csvImport
+     * @param SeasonRepository $seasonRepository
+     * @param SubscriberRepository $subscriberRepository
+     * @param StatusCalculator $statusCalculator
      * @return Response
      */
-    public function newSeason(
+    public function importSeason(
         Request $request,
-        CsvImport $csvImport
+        CsvImport $csvImport,
+        SeasonRepository $seasonRepository,
+        SubscriberRepository $subscriberRepository,
+        StatusCalculator $statusCalculator
     ): Response {
         $seasonImport = new Import();
         $form = $this->createForm(ImportType::class, $seasonImport);
@@ -37,6 +46,9 @@ class ToolsController extends AbstractController
 
             $subscriberTotal = $csvImport->createSubscriptions($csvData, $season);
             $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
+
+            $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
+            $statusCalculator->calculate($seasons);
 
             return $this->redirectToRoute('tools_import');
         }
