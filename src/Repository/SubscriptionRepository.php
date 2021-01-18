@@ -56,8 +56,9 @@ class SubscriptionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('sub')
             ->select('COUNT(sub.subscriber)')
             ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->innerJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
             ->andWhere('s.name = :seasonName')
-            ->andWhere('sub.status = :status')
+            ->andWhere('st.label = :status')
             ->setParameter('seasonName', $seasonName)
             ->setParameter('status', $status)
             ->getQuery()
@@ -163,7 +164,25 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    // /**
+    /**
+     * @param string|null $seasonName
+     * @return array
+     */
+    public function getLastSubscriber(?string $seasonName)
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('sr.licenceNumber')
+            ->innerJoin('App\Entity\Season', 'sn', 'WITH', 'sn.id = sub.season')
+            ->innerJoin('App\Entity\Subscriber', 'sr', 'WITH', 'sr.id = sub.subscriber')
+            ->where('sn.name = :seasonName')
+            ->setParameter('seasonName', $seasonName)
+            ->orderBy('sr.licenceNumber', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+    }
+
+// /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */
     /*
