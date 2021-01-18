@@ -9,6 +9,7 @@ use App\Entity\Season;
 use App\Entity\Status;
 use App\Entity\Subscriber;
 use App\Service\StatusCalculator;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -29,12 +30,20 @@ class FilterType extends AbstractType
         $builder
             ->add('fromSeason', EntityType::class, [
                 'class' => Season::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.name', 'ASC');
+                },
                 'choice_label' => 'name',
                 'label' => 'De',
                 'error_bubbling' => true
             ])
             ->add('toSeason', EntityType::class, [
                 'class' => Season::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.name', 'DESC');
+                },
                 'choice_label' => 'name',
                 'label' => 'à',
                 'error_bubbling' => true
@@ -50,7 +59,7 @@ class FilterType extends AbstractType
                 'error_bubbling' => true
             ])
             ->add('gender', ChoiceType::class, [
-                'choices' => Subscriber::GENDER,
+                'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
                 'label' => false,
                 'required' => false,
@@ -70,6 +79,10 @@ class FilterType extends AbstractType
             ])
             ->add('seasonStatus', EntityType::class, [
                 'class' => Season::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.name', 'DESC');
+                },
                 'choice_label' => 'name',
                 'label' => 'Saison',
                 'error_bubbling' => true
@@ -85,6 +98,10 @@ class FilterType extends AbstractType
             ])
             ->add('seasonLicence', EntityType::class, [
                 'class' => Season::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.name', 'DESC');
+                },
                 'choice_label' => 'name',
                 'label' => 'Saison',
                 'error_bubbling' => true
@@ -123,6 +140,10 @@ class FilterType extends AbstractType
             ])
             ->add('seasonCategory', EntityType::class, [
                 'class' => Season::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')
+                        ->orderBy('s.name', 'DESC');
+                },
                 'choice_label' => 'name',
                 'label' => 'Saison',
                 'error_bubbling' => true
