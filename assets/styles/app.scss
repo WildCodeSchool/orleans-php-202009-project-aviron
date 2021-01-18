@@ -35,38 +35,10 @@ h4 {
     box-shadow: 5px 5px 15px -10px $dark-shadow;
 }
 
-@for $i from 9 through 12 {
-    .J#{$i}, .R, .D7, .D30, .D90 {
-        background-color: #37cf9bff;
-    }
-}
-
-@for $i from 13 through 14 {
-    .J#{$i}, .P, .I {
-        background-color: #f2c950ff;
-    }
-}
-
-@for $i from 15 through 16 {
-    .J#{$i} {
-        background-color: #e69138ff;
-    }
-}
-
-@for $i from 17 through 18 {
-    .J#{$i} {
-        background-color: #d56741ff;
-    }
-}
-
-.S-23, .T, .U {
-    background-color: #a65bd7ff;
-}
-
-.S, .N, .A {
-    background-color: #66b5c3ff;
-}
-
 .filters {
     background-color: lighten($dark, 82%);
+}
+
+.custom-file-input ~ .custom-file-label:lang(fr)::after {
+    content: "Parcourir...";
 }

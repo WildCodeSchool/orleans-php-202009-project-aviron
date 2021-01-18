@@ -21,6 +21,7 @@ class HomeController extends AbstractController
 {
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
+    private const STATUS_NEW = 'N';
     private const CATEGORIES_PALETTE = [
         '#004C6D',
         '#135B79',
@@ -77,6 +78,11 @@ class HomeController extends AbstractController
             self::COMPETITION_LICENCE,
             $actualSeason,
             self::JUNIOR_CATEGORY
+        );
+
+        $newSubscribers = $subscriptionRepository->findSubscribersForActualSeasonPerStatus(
+            self::STATUS_NEW,
+            $actualSeason
         );
 
         $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
@@ -139,6 +145,7 @@ class HomeController extends AbstractController
             'subscribersByCategories' => $countByCategories,
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
+            'newSubscribers' => $newSubscribers,
             'categoriesChart' => $categoriesChart,
             'licencesChart' => $licencesChart,
         ]);
