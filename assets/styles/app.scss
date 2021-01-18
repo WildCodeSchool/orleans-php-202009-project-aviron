@@ -39,3 +39,15 @@ h4 {
     content: "Parcourir...";
 }
 
+.category-td {
+    background-color: lighten($fourth, 4%);
+    border-bottom: 2px solid;
+    border-color: lighten($dark, 65%);
+}
+
+.licence-td {
+    background-color: $light;
+    border-bottom: 1px solid;
+    border-color: lighten($dark, 68%);
+}
+

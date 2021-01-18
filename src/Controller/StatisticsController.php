@@ -23,7 +23,6 @@ class StatisticsController extends AbstractController
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
      * @return Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function generalStatistics(
         SeasonRepository $seasonRepository,
@@ -39,7 +38,7 @@ class StatisticsController extends AbstractController
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
                 $subscribersPerCategoryPerLicencePerSeason[$category->getLabel()][$licence->getAcronym()] =
-                    $subscriptionRepository->findSubscribersByCategoryByLicenceBySeason(
+                    $subscriptionRepository->findSubscribersByCategoryByLicenceBySeasonByGender(
                         $category->getLabel(),
                         $licence->getAcronym()
                     );
