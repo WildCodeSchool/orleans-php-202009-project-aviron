@@ -3,37 +3,75 @@
 namespace App\Service;
 
 use App\Entity\Season;
+use App\Entity\Status;
 use App\Entity\Subscriber;
 use App\Entity\Subscription;
+use App\Repository\StatusRepository;
+use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
+
+/**
+ * @SuppressWarnings(PHPMD.LongVariable)
+ */
 
 class StatusCalculator
 {
-    public const TRANSFER = ['Transfert' => 'T'];
-    public const NEW = ['Nouveau' => 'N'];
-    public const RENEWAL = ['Renouvellement' => 'R'];
-    public const RESUMED = ['Reprise' => 'P'];
+    /**
+     * @var StatusRepository
+     */
+    private StatusRepository $statusRepository;
+
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * @var SubscriptionRepository
+     */
+    private SubscriptionRepository $subscriptionRepository;
+
+    /**
+     * StatusCalculator constructor.
+     * @param EntityManagerInterface $entityManager
+     * @param StatusRepository $statusRepository
+     * @param SubscriptionRepository $subscriptionRepository
+     */
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        StatusRepository $statusRepository,
+        SubscriptionRepository $subscriptionRepository
+    ) {
+        $this->entityManager = $entityManager;
+        $this->statusRepository = $statusRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
+    }
 
     /**
      * @param Subscription $subscription
-     * @param array<int> $previousSeason
-     * @return string|null
+     * @param Season|null $previousSeason
+     * @param int $previousSeasonLastLicence
+     * @return Status|null
      */
-    public function calculateNew(Subscription $subscription, array $previousSeason): ?string
-    {
-        $status = $subscription->getStatus();
+    public function calculateNew(
+        Subscription $subscription,
+        ?Season $previousSeason,
+        int $previousSeasonLastLicence
+    ): ?Status {
+          $status = $subscription->getStatus();
         //si $previousSeason est vide, cela signifie qu'on est sur la première saison
         if (
-            empty($previousSeason)
-            || $subscription->getSubscriber()->getLicenceNumber() > $previousSeason[count($previousSeason) - 1]
+            !$previousSeason instanceof Season
+            || $subscription->getSubscriber()->getLicenceNumber() > $previousSeasonLastLicence
         ) {
-            $status = current(self::NEW);
+            $status = $this->statusRepository->findOneBy(['label' => 'N']);
         } elseif (
-            $subscription->getSubscriber()->getLicenceNumber() < $previousSeason[count($previousSeason) - 1]
-            && $subscription->getStatus() === ''
+            $subscription->getSubscriber()->getLicenceNumber() < $previousSeasonLastLicence
+            && $subscription->getStatus() == null
         ) {
-            $status = current(self::TRANSFER);
+            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'T']));
         }
 
         return $status;
@@ -45,33 +83,42 @@ class StatusCalculator
      */
     public function calculate(array $seasons, array $subscribers): void
     {
-        $previousSeason = [];
-        $currentSeason = [];
-        foreach ($seasons as $season) {
-            foreach ($season->getSubscriptions() as $subscriptionSeason) {
-                asort($previousSeason);
+        asort($seasons);
+
+        for ($i = 0; $i < count($seasons); $i++) {
+            if ($i === 0) {
+                $previousSeason = null;
+                $previousSeasonLastLicence = 0;
+            } else {
+                $previousSeason = $seasons[$i - 1];
+                $previousSeasonLastLicence = $this
+                    ->subscriptionRepository
+                    ->getLastSubscriber($previousSeason->getName())[0]['licenceNumber'];
+            }
+            foreach ($seasons[$i]->getSubscriptions() as $subscriptionSeason) {
                 $subscriptionSeason->setStatus($this->calculateNew(
                     $subscriptionSeason,
-                    $previousSeason
+                    $previousSeason,
+                    $previousSeasonLastLicence
                 ));
-                $currentSeason[] = $subscriptionSeason->getSubscriber()->getLicenceNumber();
             }
-            $previousSeason = [];
-            $previousSeason = $currentSeason;
-            $currentSeason = [];
-        }
-        foreach ($subscribers as $subscriber) {
-            $subscriptions = $subscriber->getSubscriptions();
-            foreach ($subscriptions as $subscription) {
-                if ($subscription->getSeason() !== $seasons[0]) {
-                    if ($this->hasPreviousYear($subscription, $subscriptions)) {
-                        $subscription->setStatus(current(self::RENEWAL));
-                    } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
-                        $subscription->setStatus(current(self::RESUMED));
+
+            foreach ($subscribers as $subscriber) {
+                $subscriptions = $subscriber->getSubscriptions();
+                foreach ($subscriptions as $subscription) {
+                    if ($subscription->getSeason() !== $seasons[0]) {
+                        if ($this->hasPreviousYear($subscription, $subscriptions)) {
+                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'R']));
+                        } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
+                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'P']));
+                        } else {
+                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'N']));
+                        }
                     }
                 }
             }
         }
+        $this->entityManager->flush();
     }
 
     /*
