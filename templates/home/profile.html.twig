@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <h1 class="text-center my-5">Mon profil</h1>
+        <div class="row">
+            <div class="col">
+                Mon adresse email : {{ app.user.email }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                    Mon type d'accès :
+                        {% if app.user.roles.0 == 'ROLE_ADMIN' %}
+                            Administrateur
+                        {% elseif pp.user.roles.0  == 'ROLE_USER' %}
+                            Utilisateur
+                        {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
