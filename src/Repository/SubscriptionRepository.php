@@ -42,6 +42,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
     /**
      * @param string|null $status
      * @param string|null $seasonName
@@ -60,6 +61,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
     public function subscribersByYearByLicences(?string $season): array
     {
         return $this->createQueryBuilder('subscription')
@@ -70,8 +72,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('season', $season)
             ->groupBy('licence.acronym')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function getQueryForSubscribersByYearByLicences(?string $season): string
@@ -158,6 +159,35 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('categoryName', $categoryName . '%')
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param string|null $categoryLabel
+     * @param string|null $licenceAcronym
+     * @param string|null $actualSeason
+     * @return Subscription
+     */
+    public function findOutgoingSubscribers(
+        ?string $categoryLabel,
+        ?string $licenceAcronym,
+        ?string $actualSeason
+    ) {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, season.name, subscriber.gender')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
+            ->leftJoin('App\Entity\Subscriber', 'subscriber', 'WITH', 'subscription.subscriber = subscriber.id')
+            ->where('licence.acronym = :licenceAcronym')
+            ->setParameter('licenceAcronym', $licenceAcronym)
+            ->andWhere('category.label = :categoryLabel')
+            ->setParameter('categoryLabel', $categoryLabel)
+            ->andWhere('season.name != :seasonName')
+            ->setParameter("seasonName", $actualSeason)
+            ->groupBy('season.name, subscriber.gender')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**
