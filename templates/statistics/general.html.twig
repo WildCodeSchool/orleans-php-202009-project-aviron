@@ -22,7 +22,7 @@
                     {%  for licenceAcronym, licenceData in licences %}
                         <tr>
                             {% if loop.index == 1 %}
-                            <td class="text-center align-middle category-td" rowspan="12">{{ categoryLabel }}</td>
+                            <td class="text-center align-middle category-td h5" rowspan="12">{{ categoryLabel }}</td>
                             {% endif %}
                             <td class="text-center align-middle licence-td" rowspan="2">{{ licenceAcronym}} </td>
                             <td class="text-center">F</td>
@@ -51,7 +51,7 @@
                     {% endfor %}
                 {% endfor %}
                 <tr>
-                    <td class="text-center align-middle category-td" rowspan="3" colspan="2">Grand total par saison</td>
+                    <td class="text-center align-middle category-td h5" rowspan="3" colspan="2">Grand total par saison</td>
                     <td class="text-center">H</td>
                     {% for season in seasons %}
                         {% for total in totalPerSeason|filter(total => total.name == season.name and total.gender == 'H') %}
