@@ -11,11 +11,11 @@
                     <div class="card-body">
                         <h5 class="card-title">Mon adresse email : {{ app.user.email }}</h5>
                         <p class="card-text">Mon type d'accès :
-                            {% for label, role in roles %}
-                                {% if app.user.roles.0 == label %}
-                                    {{ role }}
-                                {% endif %}
-                            {% endfor %}</p>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                Administrateur
+                            {% elseif is_granted('ROLE_USER') %}
+                                Utilisateur
+                            {% endif %}</p>
                         <a href="{{ path('app_logout') }}" class="btn btn-primary">Se déconnecter</a>
                     </div>
                 </div>
