@@ -39,12 +39,7 @@
                         Statut :
                         {% set status = '' %}
                         {% for filter in filters.status %}
-                            {% set current = constant('App\\Service\\StatusCalculator::TRANSFER')[filter] ??
-                                constant('App\\Service\\StatusCalculator::NEW')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RENEWAL')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RESUMED')[filter] ??
-                                '' %}
-                            {% set status = loop.last ? status ~ current : status ~ current ~ ', ' %}
+                            {% set status = loop.last ? status ~ filter.name : status ~ filter.name ~ ', ' %}
                         {% endfor %}
                         <strong>{{ status }}</strong>
                         (pour la saison <strong>{{ filters.seasonStatus.name }}</strong>)
