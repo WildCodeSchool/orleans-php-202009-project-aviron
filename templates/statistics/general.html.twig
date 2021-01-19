@@ -50,6 +50,14 @@
                         </tr>
                     {% endfor %}
                 {% endfor %}
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td>H</td>
+                    {% for season in seasons %}
+                      <td>{{ season.name }}</td>
+                    {% endfor %}
+                </tr>
                 </tbody>
             </table>
         </div>

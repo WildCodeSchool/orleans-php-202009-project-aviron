@@ -34,6 +34,7 @@ class StatisticsController extends AbstractController
         $categories = $categoryRepository->findAll();
         $licences = $licenceRepository->findAll();
         $seasons = $seasonRepository->findAll();
+        $totalPerSeason = $subscriptionRepository->totalPerSeason();
 
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
@@ -44,11 +45,13 @@ class StatisticsController extends AbstractController
                     );
             }
         }
+
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
             'categories' => $categories,
-            'licences' => $licences
+            'licences' => $licences,
+            'totalPerSeason' => $totalPerSeason
         ]);
     }
 }

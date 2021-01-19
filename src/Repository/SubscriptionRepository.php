@@ -20,6 +20,17 @@ class SubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subscription::class);
     }
+    public function totalPerSeason(): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, season.name, subscriber.gender')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Subscriber', 'subscriber', 'WITH', 'subscription.subscriber = subscriber.id')
+            ->groupBy('season.name, subscriber.gender')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
+    }
 
     /**
      * @param string|null $categoryLabel
