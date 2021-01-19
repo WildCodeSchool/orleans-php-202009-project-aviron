@@ -55,14 +55,14 @@ class SubscriberController extends AbstractController
             $seasons = $seasonRepository->findByFilter($filters);
             $subscribersData = $subscriberRepository->findByFilter($filters);
             if (!empty($filters->getFirstLicence())) {
-                $subscribersData = $firstSubscription->filterWithLicence(
+                $subscribersData = $firstSubscription->filterWith(
                     $subscribersData,
                     $filters->getFirstLicence(),
                     $filters->isStillRegistered()
                 );
             }
             if (!empty($filters->getFirstCategory())) {
-                $subscribersData = $firstSubscription->filterWithCategory(
+                $subscribersData = $firstSubscription->filterWith(
                     $subscribersData,
                     $filters->getFirstCategory(),
                     $filters->isStillRegistered()

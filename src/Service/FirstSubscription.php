@@ -18,33 +18,18 @@ class FirstSubscription
         $this->seasonRepository = $seasonRepository;
     }
 
-    public function filterWithLicence(array $subscribers, Licence $licence, bool $stillRegistered): array
+    public function filterWith(array $subscribers, LabelInterface $entity, bool $stillRegistered): array
     {
         $subscribersFiltered = [];
         foreach ($subscribers as $subscriber) {
             $firstSubscription = $this->getFirstSubscription($subscriber);
             $isRegistered = $this->isRegisteredLastSeason($subscriber);
-            if ($firstSubscription->getLicence()->getAcronym() === $licence->getAcronym()) {
-                if (($stillRegistered && $isRegistered) || !$stillRegistered) {
-                    $subscribersFiltered[] = $subscriber;
-                }
-            }
-        }
-        return $subscribersFiltered;
-    }
-
-    public function filterWithCategory(array $subscribers, Category $category, bool $stillRegistered): array
-    {
-        $subscribersFiltered = [];
-        foreach ($subscribers as $subscriber) {
-            $firstSubscription = $this->getFirstSubscription($subscriber);
-            $isRegistered = $this->isRegisteredLastSeason($subscriber);
-            if (!is_null($firstSubscription->getCategory())) {
-                if ($firstSubscription->getCategory()->getLabel() === $category->getLabel()) {
-                    if (($stillRegistered && $isRegistered) || !$stillRegistered) {
-                        $subscribersFiltered[] = $subscriber;
-                    }
-                }
+            $label =
+                $entity instanceof Licence ?
+                    $firstSubscription->getLicence()->getAcronym() :
+                    (!is_null($firstSubscription->getCategory()) ? $firstSubscription->getCategory()->getLabel() : '');
+            if ($label === $entity->getLabel() && (($stillRegistered && $isRegistered) || !$stillRegistered)) {
+                $subscribersFiltered[] = $subscriber;
             }
         }
         return $subscribersFiltered;
