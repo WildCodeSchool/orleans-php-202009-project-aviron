@@ -55,9 +55,46 @@
                     <td>Total</td>
                     <td>H</td>
                     {% for season in seasons %}
-                      <td>{{ season.name }}</td>
+                        {% for total in totalPerSeason|filter(total => total.name == season.name and total.gender == 'H') %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
                     {% endfor %}
                 </tr>
+                {{ dump(totalPerSeason) }}
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td>F</td>
+                    {% for season in seasons %}
+                        {% for total in totalPerSeason|filter(total => total.name == season.name and total.gender == 'F') %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td>Total</td>
+                    {% for season in seasons %}
+                        {% for total in grandTotal|filter(total => total.name == season.name) %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+
+
                 </tbody>
             </table>
         </div>

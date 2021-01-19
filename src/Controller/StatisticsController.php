@@ -35,6 +35,7 @@ class StatisticsController extends AbstractController
         $licences = $licenceRepository->findAll();
         $seasons = $seasonRepository->findAll();
         $totalPerSeason = $subscriptionRepository->totalPerSeason();
+        $grandTotalPerSeason = $subscriptionRepository->grandTotalPerSeason();
 
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
@@ -51,7 +52,8 @@ class StatisticsController extends AbstractController
             'seasons' => $seasons,
             'categories' => $categories,
             'licences' => $licences,
-            'totalPerSeason' => $totalPerSeason
+            'totalPerSeason' => $totalPerSeason,
+            'grandTotal' => $grandTotalPerSeason
         ]);
     }
 }
