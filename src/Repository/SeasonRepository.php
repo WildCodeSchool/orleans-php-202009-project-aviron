@@ -32,7 +32,8 @@ class SeasonRepository extends ServiceEntityRepository
         if (!empty($filter->getFromSeason()) && !empty($filter->getToSeason())) {
             $queryBuilder = $queryBuilder->where('s.startingDate BETWEEN :fromSeason AND :toSeason')
                 ->setParameter('fromSeason', $filter->getFromSeason()->getStartingDate())
-                ->setParameter('toSeason', $filter->getToSeason()->getStartingDate());
+                ->setParameter('toSeason', $filter->getToSeason()->getStartingDate())
+                ->orderBy('s.name');
         }
         return $queryBuilder->getQuery()->getResult();
     }

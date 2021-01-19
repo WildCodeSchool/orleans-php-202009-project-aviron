@@ -110,8 +110,14 @@ class SubscriberController extends AbstractController
         $filters = new Filter();
         $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
         $toSeason = $seasonRepository->find($filtersArray['toSeason']);
+        $seasonStatus = $seasonRepository->find($filtersArray['seasonStatus']);
+        $seasonLicence = $seasonRepository->find($filtersArray['seasonLicence']);
+        $fromCategory = $categoryRepository->find($filtersArray['fromCategory']);
+        $toCategory = $categoryRepository->find($filtersArray['toCategory']);
+        $seasonCategory = $seasonRepository->find($filtersArray['seasonCategory']);
         $firstCategory = $categoryRepository->find($filtersArray['firstCategory']);
         $firstLicence = $licenceRepository->find($filtersArray['firstLicence']);
+
         $filters
             ->setFromSeason($fromSeason)
             ->setToSeason($toSeason)
@@ -119,12 +125,12 @@ class SubscriberController extends AbstractController
             ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
             ->setGender($filtersArray['gender'] ?? null)
             ->setStatus($filtersArray['status'][0] ?? null)
-            ->setSeasonStatus($filtersArray['seasonStatus'] ?? null)
+            ->setSeasonStatus($seasonStatus ?? null)
             ->setLicences($filtersArray['licences'][0] ?? null)
-            ->setSeasonLicence($filtersArray['seasonLicence'] ?? null)
-            ->setFromCategory($filtersArray['fromCategory'] ?? null)
-            ->setToCategory($filtersArray['toCategory'] ?? null)
-            ->setSeasonCategory($filtersArray['seasonCategory'] ?? null)
+            ->setSeasonLicence($seasonLicence ?? null)
+            ->setFromCategory($fromCategory ?? null)
+            ->setToCategory($toCategory ?? null)
+            ->setSeasonCategory($seasonCategory ?? null)
             ->setFirstCategory($firstCategory ?? null)
             ->setFirstLicence($firstLicence ?? null)
             ->setStillRegistered($filtersArray['stillRegistered']);
