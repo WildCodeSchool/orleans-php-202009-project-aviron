@@ -26,18 +26,21 @@ class SubscriptionRepository extends ServiceEntityRepository
      * @param string|null $licenceAcronym
      * @return Subscription
      */
-    public function findSubscribersByCategoryByLicenceBySeason(?string $categoryLabel, ?string $licenceAcronym)
-    {
+    public function findSubscriptionsBySeason(
+        ?string $categoryLabel,
+        ?string $licenceAcronym
+    ) {
         return $this->createQueryBuilder('subscription')
-            ->select('COUNT(subscription.subscriber) AS total, season.name')
+            ->select('COUNT(subscription.subscriber) AS total, season.name, subscriber.gender')
             ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
             ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
             ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'subscription.licence = licence.id')
+            ->leftJoin('App\Entity\Subscriber', 'subscriber', 'WITH', 'subscription.subscriber = subscriber.id')
             ->where('licence.acronym = :licenceAcronym')
             ->setParameter('licenceAcronym', $licenceAcronym)
             ->andWhere('category.label = :categoryLabel')
             ->setParameter('categoryLabel', $categoryLabel)
-            ->groupBy('season.name')
+            ->groupBy('season.name, subscriber.gender')
             ->orderBy('season.name')
             ->getQuery()
             ->getResult();
@@ -54,8 +57,9 @@ class SubscriptionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('sub')
             ->select('COUNT(sub.subscriber)')
             ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->innerJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
             ->andWhere('s.name = :seasonName')
-            ->andWhere('sub.status = :status')
+            ->andWhere('st.label = :status')
             ->setParameter('seasonName', $seasonName)
             ->setParameter('status', $status)
             ->getQuery()
@@ -190,9 +194,27 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // /**
-    //  * @return Subscription[] Returns an array of Subscription objects
-    //  */
+    /**
+     * @param string|null $seasonName
+     * @return array
+     */
+    public function getLastSubscriber(?string $seasonName)
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('sr.licenceNumber')
+            ->innerJoin('App\Entity\Season', 'sn', 'WITH', 'sn.id = sub.season')
+            ->innerJoin('App\Entity\Subscriber', 'sr', 'WITH', 'sr.id = sub.subscriber')
+            ->where('sn.name = :seasonName')
+            ->setParameter('seasonName', $seasonName)
+            ->orderBy('sr.licenceNumber', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * //  * @return Subscription[] Returns an array of Subscription objects
+     * //  */
     /*
     public function findByExampleField($value)
     {
