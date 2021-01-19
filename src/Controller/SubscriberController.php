@@ -98,7 +98,6 @@ class SubscriberController extends AbstractController
         $toCategory = $categoryRepository->find($filtersArray['toCategory']);
         $seasonCategory = $seasonRepository->find($filtersArray['seasonCategory']);
 
-
         $filters
             ->setFromSeason($fromSeason)
             ->setToSeason($toSeason)
@@ -107,11 +106,12 @@ class SubscriberController extends AbstractController
             ->setGender($filtersArray['gender'] ?? null)
             ->setStatus($filtersArray['status'][0] ?? null)
             ->setSeasonStatus($seasonStatus ?? null)
-            ->setLicences($filtersArray['licences'] ?? null)
+            ->setLicences($filtersArray['licences'][0] ?? null)
             ->setSeasonLicence($seasonLicence ?? null)
             ->setFromCategory($fromCategory ?? null)
             ->setToCategory($toCategory ?? null)
             ->setSeasonCategory($seasonCategory ?? null);
+
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
