@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Filter;
 use App\Entity\Season;
+use App\Entity\User;
 use App\Form\FilterType;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
+use App\Repository\StatusRepository;
 use App\Repository\SubscriberRepository;
-use App\Service\StatusCalculator;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,27 +24,60 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubscriberController extends AbstractController
 {
     private const PAGINATION_LIMIT = 12;
+
     /**
      * @Route("/{display}/filter/", name="filter")
      * @param string $display
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
-     * @param StatusCalculator $statusCalculator
+     * @param PaginatorInterface $paginator
+     * @param EntityManagerInterface $entityManager
+     * @param StatusRepository $statusRepository
+     * @param LicenceRepository $licenceRepository
+     * @param CategoryRepository $categoryRepository
      * @return Response A response instance
      */
     public function filter(
         string $display,
         Request $request,
         SubscriberRepository $subscriberRepository,
-        StatusCalculator $statusCalculator,
         SeasonRepository $seasonRepository,
-        PaginatorInterface $paginator
+        PaginatorInterface $paginator,
+        EntityManagerInterface $entityManager,
+        StatusRepository $statusRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
     ): Response {
         $filter = new Filter();
-        $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
-        $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
-        $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        $user = $this->getUser();
+        if (!is_null($user) && $user instanceof User && !is_null($user->getLastSearch())) {
+            $lastSearch = unserialize($user->getLastSearch()[0], ['allowed_classes' => true]);
+            $filter->setFromSeason($seasonRepository->find($lastSearch->getFromSeason()->getId()));
+            $filter->setToSeason($seasonRepository->find($lastSearch->getToSeason()->getId()));
+            $filter->setSeasonCategory($seasonRepository->find($lastSearch->getSeasonCategory()->getId()));
+            $filter->setSeasonLicence($seasonRepository->find($lastSearch->getSeasonLicence()->getId()));
+            $filter->setSeasonStatus($seasonRepository->find($lastSearch->getSeasonStatus()->getId()));
+            $filter->setFromAdherent($lastSearch->getFromAdherent());
+            $filter->setToAdherent($lastSearch->getToAdherent());
+            $filter->setGender($lastSearch->getGender());
+            $filter->setStatus(array_map(function ($status) use ($statusRepository) {
+                return $statusRepository->find($status->getId());
+            }, $lastSearch->getStatus()));
+            $filter->setLicences(array_map(function ($licence) use ($licenceRepository) {
+                return $licenceRepository->find($licence->getId());
+            }, $lastSearch->getLicences()));
+            if (!is_null($lastSearch->getFromCategory())) {
+                $filter->setFromCategory($categoryRepository->find($lastSearch->getFromCategory()->getId()));
+            }
+            if (!is_null($lastSearch->getToCategory())) {
+                $filter->setToCategory($categoryRepository->find($lastSearch->getToCategory()->getId()));
+            }
+        } else {
+            $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
+            $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
+            $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        }
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
@@ -55,8 +90,8 @@ class SubscriberController extends AbstractController
                 $request->query->getint('page', 1),
                 self::PAGINATION_LIMIT
             );
-
-            $statusCalculator->calculate($seasons, $subscribersData);
+            $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
+            $entityManager->flush();
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,

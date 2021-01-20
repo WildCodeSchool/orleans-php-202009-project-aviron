@@ -34,6 +34,11 @@ class User implements UserInterface
      */
     private string $password;
 
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private ?array $lastSearch = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -112,5 +117,17 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getLastSearch(): ?array
+    {
+        return $this->lastSearch;
+    }
+
+    public function setLastSearch(?array $lastSearch): self
+    {
+        $this->lastSearch = $lastSearch;
+
+        return $this;
     }
 }
