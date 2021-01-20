@@ -17,39 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StatisticsController extends AbstractController
 {
-    private const TOTAL_PALETTE_F = [
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        '#F74B75',
-        ];
-    private const TOTAL_PALETTE_H = [
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-        '#135B79',
-    ];
+    private const TOTAL_PALETTE_F = '#F74B75';
 
+    private const TOTAL_PALETTE_H = '#135B79';
 
     /**
      * @Route("/general", name="general")
