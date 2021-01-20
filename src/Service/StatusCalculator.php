@@ -7,6 +7,7 @@ use App\Entity\Status;
 use App\Entity\Subscriber;
 use App\Entity\Subscription;
 use App\Repository\StatusRepository;
+use App\Repository\SubscriberRepository;
 use App\Repository\SubscriptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,126 +33,103 @@ class StatusCalculator
      * @var SubscriptionRepository
      */
     private SubscriptionRepository $subscriptionRepository;
+    /**
+     * @var SubscriberRepository
+     */
+    private SubscriberRepository $subscriberRepository;
 
     /**
      * StatusCalculator constructor.
      * @param EntityManagerInterface $entityManager
      * @param StatusRepository $statusRepository
      * @param SubscriptionRepository $subscriptionRepository
+     * @param SubscriberRepository $subscriberRepository
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         StatusRepository $statusRepository,
-        SubscriptionRepository $subscriptionRepository
+        SubscriptionRepository $subscriptionRepository,
+        SubscriberRepository $subscriberRepository
     ) {
         $this->entityManager = $entityManager;
         $this->statusRepository = $statusRepository;
         $this->subscriptionRepository = $subscriptionRepository;
-    }
-
-    /**
-     * @param Subscription $subscription
-     * @param Season|null $previousSeason
-     * @param int $previousSeasonLastLicence
-     * @return Status|null
-     */
-    public function calculateNew(
-        Subscription $subscription,
-        ?Season $previousSeason,
-        int $previousSeasonLastLicence
-    ): ?Status {
-          $status = $subscription->getStatus();
-        //si $previousSeason est vide, cela signifie qu'on est sur la première saison
-        if (
-            !$previousSeason instanceof Season
-            || $subscription->getSubscriber()->getLicenceNumber() > $previousSeasonLastLicence
-        ) {
-            $status = $this->statusRepository->findOneBy(['label' => 'N']);
-        } elseif (
-            $subscription->getSubscriber()->getLicenceNumber() < $previousSeasonLastLicence
-            && $subscription->getStatus() == null
-        ) {
-            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'T']));
-        }
-
-        return $status;
+        $this->subscriberRepository = $subscriberRepository;
     }
 
     /**
      * @param array<Season> $seasons
-     * @param array<Subscriber> $subscribers
      */
-    public function calculate(array $seasons, array $subscribers): void
+    public function calculate(array $seasons): void
     {
-        asort($seasons);
-
         for ($i = 0; $i < count($seasons); $i++) {
+            // Si on est sur la première saison importée, on passe toutes les inscriptions en nouveau (à valider avec
+            // Patrick, sinon ce sera null car on ne peut pas calculer un statut sans données de la saison précédente)
             if ($i === 0) {
-                $previousSeason = null;
-                $previousSeasonLastLicence = 0;
+                $subscriptions = $seasons[$i]->getSubscriptions();
+                foreach ($subscriptions as $subscription) {
+                    $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'N']));
+                }
             } else {
+                // Si ce n'est pas la première saison, on stocke la saison précédente et son dernier numéro de licence
+                // dans des variables
                 $previousSeason = $seasons[$i - 1];
                 $previousSeasonLastLicence = $this
                     ->subscriptionRepository
                     ->getLastSubscriber($previousSeason->getName())[0]['licenceNumber'];
-            }
-            foreach ($seasons[$i]->getSubscriptions() as $subscriptionSeason) {
-                $subscriptionSeason->setStatus($this->calculateNew(
-                    $subscriptionSeason,
-                    $previousSeason,
-                    $previousSeasonLastLicence
-                ));
-            }
 
-            foreach ($subscribers as $subscriber) {
-                $subscriptions = $subscriber->getSubscriptions();
-                foreach ($subscriptions as $subscription) {
-                    if ($subscription->getSeason() !== $seasons[0]) {
-                        if ($this->hasPreviousYear($subscription, $subscriptions)) {
-                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'R']));
-                        } elseif ($this->hasPreviousSeason($subscription, $subscriptions)) {
+                // On récupère toutes les inscriptions de la saison en cours de calcul
+                $subscriptionsSeason = $seasons[$i]->getSubscriptions();
+
+                // On boucle sur chaque inscription pour calculer le statut en fonction des saisons précédentes :
+
+                // CAS 1 : le n° de licence est supérieur au dernier numéro de licence de la saison précedente : on en
+                // déduit que c'est un NOUVEAU
+
+                // SINON CAS 2 : On cherche le rameur dans les inscriptions de la saison précédente,
+                // si on le trouve, c'est un RENOUVELLEMENT
+
+                // SINON CAS 3 : On cherche une inscription correspondant à une saison plus ancienne
+
+                // SINON DERNIER CAS : c'est un TRANSFERT
+
+                foreach ($subscriptionsSeason as $subscription) {
+                    $subscriber = $subscription->getSubscriber();
+
+                    if ($subscriber->getLicenceNumber() > $previousSeasonLastLicence) {
+                        $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'N']));
+                    } elseif (
+                        $this->subscriptionRepository->findOneBy([
+                        'subscriber' => $subscriber,
+                        'season' => $previousSeason
+                        ])
+                    ) {
+                        $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'R']));
+                    } elseif ($this->hasPreviousSubscription($subscriber, $seasons, $i)) {
                             $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'P']));
-                        } else {
-                            $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'N']));
-                        }
+                    } else {
+                        $subscription->setStatus($this->statusRepository->findOneBy(['label' => 'T']));
                     }
                 }
             }
+            $this->entityManager->flush();
         }
-        $this->entityManager->flush();
     }
 
-    /*
-    * Vérifie si le rameur a été inscrit dans ce club à la saison n-1
-    */
-    private function hasPreviousYear(Subscription $presentSubscription, Collection $subscriptions): bool
+    private function hasPreviousSubscription(Subscriber $subscriber, array $seasons, int $seasonIndex): bool
     {
-        $hasNextYear = false;
-        foreach ($subscriptions as $subscription) {
+        $previousSubscription = false;
+        for ($j = 0; $j < $seasonIndex - 1; $j++) {
             if (
-                $presentSubscription->getSeason()->getStartingDate()->format('Y')
-                === $subscription->getSeason()->getEndingDate()->format('Y')
+                $this->subscriptionRepository->findOneBy([
+                'subscriber' => $subscriber,
+                'season' => $seasons[$j]
+                ])
             ) {
-                $hasNextYear = true;
+                $previousSubscription = true;
             }
         }
-        return $hasNextYear;
-    }
 
-    /*
-     * Vérifie si le rameur a été inscrit dans ce club lors d'une précédente saison, mais pas la saison n-1
-     */
-    private function hasPreviousSeason(Subscription $presentSubscription, Collection $subscriptions): bool
-    {
-        $hasPreviousSeason = false;
-        foreach ($subscriptions as $subscription) {
-            if (
-                (int) ($presentSubscription->getSeason()->getStartingDate()->format('Y'))
-                >= $subscription->getSeason()->getEndingDate()->format('Y') + 1
-            ) {
-                $hasPreviousSeason = true;
-            }
-        }
-        return $hasPreviousSeason;
+        return $previousSubscription;
     }
 }
