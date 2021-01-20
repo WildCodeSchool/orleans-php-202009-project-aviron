@@ -8,8 +8,9 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
-class SeasonFixtures extends Fixture implements ContainerAwareInterface, DependentFixtureInterface
+class SeasonFixtures extends Fixture implements DependentFixtureInterface
 {
     private const SEASONS = [
         '2010-2011' => '/src/DataFixtures/Data/FIXTURES_saison_2010-2011.csv',
@@ -18,25 +19,18 @@ class SeasonFixtures extends Fixture implements ContainerAwareInterface, Depende
         '2013-2014' => '/src/DataFixtures/Data/FIXTURES_saison_2013-2014.csv',
     ];
 
-
-    private ContainerInterface $container;
-
     private CsvImport $csvImport;
 
-    public function __construct(CsvImport $csvImport)
+    private DecoderInterface $csvEncoder;
+
+    public function __construct(CsvImport $csvImport, DecoderInterface $csvEncoder)
     {
         $this->csvImport = $csvImport;
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
+        $this->csvEncoder = $csvEncoder;
     }
 
     public function load(ObjectManager $manager)
     {
-        $serializer = $this->container->get('serializer');
-
         foreach (self::SEASONS as $seasonName => $data) {
             $newImport = realpath("./") . $data;
 
@@ -46,7 +40,10 @@ class SeasonFixtures extends Fixture implements ContainerAwareInterface, Depende
                 (string)file_get_contents($newImport)
             );
 
-            $csvData = $serializer->decode((string)$csvString, 'csv');
+            $csvData = $this->csvEncoder->decode((string) $csvString, 'csv', [
+                'csv_delimiter' => ';',
+            ]);
+
             $season = $this->csvImport->createSeason($seasonName);
 
             $this->csvImport->createSubscriptions($csvData, $season);
