@@ -35,7 +35,22 @@ h4 {
     box-shadow: 5px 5px 15px -10px $dark-shadow;
 }
 
+.filters {
+    background-color: lighten($dark, 82%);
+}
+
 .custom-file-input ~ .custom-file-label:lang(fr)::after {
     content: "Parcourir...";
 }
 
+.category-td {
+    background-color: lighten($fourth, 4%);
+    border-bottom: 2px solid;
+    border-color: lighten($dark, 65%);
+}
+
+.licence-td {
+    background-color: $light;
+    border-bottom: 1px solid;
+    border-color: lighten($dark, 68%);
+}
