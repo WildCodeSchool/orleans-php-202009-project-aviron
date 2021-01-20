@@ -17,22 +17,40 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StatisticsController extends AbstractController
 {
-    private const TOTAL_PALETTE = [
+    private const TOTAL_PALETTE_F = [
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
         '#F74B75',
-        '#135B79',
+        '#F74B75',
+        '#F74B75',
+        '#F74B75',
+        '#F74B75',
+        '#F74B75',
+        '#F74B75',
+        '#F74B75',
         ];
+    private const TOTAL_PALETTE_H = [
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+        '#135B79',
+    ];
+
+
     /**
      * @Route("/general", name="general")
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -66,13 +84,17 @@ class StatisticsController extends AbstractController
                     );
             }
         }
-        dump($totalPerSeason);
-        $queryGrandTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
+        $queryTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
 
         $totalBuilder
-            ->query($queryGrandTotalPerSeason)
-            ->addDataSet('total', 'Subscribers', [
-                "backgroundColor" => self::TOTAL_PALETTE
+            ->query($queryTotalPerSeason)
+            ->addDataSet('totalFemale', 'Femmes', [
+                "backgroundColor" => self::TOTAL_PALETTE_F,
+                "stack" => 'Femmes'
+            ])
+            ->addDataSet('totalMale', 'Hommes', [
+                "backgroundColor" => self::TOTAL_PALETTE_H,
+                "stack" => 'Hommes'
             ])
             ->labels('seasonName');
         $totalChart = $totalBuilder->buildChart('total-chart', Chart::BAR);
@@ -80,25 +102,12 @@ class StatisticsController extends AbstractController
             'scales' => ([
                 'xAxes' => ([
                     'stacked' => 'true'
+                ]),
+                'yAxes' => ([
+                    'stacked' => 'true'
                 ])
             ])
         ]);
-
-
-//        $queryGrandTotalPerSeason = $subscriptionRepository->getQueryForGrandTotalPerSeason();
-//
-//        $totalBuilder
-//            ->query($queryGrandTotalPerSeason)
-//            ->addDataSet('total', 'Subscribers', [
-//                "backgroundColor" => self::TOTAL_PALETTE
-//            ])
-//            ->labels('seasonName');
-//        $totalChart = $totalBuilder->buildChart('total-chart', Chart::BAR);
-//        $totalChart->pushOptions([
-//            'legend' => ([
-//                'position' => 'bottom',
-//            ]),
-//        ]);
 
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscriptions,
