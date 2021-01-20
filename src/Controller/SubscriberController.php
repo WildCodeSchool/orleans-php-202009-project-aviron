@@ -74,8 +74,6 @@ class SubscriberController extends AbstractController
                 self::PAGINATION_LIMIT
             );
 
-            $statusCalculator->calculate($seasons, $subscribersData);
-
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
                 'subscribers' => $subscribers,
