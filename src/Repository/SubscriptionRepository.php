@@ -117,6 +117,19 @@ class SubscriptionRepository extends ServiceEntityRepository
                     ORDER BY c.id ASC';
     }
 
+    public function subscribersByYearByStatus(?string $season): array
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('st.label as label, COUNT(sub.status) as subscribersCount')
+            ->leftJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
+            ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
+            ->where('s.name = :season')
+            ->setParameter('season', $season)
+            ->groupBy('sub.status')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param string|null $licenceAcronym
      * @param string|null $seasonName

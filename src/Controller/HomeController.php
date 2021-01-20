@@ -6,6 +6,7 @@ use App\Entity\Subscription;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
+use App\Repository\StatusRepository;
 use App\Repository\SubscriptionRepository;
 use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
@@ -53,6 +54,7 @@ class HomeController extends AbstractController
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
+     * @param StatusRepository $statusRepository
      * @param Builder $categoriesBuilder
      * @param Builder $licencesBuilder
      * @return Response
@@ -65,6 +67,7 @@ class HomeController extends AbstractController
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository,
+        StatusRepository $statusRepository,
         Builder $categoriesBuilder,
         Builder $licencesBuilder
     ): Response {
@@ -103,6 +106,12 @@ class HomeController extends AbstractController
         $countByCategories = $countSubscribers->countSubscribersWithLabel(
             $subscribersCategories,
             $categoryRepository
+        );
+
+        $subscribersStatus = $subscriptionRepository->subscribersByYearByStatus($actualSeason);
+        $countByStatus = $countSubscribers->countSubscribersWithLabel(
+            $subscribersStatus,
+            $statusRepository
         );
 
         $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
@@ -152,6 +161,7 @@ class HomeController extends AbstractController
             'currentSeason' => $actualSeason,
             'subscribersByLicences' => $countByLicences,
             'subscribersByCategories' => $countByCategories,
+            'subscribersByStatus' => $countByStatus,
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
             'newSubscribers' => $newSubscribers,
