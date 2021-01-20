@@ -47,14 +47,27 @@ class ToolsController extends AbstractController
             $subscriberTotal = $csvImport->createSubscriptions($csvData, $season);
             $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
 
-            $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
-            $statusCalculator->calculate($seasons);
-
-            return $this->redirectToRoute('tools_import');
+            return $this->redirectToRoute('tools_status_counter');
         }
 
         return $this->render('tools/import.html.twig', [
         'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/import/status", name="status_counter", methods={"GET"})
+     * @param SeasonRepository $seasonRepository
+     * @param StatusCalculator $statusCalculator
+     * @return Response
+     */
+    public function statusCalculation(
+        SeasonRepository $seasonRepository,
+        StatusCalculator $statusCalculator
+    ): Response {
+        $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
+        $statusCalculator->calculate($seasons);
+
+        return $this->redirectToRoute('tools_import');
     }
 }

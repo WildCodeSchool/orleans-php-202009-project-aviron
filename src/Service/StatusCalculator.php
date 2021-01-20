@@ -112,7 +112,6 @@ class StatusCalculator
                     }
                 }
             }
-
             $this->entityManager->flush();
         }
     }
