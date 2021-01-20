@@ -30,6 +30,15 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+    public function getQueryForGrandTotalPerSeason(): string
+    {
+        return 'SELECT COUNT(subscription.subscriber) as total, season.name as seasonName
+        FROM App\Entity\Subscription subscription 
+        JOIN App\Entity\Season season 
+        WITH season.id=subscription.season 
+        GROUP BY seasonName
+        ORDER BY seasonName';
+    }
     public function totalPerSeason(): array
     {
         return $this->createQueryBuilder('subscription')
@@ -40,6 +49,17 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->orderBy('season.name')
             ->getQuery()
             ->getResult();
+    }
+    public function getQueryForTotalPerSeason(): string
+    {
+        return 'SELECT COUNT(subscription.subscriber) as total, season.name as seasonName, subscriber.gender as gender
+        FROM App\Entity\Subscription subscription 
+        JOIN App\Entity\Season season 
+        WITH season.id=subscription.season 
+        JOIN App\Entity\Subscriber subscriber 
+        WITH subscriber.id=subscription.subscriber 
+        GROUP BY seasonName, gender
+        ORDER BY season.name';
     }
 
     /**

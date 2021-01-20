@@ -6,6 +6,8 @@ use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
+use Mukadi\Chart\Chart;
+use Mukadi\ChartJSBundle\Chart\Builder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,6 +17,22 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class StatisticsController extends AbstractController
 {
+    private const TOTAL_PALETTE = [
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        '#F74B75',
+        '#135B79',
+        ];
     /**
      * @Route("/general", name="general")
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -22,13 +40,15 @@ class StatisticsController extends AbstractController
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
+     * @param Builder $totalBuilder
      * @return Response
      */
     public function generalStatistics(
         SeasonRepository $seasonRepository,
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        Builder $totalBuilder
     ): Response {
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
@@ -46,6 +66,39 @@ class StatisticsController extends AbstractController
                     );
             }
         }
+        dump($totalPerSeason);
+        $queryGrandTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
+
+        $totalBuilder
+            ->query($queryGrandTotalPerSeason)
+            ->addDataSet('total', 'Subscribers', [
+                "backgroundColor" => self::TOTAL_PALETTE
+            ])
+            ->labels('seasonName');
+        $totalChart = $totalBuilder->buildChart('total-chart', Chart::BAR);
+        $totalChart->pushOptions([
+            'scales' => ([
+                'xAxes' => ([
+                    'stacked' => 'true'
+                ])
+            ])
+        ]);
+
+
+//        $queryGrandTotalPerSeason = $subscriptionRepository->getQueryForGrandTotalPerSeason();
+//
+//        $totalBuilder
+//            ->query($queryGrandTotalPerSeason)
+//            ->addDataSet('total', 'Subscribers', [
+//                "backgroundColor" => self::TOTAL_PALETTE
+//            ])
+//            ->labels('seasonName');
+//        $totalChart = $totalBuilder->buildChart('total-chart', Chart::BAR);
+//        $totalChart->pushOptions([
+//            'legend' => ([
+//                'position' => 'bottom',
+//            ]),
+//        ]);
 
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscriptions,
@@ -53,7 +106,8 @@ class StatisticsController extends AbstractController
             'categories' => $categories,
             'licences' => $licences,
             'totalPerSeason' => $totalPerSeason,
-            'grandTotal' => $grandTotalPerSeason
+            'grandTotal' => $grandTotalPerSeason,
+            'totalChart' => $totalChart
         ]);
     }
 }
