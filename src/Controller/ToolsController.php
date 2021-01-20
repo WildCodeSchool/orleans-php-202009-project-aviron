@@ -24,7 +24,6 @@ class ToolsController extends AbstractController
      * @param Request $request
      * @param CsvImport $csvImport
      * @param SeasonRepository $seasonRepository
-     * @param SubscriberRepository $subscriberRepository
      * @param StatusCalculator $statusCalculator
      * @return Response
      */
@@ -32,7 +31,6 @@ class ToolsController extends AbstractController
         Request $request,
         CsvImport $csvImport,
         SeasonRepository $seasonRepository,
-        SubscriberRepository $subscriberRepository,
         StatusCalculator $statusCalculator
     ): Response {
         $seasonImport = new Import();
@@ -47,27 +45,14 @@ class ToolsController extends AbstractController
             $subscriberTotal = $csvImport->createSubscriptions($csvData, $season);
             $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
 
-            return $this->redirectToRoute('tools_status_counter');
+            $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
+            $statusCalculator->calculate($seasons);
+
+            return $this->redirectToRoute('tools_import');
         }
 
         return $this->render('tools/import.html.twig', [
         'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * @Route("/import/status", name="status_counter", methods={"GET"})
-     * @param SeasonRepository $seasonRepository
-     * @param StatusCalculator $statusCalculator
-     * @return Response
-     */
-    public function statusCalculation(
-        SeasonRepository $seasonRepository,
-        StatusCalculator $statusCalculator
-    ): Response {
-        $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
-        $statusCalculator->calculate($seasons);
-
-        return $this->redirectToRoute('tools_import');
     }
 }
