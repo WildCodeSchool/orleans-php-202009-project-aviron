@@ -3,13 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
+use App\Entity\User;
 use App\Form\FilterType;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
+use App\Repository\StatusRepository;
 use App\Repository\SubscriberRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use App\Service\FirstSubscription;
-use App\Service\StatusCalculator;
 use App\Service\SubscriptionDuration;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,13 +27,17 @@ class SubscriberController extends AbstractController
     private const PAGINATION_LIMIT = 12;
 
     /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @Route("/{display}/filter/", name="filter")
      * @param string $display
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
-     * @param StatusCalculator $statusCalculator
      * @param SeasonRepository $seasonRepository
      * @param PaginatorInterface $paginator
+     * @param EntityManagerInterface $entityManager
+     * @param StatusRepository $statusRepository
+     * @param LicenceRepository $licenceRepository
+     * @param CategoryRepository $categoryRepository
      * @param FirstSubscription $firstSubscription
      * @return Response A response instance
      */
@@ -39,16 +45,31 @@ class SubscriberController extends AbstractController
         string $display,
         Request $request,
         SubscriberRepository $subscriberRepository,
-        StatusCalculator $statusCalculator,
         SeasonRepository $seasonRepository,
         PaginatorInterface $paginator,
+        EntityManagerInterface $entityManager,
+        StatusRepository $statusRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository,
         FirstSubscription $firstSubscription,
         SubscriptionDuration $subscriptionDuration
     ): Response {
         $filter = new Filter();
-        $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
-        $fromSeason = $seasonRepository->findBy([], ['name' => 'DESC'], $limitSeasons);
-        $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        $user = $this->getUser();
+        if (!is_null($user) && $user instanceof User && !is_null($user->getLastSearch())) {
+            $lastSearch = unserialize($user->getLastSearch()[0], ['allowed_classes' => true]);
+            $filter->hydrate(
+                $lastSearch,
+                $seasonRepository,
+                $statusRepository,
+                $licenceRepository,
+                $categoryRepository
+            );
+        } else {
+            $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
+            $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
+            $filter->setFromSeason($fromSeason[$limitSeasons - 1] ?? $seasonRepository->findOneBy([]));
+        }
         $form = $this->createForm(FilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
@@ -83,6 +104,9 @@ class SubscriberController extends AbstractController
                 $request->query->getint('page', 1),
                 self::PAGINATION_LIMIT
             );
+
+            $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
+            $entityManager->flush();
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
@@ -141,7 +165,7 @@ class SubscriberController extends AbstractController
             ->setSeasonCategory($seasonCategory ?? null)
             ->setFirstCategory($firstCategory ?? null)
             ->setFirstLicence($firstLicence ?? null)
-            ->setStillRegistered($filtersArray['stillRegistered'])
+            ->setStillRegistered($filtersArray['stillRegistered'] ?? false)
             ->setDuration((int)$filtersArray['duration'] ?? null)
             ->setOrMore($filtersArray['orMore'] ?? false)
             ->setStillAdherent($filtersArray['stillAdherent'] ?? false);
