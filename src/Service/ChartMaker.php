@@ -49,9 +49,10 @@ class ChartMaker
     {
         $currentSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($currentSeason);
         $previousSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($previousSeason);
+
+        // Mise en forme des données récupérées pour les passer au graphique
         $currentSeasonData = [];
         $previousSeasonData = [];
-
         for ($i = 0; $i < 12; $i++) {
             if ($currentSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]) {
                 $currentSeasonData[] = $currentSeasonMonthlyCount[$i]['count'];
