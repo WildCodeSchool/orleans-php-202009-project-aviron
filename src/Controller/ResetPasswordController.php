@@ -117,7 +117,8 @@ class ResetPasswordController extends AbstractController
 
             // Encode the plain password, and set it.
             $encodedPassword = $passwordEncoder->encodePassword(
-                $user,
+            /** var User $user */
+                $user = $this->getUser(),
                 $form->get('plainPassword')->getData()
             );
 
@@ -166,7 +167,7 @@ class ResetPasswordController extends AbstractController
 
         $email = (new TemplatedEmail())
             ->from(new Address('aviron@aviron.com', 'Stats Aviron'))
-            ->to($user->getEmail())
+            ->to((string) $user->getEmail())
             ->subject('Stats Aviron - Réinitialiser votre de mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
