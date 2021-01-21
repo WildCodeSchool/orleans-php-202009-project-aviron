@@ -155,7 +155,7 @@ class SubscriberController extends AbstractController
             ->setSeasonCategory($seasonCategory ?? null)
             ->setFirstCategory($firstCategory ?? null)
             ->setFirstLicence($firstLicence ?? null)
-            ->setStillRegistered($filtersArray['stillRegistered']);
+            ->setStillRegistered($filtersArray['stillRegistered'] ?? false);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
