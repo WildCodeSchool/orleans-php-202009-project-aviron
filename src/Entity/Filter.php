@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use App\Repository\CategoryRepository;
+use App\Repository\LicenceRepository;
+use App\Repository\SeasonRepository;
+use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Filter
@@ -51,6 +55,40 @@ class Filter
      * @Assert\NotBlank()
      */
     private Season $seasonCategory;
+
+    public function hydrate(
+        Filter $filter,
+        SeasonRepository $seasonRepository,
+        StatusRepository $statusRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
+    ): self {
+        $this->setFromSeason($seasonRepository->find($filter->getFromSeason()));
+        $this->setToSeason($seasonRepository->find($filter->getToSeason()));
+        $this->setSeasonCategory($seasonRepository->find($filter->getSeasonCategory()->getId()));
+        $this->setSeasonLicence($seasonRepository->find($filter->getSeasonLicence()->getId()));
+        $this->setSeasonStatus($seasonRepository->find($filter->getSeasonStatus()->getId()));
+        $this->setFromAdherent($filter->getFromAdherent());
+        $this->setToAdherent($filter->getToAdherent());
+        $this->setGender($filter->getGender());
+        if (!is_null($filter->getStatus())) {
+            $this->setStatus(array_map(function ($status) use ($statusRepository) {
+                return $statusRepository->find($status->getId());
+            }, $filter->getStatus()));
+        }
+        if (!is_null($filter->getLicences())) {
+            $this->setLicences(array_map(function ($licence) use ($licenceRepository) {
+                return $licenceRepository->find($licence->getId());
+            }, $filter->getLicences()));
+        }
+        if (!is_null($filter->getFromCategory())) {
+            $this->setFromCategory($categoryRepository->find($filter->getFromCategory()->getId()));
+        }
+        if (!is_null($filter->getToCategory())) {
+            $this->setToCategory($categoryRepository->find($filter->getToCategory()->getId()));
+        }
+        return $this;
+    }
 
     /**
      * @return Season

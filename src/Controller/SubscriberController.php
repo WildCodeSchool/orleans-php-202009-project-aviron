@@ -53,26 +53,13 @@ class SubscriberController extends AbstractController
         $user = $this->getUser();
         if (!is_null($user) && $user instanceof User && !is_null($user->getLastSearch())) {
             $lastSearch = unserialize($user->getLastSearch()[0], ['allowed_classes' => true]);
-            $filter->setFromSeason($seasonRepository->find($lastSearch->getFromSeason()->getId()));
-            $filter->setToSeason($seasonRepository->find($lastSearch->getToSeason()->getId()));
-            $filter->setSeasonCategory($seasonRepository->find($lastSearch->getSeasonCategory()->getId()));
-            $filter->setSeasonLicence($seasonRepository->find($lastSearch->getSeasonLicence()->getId()));
-            $filter->setSeasonStatus($seasonRepository->find($lastSearch->getSeasonStatus()->getId()));
-            $filter->setFromAdherent($lastSearch->getFromAdherent());
-            $filter->setToAdherent($lastSearch->getToAdherent());
-            $filter->setGender($lastSearch->getGender());
-            $filter->setStatus(array_map(function ($status) use ($statusRepository) {
-                return $statusRepository->find($status->getId());
-            }, $lastSearch->getStatus()));
-            $filter->setLicences(array_map(function ($licence) use ($licenceRepository) {
-                return $licenceRepository->find($licence->getId());
-            }, $lastSearch->getLicences()));
-            if (!is_null($lastSearch->getFromCategory())) {
-                $filter->setFromCategory($categoryRepository->find($lastSearch->getFromCategory()->getId()));
-            }
-            if (!is_null($lastSearch->getToCategory())) {
-                $filter->setToCategory($categoryRepository->find($lastSearch->getToCategory()->getId()));
-            }
+            $filter->hydrate(
+                $lastSearch,
+                $seasonRepository,
+                $statusRepository,
+                $licenceRepository,
+                $categoryRepository
+            );
         } else {
             $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
             $fromSeason = $seasonRepository->findBy([], ['id' => 'DESC'], $limitSeasons);
