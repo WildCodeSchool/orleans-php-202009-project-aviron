@@ -26,6 +26,8 @@ class ChartMaker
         'Aout'
     ];
 
+    private const MONTH_SORT = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8];
+
     /**
      * @var SubscriptionRepository
      */
@@ -45,8 +47,24 @@ class ChartMaker
 
     public function getMonthlySubscriptionsChart(?string $currentSeason, ?string $previousSeason): Chart
     {
-        $currentSeasonSubscribers = '';
-        $previousSeasonSubscribers = '';
+        $currentSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($currentSeason);
+        $previousSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($previousSeason);
+        $currentSeasonData = [];
+        $previousSeasonData = [];
+
+        for ($i = 0; $i < 12; $i++) {
+            if ($currentSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]) {
+                $currentSeasonData[] = $currentSeasonMonthlyCount[$i]['count'];
+            } else {
+                $currentSeasonData[] = 0;
+            }
+
+            if ($previousSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]) {
+                $previousSeasonData[] = $previousSeasonMonthlyCount[$i]['count'];
+            } else {
+                $previousSeasonData[] = 0;
+            }
+        }
 
         $monthlySubscriptionsChart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
         $monthlySubscriptionsChart->setData([
@@ -55,12 +73,12 @@ class ChartMaker
                 [
                     'label' => 'Saison en cours',
                     'backgroundColor' => 'rgb(255, 99, 132)',
-                    'data' => $currentSeasonSubscribers,
+                    'data' => $currentSeasonData,
                 ],
                 [
                     'label' => 'Saison précédente',
                     'backgroundColor' => 'rgb(12, 99, 132)',
-                    'data' => $previousSeasonSubscribers,
+                    'data' => $previousSeasonData,
                 ],
             ],
         ]);

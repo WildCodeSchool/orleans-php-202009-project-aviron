@@ -230,6 +230,18 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getMonthlySubscriptionsByYear(?string $season): array
+    {
+        return $this->createQueryBuilder('sub')
+            ->select('month(sub.subscriptionDate) as month, count(sub.subscriber) as count')
+            ->innerJoin('App\Entity\Season', 'sn', 'WITH', 'sn.id = sub.season')
+            ->where('sn.name = :seasonName')
+            ->setParameter('seasonName', $season)
+            ->groupBy('month')
+            ->getQuery()
+            ->getResult();
+    }
+
 // /**
     //  * @return Subscription[] Returns an array of Subscription objects
     //  */
