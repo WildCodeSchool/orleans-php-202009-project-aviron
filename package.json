@@ -1,19 +1,14 @@
 {
     "devDependencies": {
-        "@symfony/webpack-encore": "^0.31.0",
-        "bootstrap": "^4.5.3",
+        "@mukadi/chartjs-builder": "file:vendor/mukadi/chartjs-builder/assets",
+        "@symfony/stimulus-bridge": "^1.1.0",
+        "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets",
+        "@symfony/webpack-encore": "^0.32.0",
         "core-js": "^3.0.0",
-        "eslint": "^7.12.1",
-        "eslint-config-airbnb": "^18.2.0",
-        "eslint-plugin-import": "^2.22.1",
-        "eslint-plugin-jsx-a11y": "^6.4.1",
-        "eslint-plugin-react": "^7.21.5",
         "jquery": "^3.5.1",
-        "node-sass": "^4.0.0",
-        "popper.js": "^1.16.1",
         "regenerator-runtime": "^0.13.2",
-        "sass-lint": "^1.13.1",
         "sass-loader": "^9.0.1",
+        "stimulus": "^2.0.0",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -24,5 +19,9 @@
         "watch": "encore dev --watch",
         "build": "encore production --progress"
     },
-    "dependencies": {}
+    "dependencies": {
+        "bootstrap": "^4.6.0",
+        "node-sass": "4.14.1",
+        "popper.js": "^1.16.1"
+    }
 }
