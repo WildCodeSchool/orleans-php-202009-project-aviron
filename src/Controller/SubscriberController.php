@@ -28,6 +28,7 @@ class SubscriberController extends AbstractController
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @Route("/{display}/filter/", name="filter")
      * @param string $display
      * @param Request $request
