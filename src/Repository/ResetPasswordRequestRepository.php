@@ -31,8 +31,7 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
         string $hashedToken
     ): ResetPasswordRequestInterface {
         return new ResetPasswordRequest(
-        /** var User $user */
-            $user = $this->getUser(),
+            $user,
             $expiresAt,
             $selector,
             $hashedToken

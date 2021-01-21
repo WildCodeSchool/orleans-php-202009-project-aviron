@@ -5,6 +5,7 @@ includes:
 parameters:
     excludes_analyse:
         - src/DataFixtures
+        - src/Controller/ResetPasswordController.php
     ignoreErrors:
         - '#Call to an undefined method [a-zA-Z0-9\\_]+::findOneBy[A-Z][a-zA-Z]*\(\)#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+::findBy[A-Z][a-zA-Z]*\(\)#'
