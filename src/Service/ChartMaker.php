@@ -28,6 +28,9 @@ class ChartMaker
 
     private const MONTH_SORT = [9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8];
 
+    private const CURRENT_YEAR_COLOR = '#05445e';
+    private const PREVIOUS_YEAR_COLOR = '#82B2C2';
+
     /**
      * @var SubscriptionRepository
      */
@@ -73,12 +76,12 @@ class ChartMaker
             'datasets' => [
                 [
                     'label' => 'Saison en cours',
-                    'backgroundColor' => 'rgb(255, 99, 132)',
+                    'backgroundColor' => self::CURRENT_YEAR_COLOR,
                     'data' => $currentSeasonData,
                 ],
                 [
                     'label' => 'Saison précédente',
-                    'backgroundColor' => 'rgb(12, 99, 132)',
+                    'backgroundColor' => self::PREVIOUS_YEAR_COLOR,
                     'data' => $previousSeasonData,
                 ],
             ],
