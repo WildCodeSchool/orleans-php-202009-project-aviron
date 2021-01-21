@@ -20,6 +20,41 @@ class SubscriptionRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Subscription::class);
     }
+    public function grandTotalPerSeason(): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, season.name')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->groupBy('season.name')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function totalPerSeason(): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, season.name, subscriber.gender')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Subscriber', 'subscriber', 'WITH', 'subscription.subscriber = subscriber.id')
+            ->groupBy('season.name, subscriber.gender')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getQueryForTotalPerSeason(): string
+    {
+        return "SELECT case when subscriber.gender= 'H' then count(subscription.subscriber) else 0 end AS totalMale,
+        case when subscriber.gender= 'F' then count(subscription.subscriber) else 0 end AS totalFemale,
+        season.name AS seasonName
+        FROM App\Entity\Subscription subscription
+        JOIN App\Entity\Season season
+        WITH season.id=subscription.season
+        JOIN App\Entity\Subscriber subscriber
+        WITH subscriber.id=subscription.subscriber
+        GROUP BY seasonName, subscriber.gender";
+    }
 
     /**
      * @param string|null $categoryLabel
