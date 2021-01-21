@@ -4,7 +4,12 @@
     <h1 class="text-center my-4">
         Récapitulatif des inscriptions
     </h1>
-    <div class="row">
+    <div class="row pb-4">
+        <div class="col">
+            {{ mukadi_chart(totalChart) }}
+        </div>
+    </div>
+    <div class="row pt-4">
         <div class="col-12">
             <table class="table table-hover table-striped">
                 <thead class="thead-dark">
@@ -22,7 +27,7 @@
                     {%  for licenceAcronym, licenceData in licences %}
                         <tr>
                             {% if loop.index == 1 %}
-                            <td class="text-center align-middle category-td" rowspan="12">{{ categoryLabel }}</td>
+                            <td class="text-center align-middle category-td h5" rowspan="12">{{ categoryLabel }}</td>
                             {% endif %}
                             <td class="text-center align-middle licence-td" rowspan="2">{{ licenceAcronym}} </td>
                             <td class="text-center">F</td>
@@ -50,9 +55,54 @@
                         </tr>
                     {% endfor %}
                 {% endfor %}
+                <tr>
+                    <td class="text-center align-middle category-td h5" rowspan="3" colspan="2">Grand total par saison</td>
+                    <td class="text-center">H</td>
+                    {% for season in seasons %}
+                        {% for total in totalPerSeason|filter(total => total.name == season.name and total.gender == 'H') %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="text-center">F</td>
+                    {% for season in seasons %}
+                        {% for total in totalPerSeason|filter(total => total.name == season.name and total.gender == 'F') %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="text-center">Total</td>
+                    {% for season in seasons %}
+                        {% for total in grandTotal|filter(total => total.name == season.name) %}
+                            <td class="text-center">
+                                {{ total.total }}
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endfor %}
+                    {% endfor %}
+                </tr>
+
+
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
+    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
+    {{ encore_entry_script_tags('app') }}
+    {{ encore_entry_script_tags('navbar') }}
 {% endblock %}
