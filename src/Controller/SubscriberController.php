@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
-use App\Entity\Season;
 use App\Entity\User;
 use App\Form\FilterType;
 use App\Repository\CategoryRepository;
@@ -12,6 +11,7 @@ use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use App\Repository\SubscriberRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\FirstSubscription;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,6 +26,7 @@ class SubscriberController extends AbstractController
     private const PAGINATION_LIMIT = 12;
 
     /**
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @Route("/{display}/filter/", name="filter")
      * @param string $display
      * @param Request $request
@@ -36,6 +37,7 @@ class SubscriberController extends AbstractController
      * @param StatusRepository $statusRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
+     * @param FirstSubscription $firstSubscription
      * @return Response A response instance
      */
     public function filter(
@@ -47,7 +49,8 @@ class SubscriberController extends AbstractController
         EntityManagerInterface $entityManager,
         StatusRepository $statusRepository,
         LicenceRepository $licenceRepository,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        FirstSubscription $firstSubscription
     ): Response {
         $filter = new Filter();
         $user = $this->getUser();
@@ -72,11 +75,26 @@ class SubscriberController extends AbstractController
             $filters = $form->getData();
             $seasons = $seasonRepository->findByFilter($filters);
             $subscribersData = $subscriberRepository->findByFilter($filters);
+            if (!empty($filters->getFirstLicence())) {
+                $subscribersData = $firstSubscription->filterWith(
+                    $subscribersData,
+                    $filters->getFirstLicence(),
+                    $filters->isStillRegistered()
+                );
+            }
+            if (!empty($filters->getFirstCategory())) {
+                $subscribersData = $firstSubscription->filterWith(
+                    $subscribersData,
+                    $filters->getFirstCategory(),
+                    $filters->isStillRegistered()
+                );
+            }
             $subscribers = $paginator->paginate(
                 $subscribersData,
                 $request->query->getint('page', 1),
                 self::PAGINATION_LIMIT
             );
+
             $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
             $entityManager->flush();
 
@@ -97,6 +115,8 @@ class SubscriberController extends AbstractController
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
+     * @param CategoryRepository $categoryRepository
+     * @param LicenceRepository $licenceRepository
      * @return Response
      */
     public function export(
@@ -104,7 +124,8 @@ class SubscriberController extends AbstractController
         Request $request,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        LicenceRepository $licenceRepository
     ) {
         /** @var array $filtersArray */
         $filtersArray = $request->query->get('filter');
@@ -116,6 +137,8 @@ class SubscriberController extends AbstractController
         $fromCategory = $categoryRepository->find($filtersArray['fromCategory']);
         $toCategory = $categoryRepository->find($filtersArray['toCategory']);
         $seasonCategory = $seasonRepository->find($filtersArray['seasonCategory']);
+        $firstCategory = $categoryRepository->find($filtersArray['firstCategory']);
+        $firstLicence = $licenceRepository->find($filtersArray['firstLicence']);
 
         $filters
             ->setFromSeason($fromSeason)
@@ -129,8 +152,10 @@ class SubscriberController extends AbstractController
             ->setSeasonLicence($seasonLicence ?? null)
             ->setFromCategory($fromCategory ?? null)
             ->setToCategory($toCategory ?? null)
-            ->setSeasonCategory($seasonCategory ?? null);
-
+            ->setSeasonCategory($seasonCategory ?? null)
+            ->setFirstCategory($firstCategory ?? null)
+            ->setFirstLicence($firstLicence ?? null)
+            ->setStillRegistered($filtersArray['stillRegistered']);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [

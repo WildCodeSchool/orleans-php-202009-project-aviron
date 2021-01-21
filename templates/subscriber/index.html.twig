@@ -39,12 +39,7 @@
                         Statut :
                         {% set status = '' %}
                         {% for filter in filters.status %}
-                            {% set current = constant('App\\Service\\StatusCalculator::TRANSFER')[filter] ??
-                                constant('App\\Service\\StatusCalculator::NEW')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RENEWAL')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RESUMED')[filter] ??
-                                '' %}
-                            {% set status = loop.last ? status ~ current : status ~ current ~ ', ' %}
+                            {% set status = loop.last ? status ~ filter.name : status ~ filter.name ~ ', ' %}
                         {% endfor %}
                         <strong>{{ status }}</strong>
                         (pour la saison <strong>{{ filters.seasonStatus.name }}</strong>)
@@ -97,7 +92,7 @@
                                         {% if display == 'licences' %}
                                             <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
                                         {% elseif display == 'renewal'%}
-                                            <td class="text-center" style="background-color:{{ subscription.status.color }}">{{ subscription.status.label}}</td>
+                                                <td class="text-center" style="background-color:{{ subscription.status.color ?? ''}} ">{{ subscription.status.label ?? '?'}}</td>
                                         {% elseif display == 'subscriptions' %}
                                             <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
                                         {% endif %}

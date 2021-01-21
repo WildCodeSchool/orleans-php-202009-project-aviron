@@ -7,6 +7,7 @@ use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Filter
 {
@@ -56,6 +57,23 @@ class Filter
      */
     private Season $seasonCategory;
 
+    private ?Licence $firstLicence = null;
+
+    private ?Category $firstCategory = null;
+
+    private bool $stillRegistered = false;
+
+    /**
+     * @Assert\Callback
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if (!is_null($this->getFirstLicence()) && !is_null($this->getFirstCategory())) {
+            $context->buildViolation('La première inscription ne peut avoir qu\'une seule valeur')
+                ->addViolation();
+        }
+    }
     public function hydrate(
         Filter $filter,
         SeasonRepository $seasonRepository,
@@ -100,6 +118,7 @@ class Filter
 
     /**
      * @param Season $fromSeason
+     * @return Filter
      */
     public function setFromSeason(Season $fromSeason): self
     {
@@ -118,6 +137,7 @@ class Filter
 
     /**
      * @param Season $toSeason
+     * @return Filter
      */
     public function setToSeason(Season $toSeason): self
     {
@@ -136,6 +156,7 @@ class Filter
 
     /**
      * @param int|null $fromAdherent
+     * @return Filter
      */
     public function setFromAdherent(?int $fromAdherent): self
     {
@@ -154,6 +175,7 @@ class Filter
 
     /**
      * @param int|null $toAdherent
+     * @return Filter
      */
     public function setToAdherent(?int $toAdherent): self
     {
@@ -172,6 +194,7 @@ class Filter
 
     /**
      * @param string|null $gender
+     * @return Filter
      */
     public function setGender(?string $gender): self
     {
@@ -190,6 +213,7 @@ class Filter
 
     /**
      * @param array|null $status
+     * @return Filter
      */
     public function setStatus(?array $status): self
     {
@@ -208,6 +232,7 @@ class Filter
 
     /**
      * @param Season $seasonStatus
+     * @return Filter
      */
     public function setSeasonStatus(Season $seasonStatus): self
     {
@@ -226,6 +251,7 @@ class Filter
 
     /**
      * @param array|null $licences
+     * @return Filter
      */
     public function setLicences(?array $licences): self
     {
@@ -244,6 +270,7 @@ class Filter
 
     /**
      * @param Season $seasonLicence
+     * @return Filter
      */
     public function setSeasonLicence(Season $seasonLicence): self
     {
@@ -262,6 +289,7 @@ class Filter
 
     /**
      * @param Category|null $fromCategory
+     * @return Filter
      */
     public function setFromCategory(?Category $fromCategory): self
     {
@@ -280,6 +308,7 @@ class Filter
 
     /**
      * @param Category|null $toCategory
+     * @return Filter
      */
     public function setToCategory(?Category $toCategory): self
     {
@@ -298,10 +327,68 @@ class Filter
 
     /**
      * @param Season $seasonCategory
+     * @return Filter
      */
     public function setSeasonCategory(Season $seasonCategory): self
     {
         $this->seasonCategory = $seasonCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return Licence|null
+     */
+    public function getFirstLicence(): ?Licence
+    {
+        return $this->firstLicence;
+    }
+
+    /**
+     * @param Licence|null $firstLicence
+     * @return Filter
+     */
+    public function setFirstLicence(?Licence $firstLicence): self
+    {
+        $this->firstLicence = $firstLicence;
+
+        return $this;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getFirstCategory(): ?Category
+    {
+        return $this->firstCategory;
+    }
+
+    /**
+     * @param Category|null $firstCategory
+     * @return Filter
+     */
+    public function setFirstCategory(?Category $firstCategory): self
+    {
+        $this->firstCategory = $firstCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStillRegistered(): bool
+    {
+        return $this->stillRegistered;
+    }
+
+    /**
+     * @param bool $stillRegistered
+     * @return Filter
+     */
+    public function setStillRegistered(bool $stillRegistered): self
+    {
+        $this->stillRegistered = $stillRegistered;
 
         return $this;
     }
