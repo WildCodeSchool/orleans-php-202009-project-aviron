@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Subscription;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
@@ -15,11 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Mukadi\Chart\Utils\RandomColorFactory;
 use Mukadi\ChartJSBundle\Chart\Builder;
 use Mukadi\Chart\Chart as MChart;
-use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
-use Symfony\UX\Chartjs\Model\Chart;
 
 class HomeController extends AbstractController
 {
