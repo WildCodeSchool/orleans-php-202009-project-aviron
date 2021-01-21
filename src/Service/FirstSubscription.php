@@ -6,16 +6,15 @@ use App\Entity\Category;
 use App\Entity\Licence;
 use App\Entity\Subscriber;
 use App\Entity\Subscription;
-use App\Repository\SeasonRepository;
 use DateTime;
 
 class FirstSubscription
 {
-    private SeasonRepository $seasonRepository;
+    private Registration $registration;
 
-    public function __construct(SeasonRepository $seasonRepository)
+    public function __construct(Registration $registration)
     {
-        $this->seasonRepository = $seasonRepository;
+        $this->registration = $registration;
     }
 
     public function filterWith(array $subscribers, LabelInterface $entity, bool $stillRegistered): array
@@ -23,7 +22,7 @@ class FirstSubscription
         $subscribersFiltered = [];
         foreach ($subscribers as $subscriber) {
             $firstSubscription = $this->getFirstSubscription($subscriber);
-            $isRegistered = $this->isRegisteredLastSeason($subscriber);
+            $isRegistered = $this->registration->isRegisteredLastSeason($subscriber);
             $label =
                 $entity instanceof Licence ?
                     $firstSubscription->getLicence()->getAcronym() :
@@ -46,15 +45,5 @@ class FirstSubscription
             }
         }
         return $firstSubscription;
-    }
-
-    private function isRegisteredLastSeason(Subscriber $subscriber): bool
-    {
-        $lastSeason = $this->seasonRepository->findOneBy([], ['name' => 'DESC']);
-        $isRegistered = false;
-        foreach ($subscriber->getSubscriptions() as $subscription) {
-            $isRegistered = $subscription->getSeason()->getStartingDate() === $lastSeason->getStartingDate();
-        }
-        return $isRegistered;
     }
 }

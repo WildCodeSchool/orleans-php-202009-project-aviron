@@ -25,3 +25,12 @@ $title-filter: 1.25rem;
 #filter_toAdherent {
     margin-left: $spacing + 2;
 }
+
+.duration > .form-group {
+    flex-direction: row-reverse;
+}
+
+.duration input {
+    margin-right: $spacing;
+    width: 65%;
+}

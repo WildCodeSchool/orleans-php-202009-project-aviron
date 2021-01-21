@@ -76,6 +76,18 @@
                 {{ form_row(form.stillRegistered) }}
             </div>
         </div>
+        <h2 class="title-filter my-3">Durée d'inscription</h2>
+        <div class="row">
+            <div class="col-2 duration">
+                {{ form_row(form.duration) }}
+            </div>
+            <div class="col-2 d-flex align-items-center">
+                {{ form_row(form.orMore) }}
+            </div>
+            <div class="col-2 d-flex align-items-center">
+                {{ form_row(form.stillAdherent) }}
+            </div>
+        </div>
         <button type="submit" class="btn btn-primary mt-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-check2"
                  viewBox="0 0 16 16">

@@ -63,6 +63,12 @@ class Filter
 
     private bool $stillRegistered = false;
 
+    private ?int $duration = null;
+
+    private bool $orMore = false;
+
+    private bool $stillAdherent = false;
+
     /**
      * @Assert\Callback
      * @param ExecutionContextInterface $context
@@ -389,6 +395,63 @@ class Filter
     public function setStillRegistered(bool $stillRegistered): self
     {
         $this->stillRegistered = $stillRegistered;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param int|null $duration
+     * @return Filter
+     */
+    public function setDuration(?int $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrMore(): bool
+    {
+        return $this->orMore;
+    }
+
+    /**
+     * @param bool $orMore
+     * @return Filter
+     */
+    public function setOrMore(bool $orMore): self
+    {
+        $this->orMore = $orMore;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStillAdherent(): bool
+    {
+        return $this->stillAdherent;
+    }
+
+    /**
+     * @param bool $stillAdherent
+     * @return Filter
+     */
+    public function setStillAdherent(bool $stillAdherent): self
+    {
+        $this->stillAdherent = $stillAdherent;
 
         return $this;
     }
