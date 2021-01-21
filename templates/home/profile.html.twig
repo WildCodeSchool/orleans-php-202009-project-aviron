@@ -9,14 +9,15 @@
                         Mes informations de connexion
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Mon adresse email : {{ app.user.email }}</h5>
+                        <h5 class="card-title pt-3">Mon adresse email : {{ app.user.email }}</h5>
                         <p class="card-text">Mon type d'accès :
                             {% if is_granted('ROLE_ADMIN') %}
                                 Administrateur
                             {% elseif is_granted('ROLE_USER') %}
                                 Utilisateur
                             {% endif %}</p>
-                        <a href="{{ path('app_logout') }}" class="btn btn-primary">Se déconnecter</a>
+                        <p>Mot de passe : <a href="{{ path('app_forgot_password_request') }}" class="font-weight-bold text-secondary"> Réinitialiser mon mot de passe</a></p>
+                        <a href="{{ path('app_logout') }}" class="btn btn-primary mt-3 mb-3">Se déconnecter</a>
                     </div>
                 </div>
             </div>
