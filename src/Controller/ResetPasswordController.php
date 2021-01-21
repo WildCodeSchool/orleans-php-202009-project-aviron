@@ -167,7 +167,7 @@ class ResetPasswordController extends AbstractController
         $email = (new TemplatedEmail())
             ->from(new Address('aviron@aviron.com', 'Stats Aviron'))
             ->to((string) $user->getEmail())
-            ->subject('Stats Aviron - Réinitialiser votre de mot de passe')
+            ->subject('Stats Aviron - Réinitialiser votre mot de passe')
             ->htmlTemplate('reset_password/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
