@@ -177,6 +177,21 @@ class FilterType extends AbstractType
                 'required' => false,
                 'label' => 'Toujours inscrit',
                 'error_bubbling' => true
+            ])
+            ->add('duration', NumberType::class, [
+                'label' => 'ans',
+                'required' => false,
+                'error_bubbling' => true
+            ])
+            ->add('orMore', CheckboxType::class, [
+                'required' => false,
+                'label' => 'ou plus',
+                'error_bubbling' => true
+            ])
+            ->add('stillAdherent', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Toujours inscrit',
+                'error_bubbling' => true
             ]);
     }
 

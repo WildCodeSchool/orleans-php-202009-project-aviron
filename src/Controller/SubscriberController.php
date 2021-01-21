@@ -10,6 +10,7 @@ use App\Repository\SeasonRepository;
 use App\Repository\SubscriberRepository;
 use App\Service\FirstSubscription;
 use App\Service\StatusCalculator;
+use App\Service\SubscriptionDuration;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,8 @@ class SubscriberController extends AbstractController
         StatusCalculator $statusCalculator,
         SeasonRepository $seasonRepository,
         PaginatorInterface $paginator,
-        FirstSubscription $firstSubscription
+        FirstSubscription $firstSubscription,
+        SubscriptionDuration $subscriptionDuration
     ): Response {
         $filter = new Filter();
         $limitSeasons = SeasonRepository::LIMIT_NUMBER_SEASONS;
@@ -66,6 +68,14 @@ class SubscriberController extends AbstractController
                     $subscribersData,
                     $filters->getFirstCategory(),
                     $filters->isStillRegistered()
+                );
+            }
+            if (!empty($filters->getDuration())) {
+                $subscribersData = $subscriptionDuration->filterBy(
+                    $subscribersData,
+                    $filters->getDuration(),
+                    $filters->isOrMore(),
+                    $filters->isStillAdherent()
                 );
             }
             $subscribers = $paginator->paginate(
@@ -131,7 +141,10 @@ class SubscriberController extends AbstractController
             ->setSeasonCategory($seasonCategory ?? null)
             ->setFirstCategory($firstCategory ?? null)
             ->setFirstLicence($firstLicence ?? null)
-            ->setStillRegistered($filtersArray['stillRegistered']);
+            ->setStillRegistered($filtersArray['stillRegistered'])
+            ->setDuration((int)$filtersArray['duration'] ?? null)
+            ->setOrMore($filtersArray['orMore'] ?? false)
+            ->setStillAdherent($filtersArray['stillAdherent'] ?? false);
         $subscribers = $subscriberRepository->findByFilter($filters);
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
