@@ -88,32 +88,35 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                        {% if display == 'licences' %}
-                                            <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
-                                        {% elseif display == 'renewal'%}
-                                                <td class="text-center" style="background-color:{{ subscription.status.color ?? ''}} ">{{ subscription.status.label ?? '?'}}</td>
-                                        {% elseif display == 'subscriptions' %}
-                                            <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
-                                        {% endif %}
-                                    {% else %}
-                                        <td></td>
-                                    {% endfor %}
+                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                    {% if display == 'licences' %}
+                                        <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
+                                    {% elseif display == 'renewal'%}
+                                        <td class="text-center" style="background-color:{{ subscription.status.color ?? ''}} ">{{ subscription.status.label ?? '?'}}</td>
+                                    {% elseif display == 'subscriptions' %}
+                                        <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
+                                    {% endif %}
+                                {% else %}
+                                    <td></td>
+                                {% endfor %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-                <nav aria-label="pagination">
-                    {% do subscribers.setPageRange(3) %}
-                    {{ knp_pagination_render(subscribers,
-                        '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
-                        {},
-                        {
-                            'align': 'center',
-                        })
-                    }}
-                </nav>
+                <div class="d-flex justify-content-center align-items-start">
+                    <nav aria-label="pagination">
+                        {% do subscribers.setPageRange(3) %}
+                        {{ knp_pagination_render(subscribers,
+                            '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
+                            {},
+                            {
+                                'align': 'center',
+                            })
+                        }}
+                    </nav>
+                    <div class="mt-2 mr-4 results">{{ numberResults }} résultats</div>
+                </div>
                 <div class="row">
                     <div class="col">
                         <a href="{{ path('subscribers_export', {display : display}|merge(app.request.query.all)) }}" class="btn btn-sm btn-primary mt-3 mb-5">Exporter en csv</a>

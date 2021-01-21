@@ -97,12 +97,14 @@ class SubscriberController extends AbstractController
 
             $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
             $entityManager->flush();
+            $numberResults = count($subscribersData);
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
-                'filters' => $filters
+                'filters' => $filters,
+                'numberResults' => $numberResults
             ]);
         }
 
