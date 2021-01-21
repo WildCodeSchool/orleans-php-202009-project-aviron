@@ -8,6 +8,7 @@ use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\ChartMaker;
 use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Mukadi\Chart\Utils\RandomColorFactory;
 use Mukadi\ChartJSBundle\Chart\Builder;
-use Mukadi\Chart\Chart;
+use Mukadi\Chart\Chart as MChart;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class HomeController extends AbstractController
 {
@@ -57,6 +60,7 @@ class HomeController extends AbstractController
      * @param StatusRepository $statusRepository
      * @param Builder $categoriesBuilder
      * @param Builder $licencesBuilder
+     * @param ChartMaker $chartMaker
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -69,7 +73,8 @@ class HomeController extends AbstractController
         CategoryRepository $categoryRepository,
         StatusRepository $statusRepository,
         Builder $categoriesBuilder,
-        Builder $licencesBuilder
+        Builder $licencesBuilder,
+        ChartMaker $chartMaker
     ): Response {
 
         // Si aucune saison en db, redirection automatique vers l'import
@@ -78,6 +83,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('tools_import');
         } else {
             $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
+            $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName() ?? null;
         }
 
         $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
@@ -114,6 +120,8 @@ class HomeController extends AbstractController
             $statusRepository
         );
 
+        $monthlySubscriptionsChart = $chartMaker->getMonthlySubscriptionsChart($actualSeason, $previousSeason);
+
         $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
 
         $categoriesBuilder
@@ -122,7 +130,7 @@ class HomeController extends AbstractController
                 "backgroundColor" => self::CATEGORIES_PALETTE
             ])
             ->labels('label');
-        $categoriesChart = $categoriesBuilder->buildChart('categories-chart', Chart::DOUGHNUT);
+        $categoriesChart = $categoriesBuilder->buildChart('categories-chart', MChart::DOUGHNUT);
         $categoriesChart->pushOptions([
             'legend' => ([
                 'position' => 'bottom',
@@ -144,7 +152,7 @@ class HomeController extends AbstractController
                 "backgroundColor" => self::LICENCES_PALETTE
             ])
             ->labels('label');
-        $licencesChart = $licencesBuilder->buildChart('licences-chart', Chart::DOUGHNUT);
+        $licencesChart = $licencesBuilder->buildChart('licences-chart', MChart::DOUGHNUT);
         $licencesChart->pushOptions([
             'legend' => ([
                 'position' => 'bottom',
@@ -157,6 +165,7 @@ class HomeController extends AbstractController
                 ])
             ])
         ]);
+
         return $this->render('home/index.html.twig', [
             'currentSeason' => $actualSeason,
             'subscribersByLicences' => $countByLicences,
@@ -167,6 +176,7 @@ class HomeController extends AbstractController
             'newSubscribers' => $newSubscribers,
             'categoriesChart' => $categoriesChart,
             'licencesChart' => $licencesChart,
+            'monthlySubscriptionsChart' => $monthlySubscriptionsChart,
         ]);
     }
 }
