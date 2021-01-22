@@ -8,6 +8,8 @@ use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use App\Repository\SubscriptionRepository;
 use App\Service\ChartMaker;
+use App\Service\MonthlySubscriptionChart;
+use App\Service\MonthlySubscriptionChartMaker;
 use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,7 +58,7 @@ class HomeController extends AbstractController
      * @param StatusRepository $statusRepository
      * @param Builder $categoriesBuilder
      * @param Builder $licencesBuilder
-     * @param ChartMaker $chartMaker
+     * @param MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -70,7 +72,7 @@ class HomeController extends AbstractController
         StatusRepository $statusRepository,
         Builder $categoriesBuilder,
         Builder $licencesBuilder,
-        ChartMaker $chartMaker
+        MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker
     ): Response {
 
         // Si aucune saison en db, redirection automatique vers l'import
@@ -116,7 +118,7 @@ class HomeController extends AbstractController
             $statusRepository
         );
 
-        $monthlySubscriptionsChart = $chartMaker->getMonthlySubscriptionsChart($actualSeason, $previousSeason);
+        $monthlySubscriptionsChart = $monthlySubscriptionChartMaker->getChart($actualSeason, $previousSeason);
 
         $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
 
