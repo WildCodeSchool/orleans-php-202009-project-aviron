@@ -20,9 +20,9 @@
                         à <strong>{{ filters.toAdherent ? filters.toAdherent : '-' }}</strong>
                     </div>
                 {% endif %}
-                {% if filters.gender %}
+                {% if filters.gender|length == 1 %}
                     <div class="col-2 pb-4">
-                        Sexe : <strong>{{ constant('App\\Entity\\Subscriber::GENDER')[filters.gender] }}</strong>
+                        Sexe : <strong>{{ constant('App\\Entity\\Subscriber::GENDER')[filters.gender[0]] }}</strong>
                     </div>
                 {% endif %}
                 {% if filters.fromCategory or filters.toCategory %}

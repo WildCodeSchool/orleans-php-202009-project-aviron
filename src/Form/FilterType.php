@@ -61,6 +61,7 @@ class FilterType extends AbstractType
             ->add('gender', ChoiceType::class, [
                 'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
+                'multiple' => true,
                 'label' => false,
                 'required' => false,
                 'placeholder' => false,
