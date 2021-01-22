@@ -119,7 +119,10 @@ class SubscriberController extends AbstractController
             ]);
         }
 
-        return $this->render('subscriber/filter.html.twig', ['form' => $form->createView()]);
+        return $this->render('subscriber/filter.html.twig', [
+            'form' => $form->createView(),
+            'display' => $display
+        ]);
     }
 
     /**
@@ -182,5 +185,20 @@ class SubscriberController extends AbstractController
         $response->headers->set('Content-type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
         return $response;
+    }
+
+    /**
+     * @Route("/reinitialisation/{display}", name="reinitialisation")
+     * @param EntityManagerInterface $entityManager
+     * @param string $display
+     * @return Response
+     */
+    public function reinitialisation(EntityManagerInterface $entityManager, string $display): Response
+    {
+        $user = $this->getUser();
+        $user instanceof User ? $user->setLastSearch(null) : false;
+        $entityManager->flush();
+
+        return $this->redirectToRoute('subscribers_filter', ['display' => $display]);
     }
 }
