@@ -136,7 +136,8 @@ class SubscriberController extends AbstractController
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
         CategoryRepository $categoryRepository,
-        LicenceRepository $licenceRepository
+        LicenceRepository $licenceRepository,
+        StatusRepository $statusRepository
     ) {
         /** @var array $filtersArray */
         $filtersArray = $request->query->get('filter');
@@ -157,9 +158,9 @@ class SubscriberController extends AbstractController
             ->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null)
             ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
             ->setGender($filtersArray['gender'] ?? null)
-            ->setStatus($filtersArray['status'][0] ?? null)
+            ->setStatus($filtersArray['status'] ?? null)
             ->setSeasonStatus($seasonStatus ?? null)
-            ->setLicences($filtersArray['licences'][0] ?? null)
+            ->setLicences($filtersArray['licences'] ?? null)
             ->setSeasonLicence($seasonLicence ?? null)
             ->setFromCategory($fromCategory ?? null)
             ->setToCategory($toCategory ?? null)
