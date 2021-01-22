@@ -53,13 +53,19 @@ class MonthlySubscriptionChartMaker extends ChartMaker
         $currentSeasonData = [];
         $previousSeasonData = [];
         for ($i = 0; $i < 12; $i++) {
-            if ($currentSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]) {
+            if (
+                isset($currentSeasonMonthlyCount[$i]['month']) &&
+                $currentSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]
+            ) {
                 $currentSeasonData[] = $currentSeasonMonthlyCount[$i]['count'];
             } else {
                 $currentSeasonData[] = 0;
             }
 
-            if ($previousSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]) {
+            if (
+                isset($previousSeasonMonthlyCount[$i]['month']) &&
+                $previousSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]
+            ) {
                 $previousSeasonData[] = $previousSeasonMonthlyCount[$i]['count'];
             } else {
                 $previousSeasonData[] = 0;
