@@ -136,8 +136,7 @@ class SubscriberController extends AbstractController
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
         CategoryRepository $categoryRepository,
-        LicenceRepository $licenceRepository,
-        StatusRepository $statusRepository
+        LicenceRepository $licenceRepository
     ) {
         /** @var array $filtersArray */
         $filtersArray = $request->query->get('filter');
