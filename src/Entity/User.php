@@ -37,7 +37,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="array", nullable=true)
      */
-    private ?array $lastSearch = [];
+    private ?array $lastSearch = null;
 
     public function getId(): ?int
     {
