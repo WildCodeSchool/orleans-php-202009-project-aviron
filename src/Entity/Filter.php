@@ -111,6 +111,16 @@ class Filter
         if (!is_null($filter->getToCategory())) {
             $this->setToCategory($categoryRepository->find($filter->getToCategory()->getId()));
         }
+        if (!is_null($filter->getFirstLicence())) {
+            $this->setFirstLicence($licenceRepository->find($filter->getFirstLicence()->getId()));
+        }
+        if (!is_null($filter->getFirstCategory())) {
+            $this->setFirstCategory($categoryRepository->find($filter->getFirstCategory()->getId()));
+        }
+        $this->setStillRegistered($filter->isStillRegistered());
+        $this->setDuration($filter->getDuration());
+        $this->setOrMore($filter->isOrMore());
+        $this->setStillAdherent($filter->isStillAdherent());
         return $this;
     }
 
