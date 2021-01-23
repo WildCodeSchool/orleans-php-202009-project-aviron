@@ -62,9 +62,7 @@ class CategoriesChartMaker extends ChartMaker
                     'backgroundColor' => self::CATEGORIES_PALETTE,
                     'data' => $subscriptionsData,
                 ],
-
             ]
-
         ]);
         $categoriesChart->setOptions([
             'legend' => ([
