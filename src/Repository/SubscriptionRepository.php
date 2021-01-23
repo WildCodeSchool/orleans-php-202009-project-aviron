@@ -139,19 +139,6 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getQueryForSubscribersByYearByCategories(?string $season): string
-    {
-        return 'SELECT COUNT(sub.category) as subscribersCount, c.label as label 
-                    FROM \App\Entity\Subscription sub
-                    JOIN \App\Entity\Category c
-                    WITH c.id = sub.category
-                    JOIN \App\Entity\Season s
-                    WITH s.id = sub.season
-                    WHERE s.name = \'' . $season . '\'
-                    GROUP BY sub.category
-                    ORDER BY c.id ASC';
-    }
-
     public function subscribersByYearByStatus(?string $season): array
     {
         return $this->createQueryBuilder('sub')
