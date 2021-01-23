@@ -109,20 +109,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('season', $season)
             ->groupBy('licence.acronym')
             ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    public function getQueryForSubscribersByYearByLicences(?string $season): string
-    {
-        return 'SELECT licence.acronym as label, COUNT(subscription.subscriber) as subscribersCount 
-        FROM App\Entity\Subscription subscription 
-        JOIN App\Entity\Licence licence 
-        WITH licence.id=subscription.licence 
-        JOIN App\Entity\Season season 
-        WITH season.id=subscription.season 
-        WHERE season.name = \'' . $season . '\'
-        GROUP BY licence.acronym';
+            ->getResult();
     }
 
     public function subscribersByYearByCategories(?string $season): array
