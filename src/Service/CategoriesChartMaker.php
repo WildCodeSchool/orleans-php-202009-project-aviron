@@ -64,6 +64,7 @@ class CategoriesChartMaker extends ChartMaker
                 ],
             ]
         ]);
+
         $categoriesChart->setOptions([
             'legend' => ([
                 'position' => 'bottom',

@@ -7,6 +7,7 @@ use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\CategoriesChartMaker;
 use App\Service\ChartMaker;
 use App\Service\MonthlySubscriptionChart;
 use App\Service\MonthlySubscriptionChartMaker;
@@ -24,20 +25,7 @@ class HomeController extends AbstractController
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
     private const STATUS_NEW = 'N';
-    private const CATEGORIES_PALETTE = [
-        '#004C6D',
-        '#135B79',
-        '#256985',
-        '#387892',
-        '#4A869E',
-        '#5D95AA',
-        '#70A3B6',
-        '#82B2C2',
-        '#95C0CE',
-        '#A7CFDB',
-        '#BADDE7',
-        '#CCECF3',
-    ];
+
     private const LICENCES_PALETTE = [
         '#F6246A',
         '#F74B75',
@@ -56,9 +44,9 @@ class HomeController extends AbstractController
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
      * @param StatusRepository $statusRepository
-     * @param Builder $categoriesBuilder
      * @param Builder $licencesBuilder
      * @param MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker
+     * @param CategoriesChartMaker $categoriesChartMaker
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -70,9 +58,9 @@ class HomeController extends AbstractController
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository,
         StatusRepository $statusRepository,
-        Builder $categoriesBuilder,
         Builder $licencesBuilder,
-        MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker
+        MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker,
+        CategoriesChartMaker $categoriesChartMaker
     ): Response {
 
         // Si aucune saison en db, redirection automatique vers l'import
@@ -120,27 +108,8 @@ class HomeController extends AbstractController
 
         $monthlySubscriptionsChart = $monthlySubscriptionChartMaker->getChart($actualSeason, $previousSeason);
 
-        $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
+        $categoriesChart = $categoriesChartMaker->getChart($actualSeason);
 
-        $categoriesBuilder
-            ->query($querySubscribersCategories)
-            ->addDataSet('subscribersCount', 'Subscribers', [
-                "backgroundColor" => self::CATEGORIES_PALETTE
-            ])
-            ->labels('label');
-        $categoriesChart = $categoriesBuilder->buildChart('categories-chart', MChart::DOUGHNUT);
-        $categoriesChart->pushOptions([
-            'legend' => ([
-                'position' => 'bottom',
-            ]),
-            'scales' => ([
-                'xAxes' => ([
-                    'gridLines' => ([
-                        'display' => 'false'
-                    ])
-                ])
-            ])
-        ]);
 
         $querySubscribersLicences = $subscriptionRepository->getQueryForSubscribersByYearByLicences($actualSeason);
 
