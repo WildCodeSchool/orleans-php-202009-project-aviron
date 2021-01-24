@@ -168,13 +168,11 @@ class SubscriptionRepository extends ServiceEntityRepository
     /**
      * @param string|null $categoryLabel
      * @param string|null $licenceAcronym
-     * @param string|null $actualSeason
      * @return Subscription
      */
     public function findOutgoingSubscribers(
         ?string $categoryLabel,
-        ?string $licenceAcronym,
-        ?string $actualSeason
+        ?string $licenceAcronym
     ) {
         return $this->createQueryBuilder('subscription')
             ->select('COUNT(subscription.subscriber) AS total, season.name, subscriber.gender')
@@ -186,8 +184,6 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('licenceAcronym', $licenceAcronym)
             ->andWhere('category.label = :categoryLabel')
             ->setParameter('categoryLabel', $categoryLabel)
-            ->andWhere('season.name != :seasonName')
-            ->setParameter("seasonName", $actualSeason)
             ->groupBy('season.name, subscriber.gender')
             ->orderBy('season.name')
             ->getQuery()

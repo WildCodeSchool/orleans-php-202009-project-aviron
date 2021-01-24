@@ -51,4 +51,41 @@ class StatisticsController extends AbstractController
             'licences' => $licences
         ]);
     }
+
+    /**
+     * @Route("/outgoing", name="outgoing")
+     * @SuppressWarnings(PHPMD.LongVariable)
+     * @param SeasonRepository $seasonRepository
+     * @param SubscriptionRepository $subscriptionRepository
+     * @param LicenceRepository $licenceRepository
+     * @param CategoryRepository $categoryRepository
+     * @return Response
+     */
+    public function outgoingStatistics(
+        SeasonRepository $seasonRepository,
+        SubscriptionRepository $subscriptionRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
+    ): Response {
+        $subscriptions = [];
+        $categories = $categoryRepository->findAll();
+        $licences = $licenceRepository->findAll();
+        $seasons = $seasonRepository->findAll();
+
+        foreach ($categories as $category) {
+            foreach ($licences as $licence) {
+                $subscriptions[$category->getLabel()][$licence->getAcronym()] =
+                    $subscriptionRepository->findOutgoingSubscribers(
+                        $category->getLabel(),
+                        $licence->getAcronym()
+                    );
+            }
+        }
+        return $this->render('statistics/outgoing.html.twig', [
+            'statistics' => $subscriptions,
+            'seasons' => $seasons,
+            'categories' => $categories,
+            'licences' => $licences
+        ]);
+    }
 }
