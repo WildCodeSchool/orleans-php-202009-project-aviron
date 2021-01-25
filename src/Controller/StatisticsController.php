@@ -15,6 +15,7 @@ use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\UX\Chartjs\Model\Chart;
 
 /**
+ * @SuppressWarnings(PHPMD)
  * @Route("/statistics", name="statistics_")
  */
 class StatisticsController extends AbstractController
@@ -85,16 +86,6 @@ class StatisticsController extends AbstractController
             ])
             ->labels('seasonName');
         $totalChart = $totalBuilder->buildChart('total-chart', MChart::BAR);
-        $totalChart->pushOptions([
-            'scales' => ([
-                'xAxes' => ([
-                    'stacked' => 'true'
-                ]),
-                'yAxes' => ([
-                    'stacked' => 'true'
-                ])
-            ])
-        ]);
 
         $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
         $seasonNames = [];
