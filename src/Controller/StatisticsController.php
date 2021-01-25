@@ -88,18 +88,22 @@ class StatisticsController extends AbstractController
         $totalChart = $totalBuilder->buildChart('total-chart', MChart::BAR);
 
         $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
+
+        $data = [
+            self::LICENCES_NAME['C'] => [],
+            self::LICENCES_NAME['D'] => [],
+            self::LICENCES_NAME['U'] => [],
+            self::LICENCES_NAME['I'] => [],
+
+        ];
         $seasonNames = [];
         foreach ($seasons as $season) {
             $seasonNames[] = $season->getName();
+            $data[self::LICENCES_NAME['C']][] = 0;
+            $data[self::LICENCES_NAME['D']][] = 0;
+            $data[self::LICENCES_NAME['U']][] = 0;
+            $data[self::LICENCES_NAME['I']][] = 0;
         }
-
-        $data = [
-            self::LICENCES_NAME['C'] => [0, 0, 0, 0, 0, 0, 0],
-            self::LICENCES_NAME['D'] => [0, 0, 0, 0, 0, 0, 0],
-            self::LICENCES_NAME['U'] => [0, 0, 0, 0, 0, 0, 0],
-            self::LICENCES_NAME['I'] => [0, 0, 0, 0, 0, 0, 0],
-
-        ];
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalLicences); $j++) {
@@ -116,7 +120,6 @@ class StatisticsController extends AbstractController
                 }
             }
         }
-
 
         $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $licencesChart->setData([
