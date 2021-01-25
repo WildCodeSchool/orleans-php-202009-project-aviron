@@ -1,8 +1,6 @@
 {
     "devDependencies": {
-        "@mukadi/chartjs-builder": "file:vendor/mukadi/chartjs-builder/assets",
         "@symfony/stimulus-bridge": "^1.1.0",
-        "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets",
         "@symfony/webpack-encore": "^0.32.0",
         "bootstrap": "^4.6.0",
         "core-js": "^3.0.0",
@@ -18,7 +16,9 @@
         "sass-lint": "^1.13.1",
         "sass-loader": "^9.0.1",
         "stimulus": "^2.0.0",
-        "webpack-notifier": "^1.6.0"
+        "webpack-notifier": "^1.6.0",
+        "@mukadi/chartjs-builder": "file:vendor/mukadi/chartjs-builder/assets",
+        "@symfony/ux-chartjs": "file:vendor/symfony/ux-chartjs/Resources/assets"
     },
     "license": "UNLICENSED",
     "private": true,
