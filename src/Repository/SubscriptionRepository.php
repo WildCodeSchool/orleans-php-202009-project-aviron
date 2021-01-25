@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Subscription|null findOneBy(array $criteria, array $orderBy = null)
  * @method Subscription[]    findAll()
  * @method Subscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @SuppressWarnings(PHPMD)
  */
 class SubscriptionRepository extends ServiceEntityRepository
 {
@@ -56,19 +57,16 @@ class SubscriptionRepository extends ServiceEntityRepository
         GROUP BY seasonName, subscriber.gender";
     }
 
-    public function getQueryForLicencesPerSeason(): string
+    public function totalLicencesPerSeason(): array
     {
-        return "SELECT case when licence.name= 'Découverte' then count(subscription.subscriber) else 0 end AS totalD,
-        case when licence.name= 'Compétition' then count(subscription.subscriber) else 0 end AS totalC,
-        case when licence.name= 'Universitaire' then count(subscription.subscriber) else 0 end AS totalU,
-        case when licence.name= 'Indoor' then count(subscription.subscriber) else 0 end AS totalI,
-        season.name AS seasonName
-        FROM App\Entity\Subscription subscription
-        JOIN App\Entity\Season season
-        WITH season.id=subscription.season
-        JOIN App\Entity\Licence licence
-        WITH licence.id=subscription.licence
-        GROUP BY seasonName, licence.name";
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, licence.name, season.name AS seasonName')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'licence.id=subscription.licence')
+            ->groupBy('season.name, licence.name')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
     }
 
     /**

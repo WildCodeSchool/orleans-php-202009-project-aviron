@@ -2,8 +2,13 @@
 {% block body %}
 <div class="container-fluid">
     <h1 class="text-center my-4">
-        Récapitulatif des inscriptions
+        Statistiques - Général
     </h1>
+    <div class="row pb-4">
+        <div class="col">
+            {{ render_chart(licencesChart) }}
+        </div>
+    </div>
     <div class="row pb-4">
         <div class="col">
             {{ mukadi_chart(totalChart) }}
