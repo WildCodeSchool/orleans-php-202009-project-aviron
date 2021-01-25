@@ -59,9 +59,33 @@ class PyramidController extends AbstractController
             $renewalPyramid[$seasons[$i]->getName()] = $renewalSeason;
         }
 
+        $renewalPyramidPercent = [];
+        /*foreach ($renewalPyramid as $season => $renewsSeason) {
+            $referenceIndex = 0;
+            $seasonReferenceCount = 1;
+            $j = 0;
+            for ($i = 0; $i < count($renewsSeason); $i++) {
+                if ($renewsSeason[$i] === null) {
+                    $referenceIndex++;
+                } elseif ($renewsSeason[$i] !== null && $i === $referenceIndex) {
+                    $seasonReferenceCount = $renewsSeason[$i];
+                } else {
+                    $renewalPyramidPercent[$season][$j] = number_format(
+                        $renewsSeason[$i] / $seasonReferenceCount * 100,
+                        1,
+                        ',',
+                        ' '
+                    );
+                    $j++;
+                }
+            }
+        }*/
+
         return $this->render('pyramid/pyramid.html.twig', [
             'seasons' => $seasons,
-            'renewalPyramid' => $renewalPyramid
+            'renewalPyramid' => $renewalPyramid,
+            'renewalPyramidPercent' => $renewalPyramidPercent,
+
         ]);
     }
 }
