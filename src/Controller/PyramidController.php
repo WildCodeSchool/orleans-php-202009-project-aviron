@@ -59,11 +59,9 @@ class PyramidController extends AbstractController
             $renewalPyramid[$seasons[$i]->getName()] = $renewalSeason;
         }
 
-        dd($renewalPyramid);
-
-
-
         return $this->render('pyramid/pyramid.html.twig', [
+            'seasons' => $seasons,
+            'renewalPyramid' => $renewalPyramid
         ]);
     }
 }
