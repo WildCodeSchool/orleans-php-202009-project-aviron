@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\PyramidCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,50 +19,27 @@ class PyramidController extends AbstractController
      * @Route("/pyramide-des-renouvellements", name="pyramid")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
-     * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
+     * @param PyramidCalculator $pyramidCalculator
      * @return Response
      */
     public function renewalPyramid(
         SeasonRepository $seasonRepository,
-        SubscriptionRepository $subscriptionRepository,
-        LicenceRepository $licenceRepository
+        LicenceRepository $licenceRepository,
+        PyramidCalculator $pyramidCalculator
     ): Response {
         $seasons = $seasonRepository->findAll();
         $licence = $licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
-        $renewalPyramid = [];
 
-        for ($i = 0; $i < count($seasons); $i++) {
-            $seasonSubscriptions = $subscriptionRepository->findBy(['season' => $seasons[$i], 'licence' => $licence]);
-            $renewalSeason = [];
-
-            for ($j = 0; $j < count($seasons); $j++) {
-                if ($j < $i) {
-                    $renewalSeason[] = null;
-                } elseif ($j === $i) {
-                    $renewalSeason[] = count($seasonSubscriptions);
-                } else {
-                    $renewSubscriptions = 0;
-                    foreach ($seasonSubscriptions as $seasonSubscription) {
-                        $seasonSubscriberSubscriptions = $seasonSubscription->getSubscriber()->getSubscriptions();
-                        $seasonSubscriberSeasons = [];
-                        foreach ($seasonSubscriberSubscriptions as $seasonSubscriberSubscription) {
-                            $seasonSubscriberSeasons[] = $seasonSubscriberSubscription->getSeason()->getName();
-                        }
-                        if (in_array($seasons[$j]->getName(), $seasonSubscriberSeasons)) {
-                            $renewSubscriptions++;
-                        }
-                    }
-                    $renewalSeason[] = $renewSubscriptions;
-                }
-            }
-
-            $renewalPyramid[$seasons[$i]->getName()] = $renewalSeason;
-        }
+        $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $licence);
+        $renewalPyramidPercent = $pyramidCalculator->getRenewalPyramidPercent($renewalPyramid);
+        $renewalPyramidAverage = $pyramidCalculator->getAverageRenewalPercent($renewalPyramidPercent);
 
         return $this->render('pyramid/pyramid.html.twig', [
             'seasons' => $seasons,
-            'renewalPyramid' => $renewalPyramid
+            'renewalPyramid' => $renewalPyramid,
+            'renewalPyramidPercent' => $renewalPyramidPercent,
+            'renewalPercentAverage' => $renewalPyramidAverage,
         ]);
     }
 }
