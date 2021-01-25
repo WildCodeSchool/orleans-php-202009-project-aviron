@@ -22,7 +22,7 @@ class HomeController extends AbstractController
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
     private const STATUS_NEW = 'N';
-
+    private const STATUS_TRANSFER = 'T';
 
     /**
      * @Route("/", name="home")
@@ -71,9 +71,11 @@ class HomeController extends AbstractController
             self::JUNIOR_CATEGORY
         );
 
-        $newSubscribers = $subscriptionRepository->findSubscribersForActualSeasonPerStatus(
+        $newSubscribers = $subscriptionRepository->findAllSubscribersForSeasonByLicenceByStatus(
             self::STATUS_NEW,
-            $actualSeason
+            self::STATUS_TRANSFER,
+            $actualSeason,
+            self::COMPETITION_LICENCE,
         );
 
         $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);

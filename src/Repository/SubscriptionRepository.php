@@ -80,25 +80,38 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
     /**
      * @param string|null $status
      * @param string|null $seasonName
+     * @param string|null $licenceAcronym
+     * @param string|null $secondStatus
      * @return Subscription
      * @throws NonUniqueResultException
      */
-    public function findSubscribersForActualSeasonPerStatus(?string $status, ?string $seasonName)
-    {
+    public function findAllSubscribersForSeasonByLicenceByStatus(
+        ?string $status,
+        ?string $secondStatus,
+        ?string $seasonName,
+        ?string $licenceAcronym
+    ) {
         return $this->createQueryBuilder('sub')
             ->select('COUNT(sub.subscriber)')
             ->innerJoin('App\Entity\Season', 's', 'WITH', 's.id = sub.season')
             ->innerJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
+            ->join('App\Entity\Licence', 'l', 'WITH', 'l.id=sub.licence')
             ->andWhere('s.name = :seasonName')
             ->andWhere('st.label = :status')
+            ->orWhere('st.label = :secondStatus')
+            ->andWhere('l.acronym = :licenceAcronym')
             ->setParameter('seasonName', $seasonName)
             ->setParameter('status', $status)
+            ->setParameter('secondStatus', $secondStatus)
+            ->setParameter('licenceAcronym', $licenceAcronym)
             ->getQuery()
             ->getOneOrNullResult();
     }
+
     public function subscribersByYearByLicences(?string $season): array
     {
         return $this->createQueryBuilder('subscription')

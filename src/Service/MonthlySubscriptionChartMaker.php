@@ -52,21 +52,25 @@ class MonthlySubscriptionChartMaker extends ChartMaker
         // Mise en forme des données récupérées pour les passer au graphique
         $currentSeasonData = [];
         $previousSeasonData = [];
+        $currentSeasonIndex = 0;
+        $previousSeasonIndex = 0;
         for ($i = 0; $i < 12; $i++) {
             if (
-                isset($currentSeasonMonthlyCount[$i]['month']) &&
-                $currentSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]
+                isset($currentSeasonMonthlyCount[$currentSeasonIndex]['month']) &&
+                $currentSeasonMonthlyCount[$currentSeasonIndex]['month'] == self::MONTH_SORT[$i]
             ) {
-                $currentSeasonData[] = $currentSeasonMonthlyCount[$i]['count'];
+                $currentSeasonData[] = $currentSeasonMonthlyCount[$currentSeasonIndex]['count'];
+                $currentSeasonIndex++;
             } else {
                 $currentSeasonData[] = 0;
             }
 
             if (
-                isset($previousSeasonMonthlyCount[$i]['month']) &&
-                $previousSeasonMonthlyCount[$i]['month'] == self::MONTH_SORT[$i]
+                isset($previousSeasonMonthlyCount[$previousSeasonIndex]['month']) &&
+                $previousSeasonMonthlyCount[$previousSeasonIndex]['month'] == self::MONTH_SORT[$i]
             ) {
-                $previousSeasonData[] = $previousSeasonMonthlyCount[$i]['count'];
+                $previousSeasonData[] = $previousSeasonMonthlyCount[$previousSeasonIndex]['count'];
+                $previousSeasonIndex++;
             } else {
                 $previousSeasonData[] = 0;
             }
