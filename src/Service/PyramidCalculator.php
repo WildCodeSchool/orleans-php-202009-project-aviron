@@ -63,7 +63,7 @@ class PyramidCalculator
         foreach ($renewalPyramid as $season => $renewsSeason) {
             $referenceIndex = 0;
             $seasonReferenceCount = 1;
-            $yearIndex = 1;
+            $yearIndex = 0;
             for ($index = 0; $index < count($renewsSeason); $index++) {
                 if ($renewsSeason[$index] === null) {
                     $referenceIndex++;
@@ -82,5 +82,28 @@ class PyramidCalculator
         }
 
         return $renewalPyramidPercent;
+    }
+
+    public function getAverageRenewalPercent(array $renewalPyramidPercent): array
+    {
+        $renewalPercentPerDuration = [];
+
+        foreach ($renewalPyramidPercent as $year) {
+            for ($index = 0; $index < count($year); $index++) {
+                $renewalPercentPerDuration[$index][] = $year[$index];
+            }
+        }
+
+        $renewalPerDurationAverage = [];
+        foreach ($renewalPercentPerDuration as $renewalPercentYear) {
+            $renewalPerDurationAverage[] = number_format(
+                array_sum($renewalPercentYear) / count($renewalPercentYear),
+                1,
+                ',',
+                ' '
+            );
+        }
+
+        return $renewalPerDurationAverage;
     }
 }

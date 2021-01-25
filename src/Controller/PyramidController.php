@@ -33,12 +33,13 @@ class PyramidController extends AbstractController
 
         $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $licence);
         $renewalPyramidPercent = $pyramidCalculator->getRenewalPyramidPercent($renewalPyramid);
+        $renewalPyramidAverage = $pyramidCalculator->getAverageRenewalPercent($renewalPyramidPercent);
 
         return $this->render('pyramid/pyramid.html.twig', [
             'seasons' => $seasons,
             'renewalPyramid' => $renewalPyramid,
             'renewalPyramidPercent' => $renewalPyramidPercent,
-
+            'renewalPercentAverage' => $renewalPyramidAverage,
         ]);
     }
 }
