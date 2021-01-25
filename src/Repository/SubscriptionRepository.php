@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Subscription|null findOneBy(array $criteria, array $orderBy = null)
  * @method Subscription[]    findAll()
  * @method Subscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @SuppressWarnings(PHPMD)
  */
 class SubscriptionRepository extends ServiceEntityRepository
 {
@@ -54,6 +55,18 @@ class SubscriptionRepository extends ServiceEntityRepository
         JOIN App\Entity\Subscriber subscriber
         WITH subscriber.id=subscription.subscriber
         GROUP BY seasonName, subscriber.gender";
+    }
+
+    public function totalLicencesPerSeason(): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, licence.name, season.name AS seasonName')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'licence.id=subscription.licence')
+            ->groupBy('season.name, licence.name')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
