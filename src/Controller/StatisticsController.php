@@ -94,16 +94,18 @@ class StatisticsController extends AbstractController
             self::LICENCES_NAME['D'] => [],
             self::LICENCES_NAME['U'] => [],
             self::LICENCES_NAME['I'] => [],
-
         ];
+
         $seasonNames = [];
         foreach ($seasons as $season) {
             $seasonNames[] = $season->getName();
-            $data[self::LICENCES_NAME['C']][] = 0;
-            $data[self::LICENCES_NAME['D']][] = 0;
-            $data[self::LICENCES_NAME['U']][] = 0;
-            $data[self::LICENCES_NAME['I']][] = 0;
         }
+
+        $data[self::LICENCES_NAME['C']] = array_fill(0, count($seasonNames), 0);
+        $data[self::LICENCES_NAME['D']] = array_fill(0, count($seasonNames), 0);
+        $data[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
+        $data[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
+
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalLicences); $j++) {
