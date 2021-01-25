@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+<div class="container-fluid">
+    <h1 class="text-center my-4">
+        Pyramide des renouvellements
+    </h1>
+
+    <div class="row pt-4">
+        <div class="col-12">
+            <table class="table table-hover table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        {% for season in seasons %}
+                            {% if loop.index == 1 %}
+                                <th class="text-center align-middle category-td h5">Général</th>
+                            {% endif %}
+                            <th scope="col" class="text-center">{{ season.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for season, data in renewalPyramid %}
+                        <tr>
+                            <th scope="row" class="text-center">{{ season }}</th>
+                            {% for total in data %}
+                                <td class="text-center align-middle">{{ total }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
