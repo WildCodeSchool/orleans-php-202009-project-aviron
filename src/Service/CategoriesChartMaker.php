@@ -17,10 +17,11 @@ class CategoriesChartMaker extends ChartMaker
         '#004C6D',
     ];
 
+    // Permet de grouper les résultats par catégories : 0 = 'Jeunes', 1 = 'Juniors', 2 = 'Seniors'
     private const CATEGORIES_GROUPS = [
-        'Jeunes' => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
-        'Juniors' => ['J15', 'J16', 'J17', 'J18'],
-        'Seniors' => ['S-23', 'S']
+        0 => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
+        1 => ['J15', 'J16', 'J17', 'J18'],
+        2 => ['S-23', 'S']
     ];
 
     private const CATEGORIES_LABELS = ['Jeunes', 'Juniors', 'Seniors'];
@@ -40,17 +41,14 @@ class CategoriesChartMaker extends ChartMaker
 
     public function getChart(?string $season): Chart
     {
-
         $subscriptionsByCategories = $this->subscriptionRepository->subscribersByYearByCategories($season);
         $subscriptionsData = [0, 0, 0];
 
         foreach ($subscriptionsByCategories as $subscriptionsByCategory) {
-            if (in_array($subscriptionsByCategory['label'], self::CATEGORIES_GROUPS['Jeunes'])) {
-                $subscriptionsData[0] += $subscriptionsByCategory['subscribersCount'];
-            } elseif (in_array($subscriptionsByCategory['label'], self::CATEGORIES_GROUPS['Juniors'])) {
-                $subscriptionsData[1] += $subscriptionsByCategory['subscribersCount'];
-            } elseif (in_array($subscriptionsByCategory['label'], self::CATEGORIES_GROUPS['Seniors'])) {
-                $subscriptionsData[2] += $subscriptionsByCategory['subscribersCount'];
+            foreach (self::CATEGORIES_GROUPS as $index => $labels) {
+                if (in_array($subscriptionsByCategory['label'], $labels)) {
+                    $subscriptionsData[$index] += $subscriptionsByCategory['subscribersCount'];
+                }
             }
         }
 

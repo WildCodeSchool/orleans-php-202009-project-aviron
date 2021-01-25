@@ -19,10 +19,10 @@ class LicencesChartMaker extends ChartMaker
     ];
 
     private const LICENCES_GROUPS = [
-        'A' => ['A'],
-        'U' => ['U'],
-        'D' => ['D7', 'D90', 'D30'],
-        'I' => ['I'],
+        0 => ['A'],
+        1 => ['U'],
+        2 => ['D7', 'D90', 'D30'],
+        3 => ['I'],
     ];
 
     private const LICENCES_LABELS = ['A', 'U', 'D', 'I'];
@@ -42,19 +42,14 @@ class LicencesChartMaker extends ChartMaker
 
     public function getChart(?string $season): Chart
     {
-
         $subscriptionsByLicences = $this->subscriptionRepository->subscribersByYearByLicences($season);
         $subscriptionsData = [0, 0, 0, 0];
 
         foreach ($subscriptionsByLicences as $subscriptionsByLicence) {
-            if (in_array($subscriptionsByLicence['label'], self::LICENCES_GROUPS['A'])) {
-                $subscriptionsData[0] += $subscriptionsByLicence['subscribersCount'];
-            } elseif (in_array($subscriptionsByLicence['label'], self::LICENCES_GROUPS['U'])) {
-                $subscriptionsData[1] += $subscriptionsByLicence['subscribersCount'];
-            } elseif (in_array($subscriptionsByLicence['label'], self::LICENCES_GROUPS['D'])) {
-                $subscriptionsData[2] += $subscriptionsByLicence['subscribersCount'];
-            } elseif (in_array($subscriptionsByLicence['label'], self::LICENCES_GROUPS['I'])) {
-                $subscriptionsData[3] += $subscriptionsByLicence['subscribersCount'];
+            foreach (self::LICENCES_GROUPS as $index => $labels) {
+                if (in_array($subscriptionsByLicence['label'], $labels)) {
+                    $subscriptionsData[$index] += $subscriptionsByLicence['subscribersCount'];
+                }
             }
         }
 
