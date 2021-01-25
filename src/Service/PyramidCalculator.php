@@ -63,7 +63,7 @@ class PyramidCalculator
         foreach ($renewalPyramid as $season => $renewsSeason) {
             $referenceIndex = 0;
             $seasonReferenceCount = 1;
-            $yearIndex = 0;
+            $yearIndex = 1;
             for ($index = 0; $index < count($renewsSeason); $index++) {
                 if ($renewsSeason[$index] === null) {
                     $referenceIndex++;
