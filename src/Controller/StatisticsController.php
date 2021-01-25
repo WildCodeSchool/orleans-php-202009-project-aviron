@@ -79,6 +79,39 @@ class StatisticsController extends AbstractController
             ])
         ]);
 
+
+//        $queryLicencesPerSeason = $subscriptionRepository->getQueryForLicencesPerSeason();
+
+//        $totalLicencesBuilder
+//            ->query($queryLicencesPerSeason)
+//            ->addDataSet('totalD', 'Découverte', [
+//                "backgroundColor" => self::LICENCES_PALETTE['Découverte'],
+//                "stack" => "stack 0"
+//            ])
+//            ->addDataSet('totalC', 'Compétition', [
+//                "backgroundColor" => self::LICENCES_PALETTE['Compétition'],
+//                "stack" => "stack 0"
+//            ])
+//            ->addDataSet('totalU', 'Universitaire', [
+//                "backgroundColor" => self::LICENCES_PALETTE['Universitaire'],
+//                "stack" => "stack 0"
+//            ])
+//            ->addDataSet('totalI', 'Indoor', [
+//                "backgroundColor" => self::LICENCES_PALETTE['Indoor'],
+//                "stack" => "stack 0"
+//            ])
+//            ->labels('seasonName');
+//        $licencesChart = $totalLicencesBuilder->buildChart('licences-chart', Chart::BAR);
+//        $licencesChart->pushOptions([
+//            "scales" => [
+//                "xAxes" => [
+//                    [
+//                        "stacked" => true
+//                    ]
+//                ],
+//            ]
+//        ]);
+
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
