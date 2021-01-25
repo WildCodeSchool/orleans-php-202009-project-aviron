@@ -32,12 +32,12 @@
         </div>
         <div class="row justify-content-between align-items-center mt-5">
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4">Répartition par catégories (%)</h4>
-                    {{ mukadi_chart(categoriesChart) }}
+                <h4 class="mb-4">Répartition par catégories</h4>
+                {{ render_chart(categoriesChart) }}
             </div>
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4">Répartition par licences (%)</h4>
-                {{ mukadi_chart(licencesChart) }}
+                <h4 class="mb-4">Répartition par licences</h4>
+                {{ render_chart(licencesChart) }}
             </div>
         </div>
         <div class="row justify-content-between align-items-center mt-5">
@@ -111,10 +111,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-{% block javascripts %}
-    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
-    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
-    {{ encore_entry_script_tags('app') }}
-    {{ encore_entry_script_tags('navbar') }}
 {% endblock %}

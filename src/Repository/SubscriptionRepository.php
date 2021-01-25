@@ -122,20 +122,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->setParameter('season', $season)
             ->groupBy('licence.acronym')
             ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    public function getQueryForSubscribersByYearByLicences(?string $season): string
-    {
-        return 'SELECT licence.acronym as label, COUNT(subscription.subscriber) as subscribersCount 
-        FROM App\Entity\Subscription subscription 
-        JOIN App\Entity\Licence licence 
-        WITH licence.id=subscription.licence 
-        JOIN App\Entity\Season season 
-        WITH season.id=subscription.season 
-        WHERE season.name = \'' . $season . '\'
-        GROUP BY licence.acronym';
+            ->getResult();
     }
 
     public function subscribersByYearByCategories(?string $season): array
@@ -150,19 +137,6 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->orderBy('c.id')
             ->getQuery()
             ->getResult();
-    }
-
-    public function getQueryForSubscribersByYearByCategories(?string $season): string
-    {
-        return 'SELECT COUNT(sub.category) as subscribersCount, c.label as label 
-                    FROM \App\Entity\Subscription sub
-                    JOIN \App\Entity\Category c
-                    WITH c.id = sub.category
-                    JOIN \App\Entity\Season s
-                    WITH s.id = sub.season
-                    WHERE s.name = \'' . $season . '\'
-                    GROUP BY sub.category
-                    ORDER BY c.id ASC';
     }
 
     public function subscribersByYearByStatus(?string $season): array
