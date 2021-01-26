@@ -44,6 +44,7 @@ class StatisticsController extends AbstractController
                     );
             }
         }
+
         return $this->render('statistics/general.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
@@ -74,18 +75,43 @@ class StatisticsController extends AbstractController
 
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
-                $subscriptions[$category->getLabel()][$licence->getAcronym()] =
-                    $subscriptionRepository->findOutgoingSubscribers(
-                        $category->getLabel(),
-                        $licence->getAcronym()
-                    );
+                for ($season = 1; $season < count($seasons); $season++) {
+                    $previousSub = $subscriptionRepository->findBy([
+                        'season' => $seasons[$season - 1],
+                        'licence' => $licence,
+                        'category' => $category
+                    ]);
+
+                    $subscriptions[$category->getLabel()]
+                    [$licence->getAcronym()]
+                    [$seasons[$season]->getName()]['H'] = 0;
+                    $subscriptions[$category->getLabel()]
+                    [$licence->getAcronym()]
+                    [$seasons[$season]->getName()]['F'] = 0;
+
+                    foreach ($previousSub as $subscription) {
+                        $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
+                        $subscriberGender = $subscription->getSubscriber()->getGender();
+
+                        $subscriberSeasons = [];
+                        foreach ($subscriptionsSubscriber as $subscriber) {
+                            $subscriberSeasons[] = $subscriber->getSeason()->getName();
+                        }
+
+                        if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
+                            $subscriptions[$category->getLabel()]
+                            [$licence->getAcronym()]
+                            [$seasons[$season]->getName()]
+                            [$subscriberGender]++;
+                        }
+                    }
+                }
             }
         }
+
         return $this->render('statistics/outgoing.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
-            'categories' => $categories,
-            'licences' => $licences
         ]);
     }
 }

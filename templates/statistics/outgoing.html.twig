@@ -1,58 +1,65 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-<div class="container-fluid">
-    <h1 class="text-center my-4">
-        Récapitulatif des inscriptions
-    </h1>
-    <div class="row">
-        <div class="col-12">
-            <table class="table table-hover table-striped">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col" class="text-center" >Catégorie</th>
-                    <th scope="col" class="text-center">Type de licence</th>
-                    <th scope="col" class="text-center">Sexe</th>
-                    {% for season in seasons %}
-                        <th scope="col" class="text-center">{{ season.name }}</th>
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for categoryLabel, licences in statistics %}
-                    {%  for licenceAcronym, licenceData in licences %}
-                        <tr>
-                            {% if loop.index == 1 %}
-                            <td class="text-center align-middle category-td" rowspan="12">{{ categoryLabel }}</td>
+    <div class="container-fluid">
+        <h1 class="text-center my-4">
+            Statistiques - Sortants
+        </h1>
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-hover table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" class="text-center">Catégorie</th>
+                        <th scope="col" class="text-center">Type de licence</th>
+                        <th scope="col" class="text-center">Sexe</th>
+                        {% for season in seasons %}
+                            {% if loop.index >= 2 %}
+                                <th scope="col" class="text-center">{{ season.name }}</th>
                             {% endif %}
-                            <td class="text-center align-middle licence-td" rowspan="2">{{ licenceAcronym}} </td>
-                            <td class="text-center">F</td>
-                                {% for season in seasons %}
-                                        {% for seasonData in licenceData|filter(seasonData => seasonData.name == season.name and seasonData.gender == 'F') %}
-                                            <td class="text-center">
-                                            {{ seasonData.total }}
-                                            </td>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for categoryLabel, licences in statistics %}
+                        {% for licenceAcronym, licenceData in licences %}
+                            <tr>
+                                {% if loop.first %}
+                                    <td class="text-center align-middle category-td"
+                                        rowspan="12">{{ categoryLabel }}</td>
+                                {% endif %}
+                                <td class="text-center align-middle licence-td" rowspan="2">{{ licenceAcronym }} </td>
+                                <td class="text-center">F</td>
+                                {% for seasonName, genderData in licenceData %}
+                                    {% for gender, genderTotal in genderData|filter((genderTotal, gender) => gender == 'F') %}
+                                        {% if genderTotal == 0 %}
+                                            <td class="text-center">-</td>
                                         {% else %}
-                                            <td></td>
-                                        {% endfor %}
+                                            <td class="text-center">
+                                                {{ genderTotal }}
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
-                        </tr>
-                        <tr>
-                            <td class="text-center">H</td>
-                            {% for season in seasons %}
-                                {% for seasonData in licenceData|filter(seasonData => seasonData.name == season.name and seasonData.gender == 'H') %}
-                                    <td class="text-center">
-                                        {{ seasonData.total }}
-                                    </td>
-                                {% else %}
-                                    <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">H</td>
+                                {% for seasonName, genderData in licenceData %}
+                                    {% for gender, genderTotal in genderData|filter((genderTotal, gender) => gender == 'H') %}
+                                        {% if genderTotal == 0 %}
+                                            <td class="text-center">-</td>
+                                        {% else %}
+                                            <td class="text-center">
+                                                {{ genderTotal }}
+                                            </td>
+                                        {% endif %}
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
-                        </tr>
+                            </tr>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
