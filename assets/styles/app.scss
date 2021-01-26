@@ -59,3 +59,17 @@ h4 {
     position: absolute;
     right: 0;
 }
+
+.error-page {
+    height: 100vh;
+    background: no-repeat linear-gradient(
+                    rgba(255, 255, 255, 0.5),
+                    rgba(255, 255, 255, 0.5)
+    ), url("../images/aviron.jpg");
+    background-size: cover;
+    font-size: 1.5rem;
+}
+
+.error-page a {
+    font-size: 1.25rem;
+}
