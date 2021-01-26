@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Filter;
+use App\Form\PyramidFilterType;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\SubscriptionRepository;
 use App\Service\PyramidCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,8 +29,15 @@ class PyramidController extends AbstractController
     public function renewalPyramid(
         SeasonRepository $seasonRepository,
         LicenceRepository $licenceRepository,
-        PyramidCalculator $pyramidCalculator
+        PyramidCalculator $pyramidCalculator,
+        Request $request
     ): Response {
+
+        $filter = new Filter();
+
+        $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
+        $form->handleRequest($request);
+
         $seasons = $seasonRepository->findAll();
         $licence = $licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
 
@@ -36,6 +46,7 @@ class PyramidController extends AbstractController
         $renewalPyramidAverage = $pyramidCalculator->getAverageRenewalPercent($renewalPyramidPercent);
 
         return $this->render('pyramid/pyramid.html.twig', [
+            'form' => $form->createView(),
             'seasons' => $seasons,
             'renewalPyramid' => $renewalPyramid,
             'renewalPyramidPercent' => $renewalPyramidPercent,
