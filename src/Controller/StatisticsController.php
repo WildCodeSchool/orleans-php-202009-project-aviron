@@ -108,25 +108,24 @@ class StatisticsController extends AbstractController
 
         if ($categoryFilter === null) {
             $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
-            for ($i = 0; $i < count($seasonNames); $i++) {
-                for ($j = 0; $j < count($totalLicences); $j++) {
-                    if ($totalLicences[$j]['seasonName'] == $seasonNames[$i]) {
-                        if ($totalLicences[$j]['name'] == self::LICENCES_NAME['C']) {
-                            $data[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
-                        } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['D']) {
-                            $data[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
-                        } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['U']) {
-                            $data[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
-                        } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['I']) {
-                            $data[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
-                        }
-                    }
-                }
-            }
         } else {
             $totalLicences = $subscriptionRepository->totalLicencesPerSeasonPerCategory($categoryFilter);
         }
-
+        for ($i = 0; $i < count($seasonNames); $i++) {
+            for ($j = 0; $j < count($totalLicences); $j++) {
+                if ($totalLicences[$j]['seasonName'] == $seasonNames[$i]) {
+                    if ($totalLicences[$j]['name'] == self::LICENCES_NAME['C']) {
+                        $data[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['D']) {
+                        $data[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['U']) {
+                        $data[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['I']) {
+                        $data[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
+                    }
+                }
+            }
+        }
 
         $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $licencesChart->setData([
@@ -177,7 +176,8 @@ class StatisticsController extends AbstractController
             'totalPerSeason' => $totalPerSeason,
             'grandTotal' => $grandTotalPerSeason,
             'totalChart' => $totalChart,
-            'licencesChart' => $licencesChart
+            'licencesChart' => $licencesChart,
+            'categoryFilter' => $categoryFilter
         ]);
     }
 }
