@@ -6,6 +6,13 @@
     <h1 class="text-center my-4">
         Statistiques - Général
     </h1>
+    <div class="row ml-4">
+        <div class="col">
+            <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes' }) }}" class="btn btn-primary btn-sm">Jeune</a>
+            <a href="{{ path('statistics_general', { categoryFilter : 'Juniors' }) }}" class="btn btn-primary btn-sm">Junior</a>
+            <a href="{{ path('statistics_general', { categoryFilter : 'Seniors' }) }}" class="btn btn-primary btn-sm">Senior</a>
+        </div>
+    </div>
     <div class="row pb-4">
         <div class="col">
             {{ render_chart(licencesChart) }}
