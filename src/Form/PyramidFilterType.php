@@ -38,7 +38,7 @@ class PyramidFilterType extends AbstractType
                 'label' => 'à',
                 'error_bubbling' => true
             ])
-            ->add('gender', ChoiceType::class, [
+            /*->add('gender', ChoiceType::class, [
                 'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
                 'multiple' => true,
@@ -57,7 +57,7 @@ class PyramidFilterType extends AbstractType
                 'required' => false,
                 'error_bubbling' => true,
                 'invalid_message' => "Le statut choisi n'est pas une valeur valide"
-            ])
+            ])*/
 /*            ->add('seasonStatus', EntityType::class, [
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
@@ -68,7 +68,7 @@ class PyramidFilterType extends AbstractType
                 'label' => 'Saison',
                 'error_bubbling' => true
             ])*/
-            ->add('fromCategory', EntityType::class, [
+           /* ->add('fromCategory', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => function ($category) {
                     return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
@@ -99,7 +99,7 @@ class PyramidFilterType extends AbstractType
                 'label' => 'à',
                 'required' => false,
                 'error_bubbling' => true
-            ])
+            ])*/
             ;
     }
 

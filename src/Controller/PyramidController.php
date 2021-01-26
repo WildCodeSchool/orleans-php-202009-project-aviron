@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Filter;
+use App\Entity\PyramidFilter;
 use App\Form\PyramidFilterType;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
@@ -24,6 +25,7 @@ class PyramidController extends AbstractController
      * @param SeasonRepository $seasonRepository
      * @param LicenceRepository $licenceRepository
      * @param PyramidCalculator $pyramidCalculator
+     * @param Request $request
      * @return Response
      */
     public function renewalPyramid(
@@ -33,13 +35,19 @@ class PyramidController extends AbstractController
         Request $request
     ): Response {
 
-        $filter = new Filter();
+        $filter = new PyramidFilter();
 
         $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
-        $seasons = $seasonRepository->findAll();
         $licence = $licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filters = $form->getData();
+            $seasons = $seasonRepository->findByFilter($filters);
+        } else {
+            $seasons = $seasonRepository->findAll();
+        }
 
         $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $licence);
         $renewalPyramidPercent = $pyramidCalculator->getRenewalPyramidPercent($renewalPyramid);
