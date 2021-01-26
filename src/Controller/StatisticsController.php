@@ -17,7 +17,7 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 /**
  * @SuppressWarnings(PHPMD)
- * @Route("/statistics", name="statistics_")
+ * @Route("/statistiques", name="statistics_")
  */
 class StatisticsController extends AbstractController
 {
@@ -219,7 +219,7 @@ class StatisticsController extends AbstractController
     }
 
     /**
-     * @Route("/outgoing", name="outgoing")
+     * @Route("/sortants", name="outgoing")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
