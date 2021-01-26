@@ -38,6 +38,15 @@ class StatisticsController extends AbstractController
         'I' => 'Indoor',
     ];
 
+    private const CATEGORIES_NAME = [
+        'Benjamin' => ['J9', 'J12'],
+        'Minime' => ['J13', 'J14'],
+        'Cadet' => ['J15', 'J16'],
+        'Junior' => ['J17', 'J18'],
+        'Senior B' => ['S-23'],
+        'Senior A' => ['S'],
+    ];
+
     /**
      * @Route("/general", name="general")
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -89,7 +98,7 @@ class StatisticsController extends AbstractController
 
         $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
 
-        $data = [
+        $licencesData = [
             self::LICENCES_NAME['C'] => [],
             self::LICENCES_NAME['D'] => [],
             self::LICENCES_NAME['U'] => [],
@@ -101,23 +110,23 @@ class StatisticsController extends AbstractController
             $seasonNames[] = $season->getName();
         }
 
-        $data[self::LICENCES_NAME['C']] = array_fill(0, count($seasonNames), 0);
-        $data[self::LICENCES_NAME['D']] = array_fill(0, count($seasonNames), 0);
-        $data[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
-        $data[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['C']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['D']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
 
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalLicences); $j++) {
                 if ($totalLicences[$j]['seasonName'] == $seasonNames[$i]) {
                     if ($totalLicences[$j]['name'] == self::LICENCES_NAME['C']) {
-                        $data[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
+                        $licencesData[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
                     } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['D']) {
-                        $data[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
+                        $licencesData[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
                     } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['U']) {
-                        $data[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
+                        $licencesData[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
                     } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['I']) {
-                        $data[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
+                        $licencesData[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
                     }
                 }
             }
@@ -130,22 +139,99 @@ class StatisticsController extends AbstractController
                 [
                     'label' => self::LICENCES_NAME['C'],
                     'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
-                    'data' => $data[self::LICENCES_NAME['C']],
+                    'data' => $licencesData[self::LICENCES_NAME['C']],
                 ],
                 [
                     'label' => self::LICENCES_NAME['D'],
                     'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
-                    'data' => $data[self::LICENCES_NAME['D']],
+                    'data' => $licencesData[self::LICENCES_NAME['D']],
                 ],
                 [
                     'label' => self::LICENCES_NAME['U'],
                     'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
-                    'data' => $data[self::LICENCES_NAME['U']],
+                    'data' => $licencesData[self::LICENCES_NAME['U']],
                 ],
                 [
                     'label' => self::LICENCES_NAME['I'],
                     'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
-                    'data' => $data[self::LICENCES_NAME['I']],
+                    'data' => $licencesData[self::LICENCES_NAME['I']],
+                ],
+            ]
+        ]);
+        $licencesChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+            ]
+        ]);
+
+        $totalCategories = $subscriptionRepository->totalCategoriesPerSeason();
+
+        $licencesData = [
+            self::LICENCES_NAME['C'] => [],
+            self::LICENCES_NAME['D'] => [],
+            self::LICENCES_NAME['U'] => [],
+            self::LICENCES_NAME['I'] => [],
+        ];
+
+        $seasonNames = [];
+        foreach ($seasons as $season) {
+            $seasonNames[] = $season->getName();
+        }
+
+        $licencesData[self::LICENCES_NAME['C']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['D']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
+        $licencesData[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
+
+
+        for ($i = 0; $i < count($seasonNames); $i++) {
+            for ($j = 0; $j < count($totalLicences); $j++) {
+                if ($totalLicences[$j]['seasonName'] == $seasonNames[$i]) {
+                    if ($totalLicences[$j]['name'] == self::LICENCES_NAME['C']) {
+                        $licencesData[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['D']) {
+                        $licencesData[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['U']) {
+                        $licencesData[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
+                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['I']) {
+                        $licencesData[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
+                    }
+                }
+            }
+        }
+
+        $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $licencesChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => [
+                [
+                    'label' => self::LICENCES_NAME['C'],
+                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
+                    'data' => $licencesData[self::LICENCES_NAME['C']],
+                ],
+                [
+                    'label' => self::LICENCES_NAME['D'],
+                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
+                    'data' => $licencesData[self::LICENCES_NAME['D']],
+                ],
+                [
+                    'label' => self::LICENCES_NAME['U'],
+                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
+                    'data' => $licencesData[self::LICENCES_NAME['U']],
+                ],
+                [
+                    'label' => self::LICENCES_NAME['I'],
+                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
+                    'data' => $licencesData[self::LICENCES_NAME['I']],
                 ],
             ]
         ]);
