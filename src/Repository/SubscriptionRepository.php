@@ -71,10 +71,10 @@ class SubscriptionRepository extends ServiceEntityRepository
     public function totalCategoriesPerSeason(): array
     {
         return $this->createQueryBuilder('subscription')
-            ->select('COUNT(subscription.subscriber) AS total, category.name, season.name AS seasonName')
+            ->select('COUNT(subscription.subscriber) AS total, category.label, season.name AS seasonName')
             ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
             ->leftJoin('App\Entity\Category', 'category', 'WITH', 'category.id=subscription.category')
-            ->groupBy('season.name, category.name')
+            ->groupBy('season.name, category.label')
             ->orderBy('season.name')
             ->getQuery()
             ->getResult();
