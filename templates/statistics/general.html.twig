@@ -6,25 +6,35 @@
     <h1 class="text-center my-4">
         Statistiques - Général
     </h1>
+    <div class="row ml-4">
+        <div class="col mt-5">
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ licenceFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les licences</a>
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Compétition' }) }}" class="btn {{ licenceFilter == 'Compétition' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Compétition</a>
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Découverte' }) }}" class="btn {{ licenceFilter == 'Découverte' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Découverte</a>
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Indoor' }) }}" class="btn {{ licenceFilter == 'Indoor' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Indoor</a>
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Universitaire' }) }}" class="btn {{ licenceFilter == 'Universitaire' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Universitaire</a>
+
+        </div>
+    </div>
     <div class="row pb-4 mb-5">
         <div class="col">
             {{ render_chart(categoriesChart) }}
         </div>
     </div>
-    <div class="row ml-4 mt-5">
-        <div class="col">
-            <a href="{{ path('statistics_general', { categoryFilter : '' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
-            <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
-            <a href="{{ path('statistics_general', { categoryFilter : 'Juniors' }) }}" class="btn {{ categoryFilter == 'Juniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Junior</a>
-            <a href="{{ path('statistics_general', { categoryFilter : 'Seniors' }) }}" class="btn {{ categoryFilter == 'Seniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Senior</a>
+    <div class="row ml-4">
+        <div class="col mt-5">
+            <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
+            <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes', licenceFilter : '' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
+            <a href="{{ path('statistics_general', { categoryFilter : 'Juniors', licenceFilter : '' }) }}" class="btn {{ categoryFilter == 'Juniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Junior</a>
+            <a href="{{ path('statistics_general', { categoryFilter : 'Seniors', licenceFilter : '' }) }}" class="btn {{ categoryFilter == 'Seniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Senior</a>
         </div>
     </div>
-    <div class="row pb-4">
+    <div class="row pb-4 mb-5">
         <div class="col">
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div class="row pb-4 pt-4">
+    <div class="row pb-4 mt-5">
         <div class="col">
             {{ mukadi_chart(totalChart) }}
         </div>
