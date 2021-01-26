@@ -87,6 +87,32 @@
                 </a>
             </div>
         </div>
+        <div class="row mb-3 mr-1 justify-content-end align-items-center">
+            {% if display == 'renewal' %}
+                Statuts :
+                {% for status in statusDB %}
+                    <div class="p-1 ml-2" style="background-color: {{ status.color }};">
+                        {{ status.name }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if display == 'subscriptions' %}
+                Catégories :
+                {% for color, category in categoriesDB %}
+                    <div class="p-1 ml-2" style="background-color: {{ color }};">
+                        {{ category }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if display == 'licences' %}
+                Types de licences :
+                {% for licence in licencesDB %}
+                    <div class="p-1 ml-2" style="background-color: {{ licence.color }};">
+                        {{ licence.name }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
         <div class="row">
             <div class="col-12">
                 <table class="table table-hover table-striped">
@@ -108,7 +134,7 @@
                             <td>{{ subscriber.licenceNumber}}</td>
                             <td>{{ subscriber.lastname }}</td>
                             <td>{{ subscriber.firstname }}</td>
-                            <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
+                            <td>{{ subscriber.birthdate|date("d/m/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
                                 {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
@@ -138,7 +164,7 @@
                             })
                         }}
                     </nav>
-                    <div class="mt-2 mr-4 results">{{ numberResults }} résultats</div>
+                    <div class="mt-2 mr-4 results">{{ numberResults }} résultat(s)</div>
                 </div>
                 <div class="row">
                     <div class="col">

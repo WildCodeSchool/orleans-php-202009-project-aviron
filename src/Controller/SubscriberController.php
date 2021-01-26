@@ -24,11 +24,12 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SubscriberController extends AbstractController
 {
-    private const PAGINATION_LIMIT = 12;
+    private const PAGINATION_LIMIT = 25;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      * @Route("/{display}/filtres/", name="filter")
      * @param string $display
      * @param Request $request
@@ -109,12 +110,26 @@ class SubscriberController extends AbstractController
             $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
             $entityManager->flush();
             $numberResults = count($subscribersData);
+            $categories = $categoryRepository->findAll();
+            $categoriesDB = [];
+            $key = '';
+            foreach ($categories as $category) {
+                if ($category->getColor() === $key) {
+                    $categoriesDB[$key] .= ', ' . $category->getLabel();
+                } else {
+                    $key = $category->getColor();
+                    $categoriesDB[$key] = $category->getOldGroup() . ' : ' . $category->getLabel();
+                }
+            }
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
                 'filters' => $filters,
+                'statusDB' => $statusRepository->findAll(),
+                'categoriesDB' => $categoriesDB,
+                'licencesDB' => $licenceRepository->findAllGroupByName(),
                 'numberResults' => $numberResults
             ]);
         }
