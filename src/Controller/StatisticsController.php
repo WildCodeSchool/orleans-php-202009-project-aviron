@@ -51,7 +51,7 @@ class StatisticsController extends AbstractController
     ];
 
     /**
-     * @Route("/general/{categoryFilter}", name="general")
+     * @Route("/general/{categoryFilter}/{licenceFilter}", name="general")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
@@ -67,7 +67,8 @@ class StatisticsController extends AbstractController
         CategoryRepository $categoryRepository,
         Builder $totalBuilder,
         ChartBuilderInterface $chartBuilder,
-        ?string $categoryFilter = null
+        ?string $categoryFilter = null,
+        ?string $licenceFilter = null
     ): Response {
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
@@ -76,6 +77,7 @@ class StatisticsController extends AbstractController
         $totalPerSeason = $subscriptionRepository->totalPerSeason();
         $grandTotalPerSeason = $subscriptionRepository->grandTotalPerSeason();
 
+        //construction du tableau du total par licence par catégorie par saison
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
                 $subscriptions[$category->getLabel()][$licence->getAcronym()] =
@@ -85,6 +87,8 @@ class StatisticsController extends AbstractController
                     );
             }
         }
+
+        //construction graphique par genre
         $queryTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
 
         $totalBuilder
@@ -100,11 +104,13 @@ class StatisticsController extends AbstractController
             ->labels('seasonName');
         $totalChart = $totalBuilder->buildChart('total-chart', MChart::BAR);
 
+        //récupération du nom des saisons pour label des graphique
         $seasonNames = [];
         foreach ($seasons as $season) {
             $seasonNames[] = $season->getName();
         }
 
+        //construction du graphique de licences
         foreach (self::LICENCES_NAME as $licenceName) {
             $licencesData[$licenceName] = array_fill(0, count($seasonNames), 0);
         }
@@ -147,7 +153,8 @@ class StatisticsController extends AbstractController
             ]
         ]);
 
-        $totalCategories = $subscriptionRepository->totalCategoriesPerSeason();
+        //construction du graphique de catégories
+        $totalCategories = $subscriptionRepository->totalCategoriesPerSeason($licenceFilter);
 
         foreach (self::CATEGORIES_NAME as $categoryName => $categoryLabel) {
             $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
@@ -203,7 +210,8 @@ class StatisticsController extends AbstractController
             'totalChart' => $totalChart,
             'licencesChart' => $licencesChart,
             'categoriesChart' => $categoriesChart,
-            'categoryFilter' => $categoryFilter
+            'categoryFilter' => $categoryFilter,
+            'licenceFilter' => $licenceFilter
         ]);
     }
 }
