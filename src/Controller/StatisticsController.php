@@ -9,6 +9,7 @@ use App\Repository\SubscriptionRepository;
 use Mukadi\Chart\Chart as MChart;
 use Mukadi\ChartJSBundle\Chart\Builder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -51,7 +52,7 @@ class StatisticsController extends AbstractController
     ];
 
     /**
-     * @Route("/general/{categoryFilter}/{licenceFilter}", name="general")
+     * @Route("/general", name="general")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
@@ -61,6 +62,7 @@ class StatisticsController extends AbstractController
      * @return Response
      */
     public function generalStatistics(
+        Request $request,
         SeasonRepository $seasonRepository,
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
@@ -76,6 +78,9 @@ class StatisticsController extends AbstractController
         $seasons = $seasonRepository->findAll();
         $totalPerSeason = $subscriptionRepository->totalPerSeason();
         $grandTotalPerSeason = $subscriptionRepository->grandTotalPerSeason();
+        $categoryFilter = $request->query->get('categoryFilter');
+        $licenceFilter = $request->query->get('licenceFilter');
+
 
         //construction du tableau du total par licence par catégorie par saison
         foreach ($categories as $category) {
