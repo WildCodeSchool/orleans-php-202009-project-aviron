@@ -5,10 +5,7 @@ $font-size-button: 1.25rem;
 
 .error-page {
     height: 100vh;
-    background: no-repeat linear-gradient(
-                    rgba(255, 255, 255, 0.5),
-                    rgba(255, 255, 255, 0.5)
-    ), url("../images/aviron.jpg");
+    background: no-repeat linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url("../images/aviron.jpg");
     background-size: cover;
     font-size: $font-size-error;
 }
