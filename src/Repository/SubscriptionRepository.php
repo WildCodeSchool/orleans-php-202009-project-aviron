@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Licence;
 use App\Entity\PyramidFilter;
 use App\Entity\Season;
+use App\Entity\Status;
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -269,7 +270,12 @@ class SubscriptionRepository extends ServiceEntityRepository
                 $queryBuilder
             );
         }
-        return $queryBuilder->getQuery()->getResult();
+
+        if (!is_null($filter) && !empty($filter->isNewSubscriber())) {
+            $queryBuilder = $this->filterNewSubscribers($queryBuilder);
+        }
+
+            return $queryBuilder->getQuery()->getResult();
     }
 
     private function filterByCategory(
@@ -298,6 +304,18 @@ class SubscriptionRepository extends ServiceEntityRepository
         $queryBuilder = $queryBuilder
             ->andWhere('sub.category IN (:categories)')
             ->setParameter('categories', $categoriesSelected);
+
+        return $queryBuilder;
+    }
+
+    private function filterNewSubscribers(QueryBuilder $queryBuilder): QueryBuilder
+    {
+        $statusRepository = $this->getEntityManager()->getRepository(Status::class);
+        $statusNew = [$statusRepository->findOneBy(['label' => 'N']), $statusRepository->findOneBy(['label' => 'T'])];
+
+        $queryBuilder = $queryBuilder
+            ->andWhere('sub.status IN (:statusNew)')
+            ->setParameter('statusNew', $statusNew);
 
         return $queryBuilder;
     }

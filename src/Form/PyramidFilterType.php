@@ -4,11 +4,11 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Season;
-use App\Entity\Status;
 use App\Entity\Subscriber;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -47,18 +47,11 @@ class PyramidFilterType extends AbstractType
                 'placeholder' => false,
                 'error_bubbling' => true,
                 'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
-            ])/*
-            ->add('status', EntityType::class, [
-                'class' => Status::class,
-                'choice_label' => 'name',
-                'expanded' => true,
-                'multiple' => true,
-                'label' => false,
-                'required' => false,
-                'error_bubbling' => true,
-                'invalid_message' => "Le statut choisi n'est pas une valeur valide"
-            ])*/
-
+            ])
+            ->add('newSubscriber', CheckboxType::class, [
+                'label' => 'Nouveaux uniquement',
+                'required' => false
+            ])
             ->add('fromCategory', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => function ($category) {

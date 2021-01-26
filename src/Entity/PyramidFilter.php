@@ -2,10 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
-use App\Repository\LicenceRepository;
-use App\Repository\SeasonRepository;
-use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class PyramidFilter
@@ -28,6 +24,8 @@ class PyramidFilter
     private ?Category $fromCategory = null;
 
     private ?Category $toCategory = null;
+
+    private bool $newSubscriber = false;
 
 
     /**
@@ -123,5 +121,22 @@ class PyramidFilter
         $this->toCategory = $toCategory;
 
         return $this;
+    }
+
+
+    /**
+     * @return bool
+     */
+    public function isNewSubscriber(): bool
+    {
+        return $this->newSubscriber;
+    }
+
+    /**
+     * @param bool $newSubscriber
+     */
+    public function setNewSubscriber(bool $newSubscriber): void
+    {
+        $this->newSubscriber = $newSubscriber;
     }
 }
