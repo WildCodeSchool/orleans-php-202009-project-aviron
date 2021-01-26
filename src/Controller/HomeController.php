@@ -72,8 +72,7 @@ class HomeController extends AbstractController
         );
 
         $newSubscribers = $subscriptionRepository->findAllSubscribersForSeasonByLicenceByStatus(
-            self::STATUS_NEW,
-            self::STATUS_TRANSFER,
+            [self::STATUS_NEW, self::STATUS_TRANSFER],
             $actualSeason,
             self::COMPETITION_LICENCE,
         );

@@ -123,16 +123,14 @@ class SubscriptionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string|null $status
+     * @param array|null $status
      * @param string|null $seasonName
      * @param string|null $licenceAcronym
-     * @param string|null $secondStatus
      * @return Subscription
      * @throws NonUniqueResultException
      */
     public function findAllSubscribersForSeasonByLicenceByStatus(
-        ?string $status,
-        ?string $secondStatus,
+        ?array $status,
         ?string $seasonName,
         ?string $licenceAcronym
     ) {
@@ -142,12 +140,10 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->innerJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
             ->join('App\Entity\Licence', 'l', 'WITH', 'l.id=sub.licence')
             ->andWhere('s.name = :seasonName')
-            ->andWhere('st.label = :status')
-            ->orWhere('st.label = :secondStatus')
+            ->andWhere('st.label IN (:status)')
             ->andWhere('l.acronym = :licenceAcronym')
             ->setParameter('seasonName', $seasonName)
             ->setParameter('status', $status)
-            ->setParameter('secondStatus', $secondStatus)
             ->setParameter('licenceAcronym', $licenceAcronym)
             ->getQuery()
             ->getOneOrNullResult();
