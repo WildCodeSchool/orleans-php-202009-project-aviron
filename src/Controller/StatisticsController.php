@@ -153,30 +153,19 @@ class StatisticsController extends AbstractController
         }
 
         for ($i = 0; $i < count($seasonNames); $i++) {
-            for ($j = 0; $j < count($totalLicences); $j++) {
+            for ($j = 0; $j < count($totalCategories); $j++) {
                 if ($totalCategories[$j]['seasonName'] == $seasonNames[$i]) {
-                    $categoriesData[$totalCategories[$j]['newGroup']][$i] += $totalCategories[$j]['total'];
+                    foreach (self::CATEGORIES_NAME as $categoryLabel => $category) {
+                        if (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME[$categoryLabel])) {
+                            $categoriesData[$categoryLabel][$i] += $totalCategories[$j]['total'];
+                        }
+                    }
                 }
             }
         }
 
-
-//        for ($i = 0; $i < count($seasonNames); $i++) {
-//            for ($j = 0; $j < count($totalCategories); $j++) {
-//                if ($totalCategories[$j]['seasonName'] == $seasonNames[$i]) {
-//                    if (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Jeune'])) {
-//                        $categoriesData['Jeune'][$i] += $totalCategories[$j]['total'];
-//                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Junior'])) {
-//                        $categoriesData['Junior'][$i] += $totalCategories[$j]['total'];
-//                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Senior'])) {
-//                        $categoriesData['Senior'][$i] += $totalCategories[$j]['total'];
-//                    }
-//                }
-//            }
-//        }
-
         foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
-            $categoryDatataSets[] = [
+            $categoryDataSets[] = [
                 'label' => $categoryName,
                 'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
                 'data' => $categoriesData[$categoryName],
@@ -186,7 +175,7 @@ class StatisticsController extends AbstractController
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $categoryDatataSets
+            'datasets' => $categoryDataSets
         ]);
         $categoriesChart->setOptions([
             "scales" => [

@@ -75,7 +75,7 @@ class SubscriptionRepository extends ServiceEntityRepository
             season.name AS seasonName')
             ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
             ->leftJoin('App\Entity\Category', 'category', 'WITH', 'category.id=subscription.category')
-            ->groupBy('season.name, category.label')
+            ->groupBy('season.name, category.label, category.newGroup')
             ->orderBy('season.name')
             ->getQuery()
             ->getResult();
