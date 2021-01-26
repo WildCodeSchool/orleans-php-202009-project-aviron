@@ -11,7 +11,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/logout", name="app_logout", methods={"GET"})
+     * @Route("/se-deconnecter", name="app_logout", methods={"GET"})
      */
     public function logout(): void
     {
@@ -19,7 +19,7 @@ class SecurityController extends AbstractController
         throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
     /**
-     * @Route("/login", name="app_login")
+     * @Route("/connexion", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
