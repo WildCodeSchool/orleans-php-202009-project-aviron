@@ -6,25 +6,25 @@
     <h1 class="text-center my-4">
         Statistiques - Général
     </h1>
-    <div class="row ml-4">
+    <div class="row pb-4 mb-5">
         <div class="col">
+            {{ render_chart(categoriesChart) }}
+        </div>
+    </div>
+    <div class="row ml-4">
+        <div class="col mt-5">
             <a href="{{ path('statistics_general', { categoryFilter : '' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Juniors' }) }}" class="btn {{ categoryFilter == 'Juniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Junior</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Seniors' }) }}" class="btn {{ categoryFilter == 'Seniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Senior</a>
         </div>
     </div>
-    <div class="row pb-4">
-        <div class="col">
-            {{ render_chart(categoriesChart) }}
-        </div>
-    </div>
-    <div class="row pb-4">
+    <div class="row pb-4 mb-5">
         <div class="col">
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div class="row pb-4">
+    <div class="row pb-4 mt-5">
         <div class="col">
             {{ mukadi_chart(totalChart) }}
         </div>
