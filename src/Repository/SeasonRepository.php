@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Filter;
+use App\Entity\PyramidFilter;
 use App\Entity\Season;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,10 +24,10 @@ class SeasonRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param Filter $filter
+     * @param Filter|PyramidFilter $filter
      * @return int|mixed|string
      */
-    public function findByFilter(Filter $filter)
+    public function findByFilter($filter)
     {
         $queryBuilder = $this->createQueryBuilder('s');
         if (!empty($filter->getFromSeason()) && !empty($filter->getToSeason())) {
