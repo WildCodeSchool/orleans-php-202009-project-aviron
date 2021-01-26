@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/subscribers", name="subscribers_")
+ * @Route("/adherents", name="subscribers_")
  */
 class SubscriberController extends AbstractController
 {
@@ -30,7 +30,7 @@ class SubscriberController extends AbstractController
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @Route("/{display}/filter/", name="filter")
+     * @Route("/{display}/filtres/", name="filter")
      * @param string $display
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository

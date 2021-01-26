@@ -2,16 +2,16 @@
 
 {% block title %}{{ parent() }}
     {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-    {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
-    {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
+    {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
+    {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
 {% endblock %}
 
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center my-4">
             {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-            {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
-            {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
+            {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
+            {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
         </h1>
         <div class="mb-4 filters">
             <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
@@ -140,9 +140,9 @@
                                 {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
                                     {% if display == 'licences' %}
                                         <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
-                                    {% elseif display == 'renewal'%}
+                                    {% elseif display == 'renouvellements'%}
                                         <td class="text-center" style="background-color:{{ subscription.status.color ?? ''}} ">{{ subscription.status.label ?? '?'}}</td>
-                                    {% elseif display == 'subscriptions' %}
+                                    {% elseif display == 'inscriptions' %}
                                         <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
                                     {% endif %}
                                 {% else %}
