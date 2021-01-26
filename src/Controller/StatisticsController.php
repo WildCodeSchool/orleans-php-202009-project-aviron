@@ -153,39 +153,40 @@ class StatisticsController extends AbstractController
         }
 
         for ($i = 0; $i < count($seasonNames); $i++) {
-            for ($j = 0; $j < count($totalCategories); $j++) {
+            for ($j = 0; $j < count($totalLicences); $j++) {
                 if ($totalCategories[$j]['seasonName'] == $seasonNames[$i]) {
-                    if (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Jeune'])) {
-                        $categoriesData['Jeune'][$i] += $totalCategories[$j]['total'];
-                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Junior'])) {
-                        $categoriesData['Junior'][$i] += $totalCategories[$j]['total'];
-                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Senior'])) {
-                        $categoriesData['Senior'][$i] += $totalCategories[$j]['total'];
-                    }
+                    $categoriesData[$totalCategories[$j]['newGroup']][$i] += $totalCategories[$j]['total'];
                 }
             }
+        }
+
+
+//        for ($i = 0; $i < count($seasonNames); $i++) {
+//            for ($j = 0; $j < count($totalCategories); $j++) {
+//                if ($totalCategories[$j]['seasonName'] == $seasonNames[$i]) {
+//                    if (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Jeune'])) {
+//                        $categoriesData['Jeune'][$i] += $totalCategories[$j]['total'];
+//                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Junior'])) {
+//                        $categoriesData['Junior'][$i] += $totalCategories[$j]['total'];
+//                    } elseif (in_array($totalCategories[$j]['label'], self::CATEGORIES_NAME['Senior'])) {
+//                        $categoriesData['Senior'][$i] += $totalCategories[$j]['total'];
+//                    }
+//                }
+//            }
+//        }
+
+        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
+            $categoryDatataSets[] = [
+                'label' => $categoryName,
+                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
+                'data' => $categoriesData[$categoryName],
+            ];
         }
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => [
-                [
-                    'label' => 'Jeune',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeune'],
-                    'data' => $categoriesData['Jeune'],
-                ],
-                [
-                    'label' => 'Junior',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Junior'],
-                    'data' => $categoriesData['Junior'],
-                ],
-                [
-                    'label' => 'Senior',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Senior'],
-                    'data' => $categoriesData['Senior'],
-                ],
-            ]
+            'datasets' => $categoryDatataSets
         ]);
         $categoriesChart->setOptions([
             "scales" => [
