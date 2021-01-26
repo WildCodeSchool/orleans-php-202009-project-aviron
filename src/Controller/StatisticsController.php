@@ -105,11 +105,10 @@ class StatisticsController extends AbstractController
         $data[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
         $data[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
 
-
         if ($categoryFilter === null) {
             $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
         } else {
-            $totalLicences = $subscriptionRepository->totalLicencesPerSeasonPerCategory($categoryFilter);
+            $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
         }
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalLicences); $j++) {
