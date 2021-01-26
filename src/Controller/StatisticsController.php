@@ -124,7 +124,7 @@ class StatisticsController extends AbstractController
                 }
             }
         } else {
-//            $totalLicences = $subscriptionRepository->totalLicencesPerSeasonPerCategory($categoryFilter);
+            $totalLicences = $subscriptionRepository->totalLicencesPerSeasonPerCategory($categoryFilter);
         }
 
 

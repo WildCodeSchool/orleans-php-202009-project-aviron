@@ -69,6 +69,21 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function totalLicencesPerSeasonPerCategory(string $categoryFilter): array
+    {
+        return $this->createQueryBuilder('subscription')
+            ->select('COUNT(subscription.subscriber) AS total, licence.name, season.name AS seasonName')
+            ->leftJoin('App\Entity\Season', 'season', 'WITH', 'subscription.season = season.id')
+            ->leftJoin('App\Entity\Licence', 'licence', 'WITH', 'licence.id=subscription.licence')
+            ->leftJoin('App\Entity\Category', 'category', 'WITH', 'subscription.category = category.id')
+            ->where('category.newGroup = :categoryFilter')
+            ->setParameter('categoryFilter', $categoryFilter)
+            ->groupBy('season.name, licence.name')
+            ->orderBy('season.name')
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param string|null $categoryLabel
      * @param string|null $licenceAcronym
