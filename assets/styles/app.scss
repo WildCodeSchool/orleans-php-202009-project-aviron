@@ -5,6 +5,8 @@
 @import "~bootstrap/scss/bootstrap";
 @import 'navbar';
 
+$padding-table: 0.5rem;
+
 body {
     color : $primary;
 }
@@ -53,6 +55,15 @@ h4 {
     background-color: $light;
     border-bottom: 1px solid;
     border-color: lighten($dark, 68%);
+}
+
+th {
+    position: sticky;
+    top: 0;
+}
+
+.table td {
+    padding: $padding-table;
 }
 
 .results {
