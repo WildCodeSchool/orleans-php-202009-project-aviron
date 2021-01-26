@@ -76,6 +76,7 @@ class PyramidFilter
 
     /**
      * @param array|null $gender
+     * @return PyramidFilter
      */
     public function setGender(?array $gender): self
     {
@@ -83,7 +84,6 @@ class PyramidFilter
 
         return $this;
     }
-
 
     /**
      * @return Category|null

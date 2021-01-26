@@ -30,7 +30,6 @@ class PyramidCalculator
         $renewalPyramid = [];
         $licence = $this->licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
 
-
         for ($i = 0; $i < count($seasons); $i++) {
             $seasonSubscriptions = $this->subscriptionRepository->findByPyramidFilter($seasons[$i], $licence, $filters);
 
