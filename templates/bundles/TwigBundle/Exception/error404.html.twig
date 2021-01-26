@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Erreur 404{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('error') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid error-page d-flex flex-column align-items-center justify-content-center">
+            <h1 class="mb-3">Oups !</h1>
+            <p>La page que vous cherchez semble introuvable.</p>
+            <a href="{{ path('home') }}" class="btn btn-primary mt-4">Retour à l'accueil</a>
+    </div>
+{% endblock %}
