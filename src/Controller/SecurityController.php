@@ -19,7 +19,7 @@ class SecurityController extends AbstractController
         throw new Exception('Don\'t forget to activate logout in security.yaml');
     }
     /**
-     * @Route("/connexion", name="app_login")
+     * @Route("/login", name="app_login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
