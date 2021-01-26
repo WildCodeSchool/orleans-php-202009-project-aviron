@@ -25,6 +25,10 @@ class PyramidFilter
 
     private ?array $gender = [];
 
+    private ?Category $fromCategory = null;
+
+    private ?Category $toCategory = null;
+
 
     /**
      * @return Season
@@ -78,6 +82,45 @@ class PyramidFilter
     public function setGender(?array $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+
+    /**
+     * @return Category|null
+     */
+    public function getFromCategory(): ?Category
+    {
+        return $this->fromCategory;
+    }
+
+    /**
+     * @param Category|null $fromCategory
+     * @return PyramidFilter
+     */
+    public function setFromCategory(?Category $fromCategory): self
+    {
+        $this->fromCategory = $fromCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getToCategory(): ?Category
+    {
+        return $this->toCategory;
+    }
+
+    /**
+     * @param Category|null $toCategory
+     * @return PyramidFilter
+     */
+    public function setToCategory(?Category $toCategory): self
+    {
+        $this->toCategory = $toCategory;
 
         return $this;
     }

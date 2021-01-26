@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Licence;
 use App\Entity\PyramidFilter;
 use App\Entity\Season;
@@ -9,6 +10,7 @@ use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\AST\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -259,7 +261,45 @@ class SubscriptionRepository extends ServiceEntityRepository
                 ->andWhere('sr.gender IN (:gender)')
                 ->setParameter('gender', $filter->getGender());
         }
+
+        if (!is_null($filter) && (!empty($filter->getFromCategory()) || !empty($filter->getToCategory()))) {
+            $queryBuilder = $this->filterByCategory(
+                $filter->getFromCategory(),
+                $filter->getToCategory(),
+                $queryBuilder
+            );
+        }
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    private function filterByCategory(
+        ?Category $fromCategory,
+        ?Category $toCategory,
+        QueryBuilder $queryBuilder
+    ): QueryBuilder {
+        $categoryRepository = $this->getEntityManager()->getRepository(Category::class);
+        $categories = $categoryRepository->findAll();
+
+        $firstCategory = 0;
+        $lastCategory = 0;
+        foreach ($categories as $key => $value) {
+            $labelFirst = !is_null($fromCategory) ? $fromCategory->getLabel() : ' ';
+            $labelLast = !is_null($toCategory) ? $toCategory->getLabel() : ' ';
+            if ($value->getLabel() === $labelFirst) {
+                $firstCategory = $key;
+            }
+            if ($value->getLabel() === $labelLast) {
+                $lastCategory = $key;
+            }
+        }
+
+        $categoriesSelected = array_slice($categories, $firstCategory, $lastCategory - $firstCategory + 1);
+
+        $queryBuilder = $queryBuilder
+            ->andWhere('sub.category IN (:categories)')
+            ->setParameter('categories', $categoriesSelected);
+
+        return $queryBuilder;
     }
 
 // /**
