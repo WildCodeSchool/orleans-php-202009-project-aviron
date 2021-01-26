@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Licence;
+use App\Entity\PyramidFilter;
+use App\Repository\LicenceRepository;
 use App\Repository\SubscriptionRepository;
 
 /**
@@ -10,23 +12,27 @@ use App\Repository\SubscriptionRepository;
 */
 class PyramidCalculator
 {
+    private const COMPETITION_LICENCE = 'A';
+
     private SubscriptionRepository $subscriptionRepository;
 
-    public function __construct(SubscriptionRepository $subscriptionRepository)
+    private LicenceRepository $licenceRepository;
+
+    public function __construct(SubscriptionRepository $subscriptionRepository, LicenceRepository $licenceRepository)
     {
         $this->subscriptionRepository = $subscriptionRepository;
+        $this->licenceRepository = $licenceRepository;
     }
 
 
-    public function getRenewalPyramidCounts(array $seasons, ?Licence $licence): array
+    public function getRenewalPyramidCounts(array $seasons, ?PyramidFilter $filters): array
     {
         $renewalPyramid = [];
+        $licence = $this->licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
+
 
         for ($i = 0; $i < count($seasons); $i++) {
-            $seasonSubscriptions = $this->subscriptionRepository->findBy([
-                'season' => $seasons[$i],
-                'licence' => $licence
-            ]);
+            $seasonSubscriptions = $this->subscriptionRepository->findByPyramidFilter($seasons[$i], $licence, $filters);
 
             $renewalSeason = [];
 

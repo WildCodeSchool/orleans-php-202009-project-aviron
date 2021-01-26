@@ -17,8 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PyramidController extends AbstractController
 {
-    private const COMPETITION_LICENCE = 'A';
-
     /**
      * @Route("/pyramide-des-renouvellements", name="pyramid")
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -40,7 +38,6 @@ class PyramidController extends AbstractController
         $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
-        $licence = $licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $filters = $form->getData();
@@ -49,7 +46,7 @@ class PyramidController extends AbstractController
             $seasons = $seasonRepository->findAll();
         }
 
-        $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $licence);
+        $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $filters ?? null);
         $renewalPyramidPercent = $pyramidCalculator->getRenewalPyramidPercent($renewalPyramid);
         $renewalPyramidAverage = $pyramidCalculator->getAverageRenewalPercent($renewalPyramidPercent);
 

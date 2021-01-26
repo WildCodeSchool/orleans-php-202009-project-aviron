@@ -38,7 +38,7 @@ class PyramidFilterType extends AbstractType
                 'label' => 'à',
                 'error_bubbling' => true
             ])
-            /*->add('gender', ChoiceType::class, [
+            ->add('gender', ChoiceType::class, [
                 'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
                 'multiple' => true,
@@ -47,7 +47,7 @@ class PyramidFilterType extends AbstractType
                 'placeholder' => false,
                 'error_bubbling' => true,
                 'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
-            ])
+            ])/*
             ->add('status', EntityType::class, [
                 'class' => Status::class,
                 'choice_label' => 'name',

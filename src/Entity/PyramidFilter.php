@@ -7,7 +7,6 @@ use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class PyramidFilter
 {
@@ -23,6 +22,8 @@ class PyramidFilter
      *     message="La saison de fin doit être supérieure ou égale à la saison de début")
      */
     private Season $toSeason;
+
+    private ?array $gender = [];
 
 
     /**
@@ -59,6 +60,24 @@ class PyramidFilter
     public function setToSeason(Season $toSeason): self
     {
         $this->toSeason = $toSeason;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getGender(): ?array
+    {
+        return $this->gender;
+    }
+
+    /**
+     * @param array|null $gender
+     */
+    public function setGender(?array $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }

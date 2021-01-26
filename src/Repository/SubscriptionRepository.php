@@ -2,6 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Licence;
+use App\Entity\PyramidFilter;
+use App\Entity\Season;
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -240,6 +243,23 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->groupBy('month')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByPyramidFilter(Season $season, ?Licence $licence, ?PyramidFilter $filter): array
+    {
+        $queryBuilder = $this->createQueryBuilder('sub')
+            ->where('sub.season = :season')
+            ->setParameter('season', $season)
+            ->andWhere('sub.licence = :licence')
+            ->setParameter('licence', $licence);
+
+        if (!is_null($filter) && !empty($filter->getGender())) {
+            $queryBuilder = $queryBuilder
+                ->join('App\Entity\Subscriber', 'sr', 'WITH', 'sr.id = sub.subscriber')
+                ->andWhere('sr.gender IN (:gender)')
+                ->setParameter('gender', $filter->getGender());
+        }
+        return $queryBuilder->getQuery()->getResult();
     }
 
 // /**
