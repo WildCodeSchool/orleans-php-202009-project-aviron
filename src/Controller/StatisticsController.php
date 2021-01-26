@@ -101,65 +101,35 @@ class StatisticsController extends AbstractController
 
         $totalLicences = $subscriptionRepository->totalLicencesPerSeason();
 
-        $licencesData = [
-            self::LICENCES_NAME['C'] => [],
-            self::LICENCES_NAME['D'] => [],
-            self::LICENCES_NAME['U'] => [],
-            self::LICENCES_NAME['I'] => [],
-        ];
-
         $seasonNames = [];
         foreach ($seasons as $season) {
             $seasonNames[] = $season->getName();
         }
 
-        $licencesData[self::LICENCES_NAME['C']] = array_fill(0, count($seasonNames), 0);
-        $licencesData[self::LICENCES_NAME['D']] = array_fill(0, count($seasonNames), 0);
-        $licencesData[self::LICENCES_NAME['U']] = array_fill(0, count($seasonNames), 0);
-        $licencesData[self::LICENCES_NAME['I']] = array_fill(0, count($seasonNames), 0);
-
+        foreach (self::LICENCES_NAME as $licenceName) {
+            $licencesData[$licenceName] = array_fill(0, count($seasonNames), 0);
+        }
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalLicences); $j++) {
                 if ($totalLicences[$j]['seasonName'] == $seasonNames[$i]) {
-                    if ($totalLicences[$j]['name'] == self::LICENCES_NAME['C']) {
-                        $licencesData[self::LICENCES_NAME['C']][$i] += $totalLicences[$j]['total'];
-                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['D']) {
-                        $licencesData[self::LICENCES_NAME['D']][$i] += $totalLicences[$j]['total'];
-                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['U']) {
-                        $licencesData[self::LICENCES_NAME['U']][$i] += $totalLicences[$j]['total'];
-                    } elseif ($totalLicences[$j]['name'] == self::LICENCES_NAME['I']) {
-                        $licencesData[self::LICENCES_NAME['I']][$i] += $totalLicences[$j]['total'];
-                    }
+                    $licencesData[$totalLicences[$j]['name']][$i] += $totalLicences[$j]['total'];
                 }
             }
+        }
+
+        foreach (self::LICENCES_NAME as $licenceName) {
+            $licenceDatataSets[] = [
+                'label' => $licenceName,
+                'backgroundColor' => self::LICENCES_PALETTE[$licenceName],
+                'data' => $licencesData[$licenceName],
+            ];
         }
 
         $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $licencesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => [
-                [
-                    'label' => self::LICENCES_NAME['C'],
-                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
-                    'data' => $licencesData[self::LICENCES_NAME['C']],
-                ],
-                [
-                    'label' => self::LICENCES_NAME['D'],
-                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
-                    'data' => $licencesData[self::LICENCES_NAME['D']],
-                ],
-                [
-                    'label' => self::LICENCES_NAME['U'],
-                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
-                    'data' => $licencesData[self::LICENCES_NAME['U']],
-                ],
-                [
-                    'label' => self::LICENCES_NAME['I'],
-                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
-                    'data' => $licencesData[self::LICENCES_NAME['I']],
-                ],
-            ]
+            'datasets' => $licenceDatataSets
         ]);
         $licencesChart->setOptions([
             "scales" => [
@@ -178,15 +148,9 @@ class StatisticsController extends AbstractController
 
         $totalCategories = $subscriptionRepository->totalCategoriesPerSeason();
 
-        $categoriesData = [
-            'Jeune' => [],
-            'Junior ' => [],
-            'Senior' => [],
-        ];
-
-        $categoriesData['Jeune'] = array_fill(0, count($seasonNames), 0);
-        $categoriesData['Junior'] = array_fill(0, count($seasonNames), 0);
-        $categoriesData['Senior'] = array_fill(0, count($seasonNames), 0);
+        foreach (self::CATEGORIES_NAME as $categoryName => $categoryLabel) {
+            $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
+        }
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalCategories); $j++) {
