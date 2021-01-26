@@ -20,16 +20,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/subscribers", name="subscribers_")
+ * @Route("/adherents", name="subscribers_")
  */
 class SubscriberController extends AbstractController
 {
-    private const PAGINATION_LIMIT = 12;
+    private const PAGINATION_LIMIT = 25;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     * @Route("/{display}/filter/", name="filter")
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @Route("/{display}/filtres/", name="filter")
      * @param string $display
      * @param Request $request
      * @param SubscriberRepository $subscriberRepository
@@ -109,17 +110,34 @@ class SubscriberController extends AbstractController
             $user instanceof User ? $user->setLastSearch((array)serialize($filters)) : false;
             $entityManager->flush();
             $numberResults = count($subscribersData);
+            $categories = $categoryRepository->findAll();
+            $categoriesDB = [];
+            $key = '';
+            foreach ($categories as $category) {
+                if ($category->getColor() === $key) {
+                    $categoriesDB[$key] .= ', ' . $category->getLabel();
+                } else {
+                    $key = $category->getColor();
+                    $categoriesDB[$key] = $category->getOldGroup() . ' : ' . $category->getLabel();
+                }
+            }
 
             return $this->render('subscriber/index.html.twig', [
                 'display' => $display,
                 'subscribers' => $subscribers,
                 'seasons' => $seasons,
                 'filters' => $filters,
+                'statusDB' => $statusRepository->findAll(),
+                'categoriesDB' => $categoriesDB,
+                'licencesDB' => $licenceRepository->findAllGroupByName(),
                 'numberResults' => $numberResults
             ]);
         }
 
-        return $this->render('subscriber/filter.html.twig', ['form' => $form->createView()]);
+        return $this->render('subscriber/filter.html.twig', [
+            'form' => $form->createView(),
+            'display' => $display
+        ]);
     }
 
     /**
@@ -182,5 +200,20 @@ class SubscriberController extends AbstractController
         $response->headers->set('Content-type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
         return $response;
+    }
+
+    /**
+     * @Route("/reinitialisation/{display}", name="reinitialisation")
+     * @param EntityManagerInterface $entityManager
+     * @param string $display
+     * @return Response
+     */
+    public function reinitialisation(EntityManagerInterface $entityManager, string $display): Response
+    {
+        $user = $this->getUser();
+        $user instanceof User ? $user->setLastSearch(null) : false;
+        $entityManager->flush();
+
+        return $this->redirectToRoute('subscribers_filter', ['display' => $display]);
     }
 }

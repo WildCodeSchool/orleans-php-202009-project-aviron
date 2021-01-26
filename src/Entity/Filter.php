@@ -32,7 +32,7 @@ class Filter
      */
     private ?int $toAdherent = null;
 
-    private ?string $gender = null;
+    private ?array $gender = [];
 
     private ?array $status = [];
 
@@ -201,18 +201,17 @@ class Filter
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getGender(): ?string
+    public function getGender(): ?array
     {
         return $this->gender;
     }
 
     /**
-     * @param string|null $gender
-     * @return Filter
+     * @param array|null $gender
      */
-    public function setGender(?string $gender): self
+    public function setGender(?array $gender): self
     {
         $this->gender = $gender;
 

@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ parent() }} - Filtrer{% endblock %}
+{% block title %}{{ parent() }} Récapitulatifs - Filtres{% endblock %}
 {% block stylesheets %}
     {{ encore_entry_link_tags('filter') }}
 {% endblock %}
@@ -8,102 +8,120 @@
         <h1 class="text-center my-4">Filtres de sélection</h1>
         {{ form_start(form) }}
         {{ form_errors(form) }}
-        <h2 class="title-filter mb-3">Saison</h2>
-        <div class="row">
-            <div class="col-2 filter">
-                {{ form_row(form.fromSeason) }}
+        <div class="row ml-5 justify-content-between">
+            <div class="col-4">
+                <h2 class="title-filter ml-2 my-3">Saison</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 w-80">
+                    {{ form_row(form.fromSeason) }}
+                    {{ form_row(form.toSeason) }}
+                </div>
             </div>
-            <div class="col filter">
-                {{ form_row(form.toSeason) }}
+            <div class="col-4">
+                <h2 class="title-filter ml-2 my-3">Numéro adhérent</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 w-80">
+                    {{ form_row(form.fromAdherent) }}
+                    {{ form_row(form.toAdherent) }}
+                </div>
             </div>
-        </div>
-        <h2 class="title-filter my-3">Numéro adhérent</h2>
-        <div class="row">
-            <div class="col-2">
-                {{ form_row(form.fromAdherent) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-2">
-                {{ form_row(form.toAdherent) }}
-            </div>
-        </div>
-        <h2 class="title-filter my-3">Sexe</h2>
-        <div class="row">
-            <div class="col-2">
-                {{ form_row(form.gender) }}
+            <div class="col-2 filter-gender">
+                <h2 class="title-filter ml-2 my-3">Sexe</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 w-80">
+                    {{ form_row(form.gender) }}
+                </div>
             </div>
         </div>
-        <h2 class="title-filter my-3">Statut</h2>
-        <div class="row">
-            <div class="col-5 d-flex align-items-center">
-                {{ form_row(form.status) }}
+        <div class="row mt-3 ml-5">
+            <div class="col-6">
+                <h2 class="title-filter ml-2 my-3">Catégorie</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 d-flex justify-content-between align-items-center">
+                    <div class="w-50">
+                        <div>
+                            {{ form_row(form.fromCategory) }}
+                        </div>
+                        <div>
+                            {{ form_row(form.toCategory) }}
+                        </div>
+                    </div>
+                    <div class="mx-4">
+                        {{ form_row(form.seasonCategory) }}
+                    </div>
+                </div>
             </div>
-            <div class="col-2">
-                {{ form_row(form.seasonStatus) }}
-            </div>
-        </div>
-        <h2 class="title-filter my-3">Type de licence</h2>
-        <div class="row">
-            <div class="col-5 d-flex align-items-center">
-                {{ form_row(form.licences) }}
-            </div>
-            <div class="col-2">
-                {{ form_row(form.seasonLicence) }}
-            </div>
-        </div>
-        <h2 class="title-filter my-3">Catégorie</h2>
-        <div class="row">
-            <div class="col-3">
-                {{ form_row(form.fromCategory) }}
-            </div>
-            <div class="col-3">
-                {{ form_row(form.toCategory) }}
-            </div>
-            <div class="col-2">
-                {{ form_row(form.seasonCategory) }}
-            </div>
-        </div>
-        <h2 class="title-filter my-3">Première inscription</h2>
-        <div class="row">
-            <div class="col-3">
-                {{ form_row(form.firstLicence) }}
-            </div>
-            <div class="col-3">
-                {{ form_row(form.firstCategory) }}
-            </div>
-            <div class="col-2 d-flex align-items-center">
-                {{ form_row(form.stillRegistered) }}
+            <div class="col-6">
+                <h2 class="title-filter ml-2 my-3">Première inscription</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 w-90 d-flex flex-row justify-content-between align-items-center">
+                    <div class="w-50">
+                        <div>
+                            {{ form_row(form.firstLicence) }}
+                        </div>
+                        <div>
+                            {{ form_row(form.firstCategory) }}
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mr-4">
+                        {{ form_row(form.stillRegistered) }}
+                    </div>
+                </div>
             </div>
         </div>
-        <h2 class="title-filter my-3">Durée d'inscription</h2>
-        <div class="row">
-            <div class="col-2 duration">
-                {{ form_row(form.duration) }}
+        <div class="row mt-3 ml-5">
+            <div class="col-6">
+                <h2 class="title-filter ml-2 my-3">Type de licence</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 d-flex justify-content-between">
+                    <div class="d-flex align-items-center">
+                        {{ form_row(form.licences) }}
+                    </div>
+                    <div class="mr-4">
+                        {{ form_row(form.seasonLicence) }}
+                    </div>
+                </div>
             </div>
-            <div class="col-2 d-flex align-items-center">
-                {{ form_row(form.orMore) }}
-            </div>
-            <div class="col-2 d-flex align-items-center">
-                {{ form_row(form.stillAdherent) }}
+            <div class="col-6">
+                <h2 class="title-filter my-3">Durée d'inscription</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 w-90 d-flex flex-row justify-content-between">
+                    <div class="d-flex flex-row">
+                        <div class="duration">
+                            {{ form_row(form.duration) }}
+                        </div>
+                        <div class="d-flex align-items-center">
+                            {{ form_row(form.orMore) }}
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center mr-4">
+                        {{ form_row(form.stillAdherent) }}
+                    </div>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary mt-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-check2"
+        <div class="row my-3 ml-5">
+            <div class="col-7">
+                <h2 class="title-filter ml-2 my-3">Statut</h2>
+                <div class="filter-group pb-2 pt-4 pl-4 d-flex flex-row justify-content-between">
+                    <div class="d-flex align-items-center">
+                        {{ form_row(form.status) }}
+                    </div>
+                    <div class="mr-4">
+                        {{ form_row(form.seasonStatus) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary my-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-check2"
                  viewBox="0 0 16 16">
                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5
                 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
             </svg>
             Appliquer
         </button>
-        <button type="reset" class="btn btn-primary mt-3 ml-2">
+        <a href="{{ path('subscribers_reinitialisation', {display : display}) }}" class="btn btn-primary my-4 ml-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                  class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
                 <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
             </svg>
             Réinitialiser
-        </button>
+        </a>
         {{ form_end(form) }}
     </div>
 {% endblock %}

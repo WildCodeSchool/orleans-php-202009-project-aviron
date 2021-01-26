@@ -2,61 +2,39 @@
 
 namespace App\Controller;
 
-use App\Entity\Subscription;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use App\Repository\SubscriptionRepository;
+use App\Service\CategoriesChartMaker;
+use App\Service\LicencesChartMaker;
+use App\Service\MonthlySubscriptionChartMaker;
 use App\Service\SubscribersCounter;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Mukadi\Chart\Utils\RandomColorFactory;
-use Mukadi\ChartJSBundle\Chart\Builder;
-use Mukadi\Chart\Chart;
 
 class HomeController extends AbstractController
 {
     private const COMPETITION_LICENCE = 'A';
     private const JUNIOR_CATEGORY = 'J';
     private const STATUS_NEW = 'N';
-    private const CATEGORIES_PALETTE = [
-        '#004C6D',
-        '#135B79',
-        '#256985',
-        '#387892',
-        '#4A869E',
-        '#5D95AA',
-        '#70A3B6',
-        '#82B2C2',
-        '#95C0CE',
-        '#A7CFDB',
-        '#BADDE7',
-        '#CCECF3',
-    ];
-    private const LICENCES_PALETTE = [
-        '#F6246A',
-        '#F74B75',
-        '#F87380',
-        '#F99A8A',
-        '#FAC295',
-        '#FBE9A0',
-    ];
+    private const STATUS_TRANSFER = 'T';
 
     /**
      * @Route("/", name="home")
-     * @SuppressWarnings(PHPMD)
      * @param SubscribersCounter $countSubscribers
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
      * @param StatusRepository $statusRepository
-     * @param Builder $categoriesBuilder
-     * @param Builder $licencesBuilder
+     * @param MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker
+     * @param CategoriesChartMaker $categoriesChartMaker
+     * @param LicencesChartMaker $licencesChartMaker
      * @return Response
      * @throws NonUniqueResultException
      * @SuppressWarnings(PHPMD.LongVariable)
@@ -68,8 +46,9 @@ class HomeController extends AbstractController
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository,
         StatusRepository $statusRepository,
-        Builder $categoriesBuilder,
-        Builder $licencesBuilder
+        MonthlySubscriptionChartMaker $monthlySubscriptionChartMaker,
+        CategoriesChartMaker $categoriesChartMaker,
+        LicencesChartMaker $licencesChartMaker
     ): Response {
 
         // Si aucune saison en db, redirection automatique vers l'import
@@ -78,6 +57,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('tools_import');
         } else {
             $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
+            $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName() ?? null;
         }
 
         $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
@@ -91,9 +71,11 @@ class HomeController extends AbstractController
             self::JUNIOR_CATEGORY
         );
 
-        $newSubscribers = $subscriptionRepository->findSubscribersForActualSeasonPerStatus(
+        $newSubscribers = $subscriptionRepository->findAllSubscribersForSeasonByLicenceByStatus(
             self::STATUS_NEW,
-            $actualSeason
+            self::STATUS_TRANSFER,
+            $actualSeason,
+            self::COMPETITION_LICENCE,
         );
 
         $subscribersLicences = $subscriptionRepository->subscribersByYearByLicences($actualSeason);
@@ -114,49 +96,12 @@ class HomeController extends AbstractController
             $statusRepository
         );
 
-        $querySubscribersCategories = $subscriptionRepository->getQueryForSubscribersByYearByCategories($actualSeason);
+        $monthlySubscriptionsChart = $monthlySubscriptionChartMaker->getChart($actualSeason, $previousSeason);
 
-        $categoriesBuilder
-            ->query($querySubscribersCategories)
-            ->addDataSet('subscribersCount', 'Subscribers', [
-                "backgroundColor" => self::CATEGORIES_PALETTE
-            ])
-            ->labels('label');
-        $categoriesChart = $categoriesBuilder->buildChart('categories-chart', Chart::DOUGHNUT);
-        $categoriesChart->pushOptions([
-            'legend' => ([
-                'position' => 'bottom',
-            ]),
-            'scales' => ([
-                'xAxes' => ([
-                    'gridLines' => ([
-                        'display' => 'false'
-                    ])
-                ])
-            ])
-        ]);
+        $categoriesChart = $categoriesChartMaker->getChart($actualSeason);
 
-        $querySubscribersLicences = $subscriptionRepository->getQueryForSubscribersByYearByLicences($actualSeason);
+        $licencesChart = $licencesChartMaker->getChart($actualSeason);
 
-        $licencesBuilder
-            ->query($querySubscribersLicences)
-            ->addDataSet('subscribersCount', 'Subscribers', [
-                "backgroundColor" => self::LICENCES_PALETTE
-            ])
-            ->labels('label');
-        $licencesChart = $licencesBuilder->buildChart('licences-chart', Chart::DOUGHNUT);
-        $licencesChart->pushOptions([
-            'legend' => ([
-                'position' => 'bottom',
-            ]),
-            'scales' => ([
-                'xAxes' => ([
-                    'gridLines' => ([
-                        'display' => 'false'
-                    ])
-                ])
-            ])
-        ]);
         return $this->render('home/index.html.twig', [
             'currentSeason' => $actualSeason,
             'subscribersByLicences' => $countByLicences,
@@ -167,6 +112,7 @@ class HomeController extends AbstractController
             'newSubscribers' => $newSubscribers,
             'categoriesChart' => $categoriesChart,
             'licencesChart' => $licencesChart,
+            'monthlySubscriptionsChart' => $monthlySubscriptionsChart,
         ]);
     }
 }

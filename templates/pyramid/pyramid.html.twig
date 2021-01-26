@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ parent() }} Pyramide des renouvellements{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="text-center my-4">
+        Pyramide des renouvellements
+    </h1>
+
+    <div class="row pt-4">
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    {% for season in seasons %}
+                        {% if loop.index == 1 %}
+                            <th class="text-center align-middle category-td h5">Général</th>
+                        {% endif %}
+                        <th scope="col" class="text-center">{{ season.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for season, data in renewalPyramid %}
+                    <tr>
+                        <th scope="row" class="text-center">{{ season }}</th>
+                        {% for total in data %}
+                            <td class="text-center align-middle">{{ total }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row my-5">
+        <table class="table table-hover table-striped">
+            <thead class="thead-dark">
+            <tr></tr>
+            <tr>
+
+                {% for season, data in renewalPyramidPercent %}
+                    {% if loop.index == 1 %}
+                        <th class="text-center"></th>
+                        <th class="text-center">{{ loop.index }} an</th>
+                    {% else %}
+                        <th scope="col" class="text-center">{{ loop.index }} ans</th>
+                    {% endif %}
+
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for season, duration in renewalPyramidPercent %}
+                <tr>
+                    <th scope="row" class="text-center">{{ season }}</th>
+                    {% for percent in duration %}
+                        <td class="text-center align-middle">{{ percent }} %</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            <tr>
+                <th scope="row" class="text-center">Moyenne</th>
+                {% for percent in renewalPercentAverage %}
+                    <td class="text-center align-middle font-weight-bold">{{ percent }} %</td>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
