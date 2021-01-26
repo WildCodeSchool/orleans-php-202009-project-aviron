@@ -68,9 +68,7 @@ class StatisticsController extends AbstractController
         LicenceRepository $licenceRepository,
         CategoryRepository $categoryRepository,
         Builder $totalBuilder,
-        ChartBuilderInterface $chartBuilder,
-        ?string $categoryFilter = null,
-        ?string $licenceFilter = null
+        ChartBuilderInterface $chartBuilder
     ): Response {
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
