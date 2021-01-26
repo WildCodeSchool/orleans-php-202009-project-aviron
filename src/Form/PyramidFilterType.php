@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Category;
+use App\Entity\PyramidFilter;
 use App\Entity\Season;
 use App\Entity\Subscriber;
 use Doctrine\ORM\EntityRepository;
@@ -90,7 +91,7 @@ class PyramidFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
+            'data_class' => PyramidFilter::class
         ]);
     }
 }
