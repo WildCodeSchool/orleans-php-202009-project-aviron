@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\StatusRepository;
+use App\Service\LabelInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=StatusRepository::class)
  */
-class Status
+class Status implements LabelInterface
 {
     /**
      * @ORM\Id

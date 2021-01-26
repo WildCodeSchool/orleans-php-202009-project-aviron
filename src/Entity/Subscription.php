@@ -104,17 +104,6 @@ class Subscription
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): self
-    {
-        $this->category = $category;
-        return $this;
-    }
-
     public function getStatus(): ?Status
     {
         return $this->status;
@@ -123,7 +112,17 @@ class Subscription
     public function setStatus(?Status $status): self
     {
         $this->status = $status;
+        return $this;
+    }
 
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
         return $this;
     }
 }

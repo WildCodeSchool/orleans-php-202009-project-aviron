@@ -1,5 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ parent() }} - Types de licence{% endblock %}
+
+{% block title %}{{ parent() }}
+    {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
+    {% if display == 'renewal' %}Récapitulatif des renouvellements{% endif %}
+    {% if display == 'subscriptions' %}Récapitulatif des inscriptions{% endif %}
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center my-4">
@@ -9,27 +15,44 @@
         </h1>
         <div class="mb-4 filters">
             <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
-            <div class="row p-4">
-                <div class="col-3">
+            <div class="row px-4 pt-4">
+                <div class="col-3 pb-4">
                     Saisons : de <strong>{{ filters.fromSeason.name }}</strong>
                     à <strong>{{ filters.toSeason.name }}</strong>
                 </div>
                 {% if filters.fromAdherent or filters.toAdherent %}
-                    <div class="col-3">
+                    <div class="col-3 pb-4">
                         Numéro adhérent : de <strong>{{ filters.fromAdherent ? filters.fromAdherent : '-' }}</strong>
                         à <strong>{{ filters.toAdherent ? filters.toAdherent : '-' }}</strong>
                     </div>
                 {% endif %}
-                {% if filters.gender %}
-                    <div class="col-2">
-                        Sexe : <strong>{{ constant('App\\Entity\\Subscriber::GENDER')[filters.gender] }}</strong>
+                {% if filters.gender|length == 1 %}
+                    <div class="col-2 pb-4">
+                        Sexe : <strong>{{ constant('App\\Entity\\Subscriber::GENDER')[filters.gender[0]] }}</strong>
                     </div>
                 {% endif %}
                 {% if filters.fromCategory or filters.toCategory %}
-                    <div class="col-4">
+                    <div class="col-4 pb-4">
                         Catégorie : de <strong>{{ filters.fromCategory ? filters.fromCategory.label : '-' }}</strong>
                         à <strong>{{ filters.toCategory ? filters.toCategory.label : '-' }}</strong>
                         (pour la saison <strong>{{ filters.seasonCategory.name }}</strong>)
+                    </div>
+                {% endif %}
+                {% if filters.firstLicence or filters.firstCategory %}
+                    <div class="col-6 pb-4">
+                        Première inscription en :
+                        <strong>
+                            {{ filters.firstLicence ? filters.firstLicence.acronym : filters.firstCategory.label }}
+                        </strong>
+                        {{ filters.stillRegistered ? 'et toujours inscrit' : '' }}
+                    </div>
+                {% endif %}
+                {% if filters.duration %}
+                    <div class="col-4 pb-4">
+                        Durée d'inscription :
+                        <strong>{{ filters.duration }}</strong> an(s)
+                        <strong>{{ filters.orMore ? 'ou plus' : '' }}</strong>
+                        {{ filters.stillAdherent ? 'et toujours inscrit' : '' }}
                     </div>
                 {% endif %}
             </div>
@@ -39,12 +62,7 @@
                         Statut :
                         {% set status = '' %}
                         {% for filter in filters.status %}
-                            {% set current = constant('App\\Service\\StatusCalculator::TRANSFER')[filter] ??
-                                constant('App\\Service\\StatusCalculator::NEW')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RENEWAL')[filter] ??
-                                constant('App\\Service\\StatusCalculator::RESUMED')[filter] ??
-                                '' %}
-                            {% set status = loop.last ? status ~ current : status ~ current ~ ', ' %}
+                            {% set status = loop.last ? status ~ filter.name : status ~ filter.name ~ ', ' %}
                         {% endfor %}
                         <strong>{{ status }}</strong>
                         (pour la saison <strong>{{ filters.seasonStatus.name }}</strong>)
@@ -93,32 +111,35 @@
                             <td>{{ subscriber.birthdate|date("m/d/Y") }}</td>
                             <td>{{ subscriber.gender }}</td>
                             {% for season in seasons %}
-                                    {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
-                                        {% if display == 'licences' %}
-                                            <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
-                                        {% elseif display == 'renewal'%}
-                                            <td class="text-center" style="background-color:{{ subscription.status.color }}">{{ subscription.status.label}}</td>
-                                        {% elseif display == 'subscriptions' %}
-                                            <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
-                                        {% endif %}
-                                    {% else %}
-                                        <td></td>
-                                    {% endfor %}
+                                {% for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) %}
+                                    {% if display == 'licences' %}
+                                        <td class="text-center" style="background-color:{{ subscription.licence.color }}">{{ subscription.licence.acronym }}</td>
+                                    {% elseif display == 'renewal'%}
+                                        <td class="text-center" style="background-color:{{ subscription.status.color ?? ''}} ">{{ subscription.status.label ?? '?'}}</td>
+                                    {% elseif display == 'subscriptions' %}
+                                        <td class="text-center" style="background-color:{{ subscription.category.color }}">{{ subscription.category.label ?? 'null' }}</td>
+                                    {% endif %}
+                                {% else %}
+                                    <td></td>
+                                {% endfor %}
                             {% endfor %}
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-                <nav aria-label="pagination">
-                    {% do subscribers.setPageRange(3) %}
-                    {{ knp_pagination_render(subscribers,
-                        '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
-                        {},
-                        {
-                            'align': 'center',
-                        })
-                    }}
-                </nav>
+                <div class="d-flex justify-content-center align-items-start">
+                    <nav aria-label="pagination">
+                        {% do subscribers.setPageRange(3) %}
+                        {{ knp_pagination_render(subscribers,
+                            '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig',
+                            {},
+                            {
+                                'align': 'center',
+                            })
+                        }}
+                    </nav>
+                    <div class="mt-2 mr-4 results">{{ numberResults }} résultats</div>
+                </div>
                 <div class="row">
                     <div class="col">
                         <a href="{{ path('subscribers_export', {display : display}|merge(app.request.query.all)) }}" class="btn btn-sm btn-primary mt-3 mb-5">Exporter en csv</a>

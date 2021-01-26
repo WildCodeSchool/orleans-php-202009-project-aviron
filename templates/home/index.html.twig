@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} | Accueil{% endblock %}
+{% block title %}{{ parent() }} Accueil{% endblock %}
     {% block stylesheets %}
         {{ encore_entry_link_tags('home') }}
     {% endblock %}
@@ -12,19 +12,19 @@
     <section class="container">
         <div class="row justify-content-center align-items-center box-shadow card-shadow">
             <div class="col-8 col-md-4 text-center mt-2 mb-2">
-                <h5>Total inscrits licence compétition</h5>
+                <h5>Total inscrits licence A</h5>
                 {% for subscriberCount in actualSubscribers %}
                     <p class="subscribers-count mb-0">{{ subscriberCount }}</p>
                 {% endfor %}
             </div>
             <div class="col-8 col-md-4 text-center divider-border mt-2 mb-2">
-                <h5>Total nouveaux inscrits</h5>
+                <h5>Total nouveaux inscrits licence A</h5>
                 {% for NewSubscriberCount in newSubscribers %}
                     <p class="subscribers-count mb-0">{{ NewSubscriberCount }}</p>
                 {% endfor %}
             </div>
             <div class="col-8 col-md-4 text-center mt-2 mb-2">
-                <h5>Total jeunes</h5>
+                <h5>Total jeunes licence A</h5>
                 {% for youngSubscribersCount in youngSubscribers %}
                     <p class="subscribers-count mb-0">{{ youngSubscribersCount }}</p>
                 {% endfor %}
@@ -32,22 +32,41 @@
         </div>
         <div class="row justify-content-between align-items-center mt-5">
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4">Répartition par catégories (%)</h4>
-                {{ mukadi_chart(categoriesChart) }}
+                <h4 class="mb-4">Répartition par catégories</h4>
+                {{ render_chart(categoriesChart) }}
             </div>
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4">Répartition par licences (%)</h4>
-                {{ mukadi_chart(licencesChart) }}
+                <h4 class="mb-4">Répartition par licences</h4>
+                {{ render_chart(licencesChart) }}
             </div>
         </div>
         <div class="row justify-content-between align-items-center mt-5">
             <div class="col text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4">Évolution des inscriptions</h4>
+                <h4 class="mb-4">Évolution des inscriptions mensuelles</h4>
+                <div class="px-5 py-3">
+                    {{ render_chart(monthlySubscriptionsChart) }}
+                </div>
             </div>
         </div>
         <div class="row justify-content-between align-items-center mt-5">
-            <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
-                <h4 class="mb-4"></h4>
+            <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow pr-3">
+                <h4 class="mb-4">Total de licenciés par statut sur l'année en cours</h4>
+                <table class="table table-hover table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        {% for status,count in subscribersByStatus %}
+                            <th scope="col" class="text-center"> {{ status }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        {% for status,count in subscribersByStatus %}
+                            <td>{{ count }}</td>
+                        {% endfor %}
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col-xl-6 my-4 text-center card-shadow py-4 box-shadow">
                 <h4 class="mb-4">Total de licenciés par type de licence sur l'année en cours</h4>
@@ -92,10 +111,4 @@
             </div>
         </div>
     </section>
-{% endblock %}
-{% block javascripts %}
-    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
-    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
-    {{ encore_entry_script_tags('app') }}
-    {{ encore_entry_script_tags('navbar') }}
 {% endblock %}

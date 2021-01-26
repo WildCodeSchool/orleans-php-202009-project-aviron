@@ -47,7 +47,7 @@ class SubscriberRepository extends ServiceEntityRepository
             );
         }
         if (!empty($filter->getGender())) {
-            $queryBuilder = $queryBuilder->andWhere('sr.gender = :gender')
+            $queryBuilder = $queryBuilder->andWhere('sr.gender IN (:gender)')
                 ->setParameter('gender', $filter->getGender());
         }
         if (!empty($filter->getStatus())) {

@@ -1,12 +1,27 @@
 @import 'variables';
 
-$spacing-form: $spacing * 3;
+$spacing-form: $spacing * 2;
 $title-filter: 1.25rem;
+$margin-to: 10px;
+$padding-button: 1rem;
 
-.filter, .form-group, #filter_status, #filter_licences {
+.form-group, #filter_status, #filter_licences {
     display: flex;
     flex-direction: row;
     align-items: center;
+}
+
+.filter-group {
+    background-color: $fourth;
+    border-radius: $border-radius;
+}
+
+.w-80 {
+    width: 80%;
+}
+
+.w-90 {
+    width: 90%;
 }
 
 .form-group label, .form-control {
@@ -22,6 +37,38 @@ $title-filter: 1.25rem;
     font-size: $title-filter;
 }
 
-#filter_toAdherent {
-    margin-left: $spacing + 2;
+#filter_toAdherent, #filter_toSeason, #filter_toCategory {
+    margin-left: $margin-to;
+}
+
+.filter-gender {
+    margin-right: 1.75rem;
+}
+
+#filter_gender {
+    height: $spacing * 11 + 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.duration > .form-group {
+    flex-direction: row-reverse;
+    justify-content: start;
+}
+
+.duration input {
+    width: 55%;
+}
+
+.duration label {
+    margin-right: 0;
+}
+
+button {
+    margin-left: $spacing * 9;
+}
+
+.btn {
+    padding: ($padding-button / 2) $padding-button;
 }

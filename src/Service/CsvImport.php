@@ -181,6 +181,7 @@ class CsvImport
                     ->setCategory($this->categoryRepository->findOneBy(['label' => $csvLine['CATEGORIE AGE']]));
             }
         }
+        $this->entityManager->refresh($season);
         $this->entityManager->flush();
 
         return $total;

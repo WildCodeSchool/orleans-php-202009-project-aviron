@@ -12,9 +12,9 @@ use App\Service\StatusCalculator;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -61,6 +61,7 @@ class FilterType extends AbstractType
             ->add('gender', ChoiceType::class, [
                 'choices' => array_flip(Subscriber::GENDER),
                 'expanded' => true,
+                'multiple' => true,
                 'label' => false,
                 'required' => false,
                 'placeholder' => false,
@@ -146,6 +147,51 @@ class FilterType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
+                'error_bubbling' => true
+            ])
+            ->add('firstLicence', EntityType::class, [
+                'class' => Licence::class,
+                'choice_label' => 'acronym',
+                'label' => 'En',
+                'placeholder' => 'Type de licence',
+                'required' => false,
+                'error_bubbling' => true,
+                'invalid_message' => "Le type de licence choisi n'est pas une valeur valide"
+            ])
+            ->add('firstCategory', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => function ($category) {
+                    return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
+                },
+                'choice_value' => function (?Category $entity) {
+                    return $entity ? $entity->getLabel() : '';
+                },
+                'group_by' => function ($choice, $key, $value) {
+                    return $choice->getNewGroup();
+                },
+                'placeholder' => 'Catégorie',
+                'label' => 'En',
+                'required' => false,
+                'error_bubbling' => true
+            ])
+            ->add('stillRegistered', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Toujours inscrit',
+                'error_bubbling' => true
+            ])
+            ->add('duration', NumberType::class, [
+                'label' => 'ans',
+                'required' => false,
+                'error_bubbling' => true
+            ])
+            ->add('orMore', CheckboxType::class, [
+                'required' => false,
+                'label' => 'ou plus',
+                'error_bubbling' => true
+            ])
+            ->add('stillAdherent', CheckboxType::class, [
+                'required' => false,
+                'label' => 'Toujours inscrit',
                 'error_bubbling' => true
             ]);
     }

@@ -2,7 +2,12 @@
 
 namespace App\Entity;
 
+use App\Repository\CategoryRepository;
+use App\Repository\LicenceRepository;
+use App\Repository\SeasonRepository;
+use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class Filter
 {
@@ -27,7 +32,7 @@ class Filter
      */
     private ?int $toAdherent = null;
 
-    private ?string $gender = null;
+    private ?array $gender = [];
 
     private ?array $status = [];
 
@@ -52,6 +57,73 @@ class Filter
      */
     private Season $seasonCategory;
 
+    private ?Licence $firstLicence = null;
+
+    private ?Category $firstCategory = null;
+
+    private bool $stillRegistered = false;
+
+    private ?int $duration = null;
+
+    private bool $orMore = false;
+
+    private bool $stillAdherent = false;
+
+    /**
+     * @Assert\Callback
+     * @param ExecutionContextInterface $context
+     */
+    public function validate(ExecutionContextInterface $context): void
+    {
+        if (!is_null($this->getFirstLicence()) && !is_null($this->getFirstCategory())) {
+            $context->buildViolation('La première inscription ne peut avoir qu\'une seule valeur')
+                ->addViolation();
+        }
+    }
+    public function hydrate(
+        Filter $filter,
+        SeasonRepository $seasonRepository,
+        StatusRepository $statusRepository,
+        LicenceRepository $licenceRepository,
+        CategoryRepository $categoryRepository
+    ): self {
+        $this->setFromSeason($seasonRepository->find($filter->getFromSeason()));
+        $this->setToSeason($seasonRepository->find($filter->getToSeason()));
+        $this->setSeasonCategory($seasonRepository->find($filter->getSeasonCategory()->getId()));
+        $this->setSeasonLicence($seasonRepository->find($filter->getSeasonLicence()->getId()));
+        $this->setSeasonStatus($seasonRepository->find($filter->getSeasonStatus()->getId()));
+        $this->setFromAdherent($filter->getFromAdherent());
+        $this->setToAdherent($filter->getToAdherent());
+        $this->setGender($filter->getGender());
+        if (!is_null($filter->getStatus())) {
+            $this->setStatus(array_map(function ($status) use ($statusRepository) {
+                return $statusRepository->find($status->getId());
+            }, $filter->getStatus()));
+        }
+        if (!is_null($filter->getLicences())) {
+            $this->setLicences(array_map(function ($licence) use ($licenceRepository) {
+                return $licenceRepository->find($licence->getId());
+            }, $filter->getLicences()));
+        }
+        if (!is_null($filter->getFromCategory())) {
+            $this->setFromCategory($categoryRepository->find($filter->getFromCategory()->getId()));
+        }
+        if (!is_null($filter->getToCategory())) {
+            $this->setToCategory($categoryRepository->find($filter->getToCategory()->getId()));
+        }
+        if (!is_null($filter->getFirstLicence())) {
+            $this->setFirstLicence($licenceRepository->find($filter->getFirstLicence()->getId()));
+        }
+        if (!is_null($filter->getFirstCategory())) {
+            $this->setFirstCategory($categoryRepository->find($filter->getFirstCategory()->getId()));
+        }
+        $this->setStillRegistered($filter->isStillRegistered());
+        $this->setDuration($filter->getDuration());
+        $this->setOrMore($filter->isOrMore());
+        $this->setStillAdherent($filter->isStillAdherent());
+        return $this;
+    }
+
     /**
      * @return Season
      */
@@ -62,6 +134,7 @@ class Filter
 
     /**
      * @param Season $fromSeason
+     * @return Filter
      */
     public function setFromSeason(Season $fromSeason): self
     {
@@ -80,6 +153,7 @@ class Filter
 
     /**
      * @param Season $toSeason
+     * @return Filter
      */
     public function setToSeason(Season $toSeason): self
     {
@@ -98,6 +172,7 @@ class Filter
 
     /**
      * @param int|null $fromAdherent
+     * @return Filter
      */
     public function setFromAdherent(?int $fromAdherent): self
     {
@@ -116,6 +191,7 @@ class Filter
 
     /**
      * @param int|null $toAdherent
+     * @return Filter
      */
     public function setToAdherent(?int $toAdherent): self
     {
@@ -125,17 +201,17 @@ class Filter
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getGender(): ?string
+    public function getGender(): ?array
     {
         return $this->gender;
     }
 
     /**
-     * @param string|null $gender
+     * @param array|null $gender
      */
-    public function setGender(?string $gender): self
+    public function setGender(?array $gender): self
     {
         $this->gender = $gender;
 
@@ -152,6 +228,7 @@ class Filter
 
     /**
      * @param array|null $status
+     * @return Filter
      */
     public function setStatus(?array $status): self
     {
@@ -170,6 +247,7 @@ class Filter
 
     /**
      * @param Season $seasonStatus
+     * @return Filter
      */
     public function setSeasonStatus(Season $seasonStatus): self
     {
@@ -188,6 +266,7 @@ class Filter
 
     /**
      * @param array|null $licences
+     * @return Filter
      */
     public function setLicences(?array $licences): self
     {
@@ -206,6 +285,7 @@ class Filter
 
     /**
      * @param Season $seasonLicence
+     * @return Filter
      */
     public function setSeasonLicence(Season $seasonLicence): self
     {
@@ -224,6 +304,7 @@ class Filter
 
     /**
      * @param Category|null $fromCategory
+     * @return Filter
      */
     public function setFromCategory(?Category $fromCategory): self
     {
@@ -242,6 +323,7 @@ class Filter
 
     /**
      * @param Category|null $toCategory
+     * @return Filter
      */
     public function setToCategory(?Category $toCategory): self
     {
@@ -260,10 +342,125 @@ class Filter
 
     /**
      * @param Season $seasonCategory
+     * @return Filter
      */
     public function setSeasonCategory(Season $seasonCategory): self
     {
         $this->seasonCategory = $seasonCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return Licence|null
+     */
+    public function getFirstLicence(): ?Licence
+    {
+        return $this->firstLicence;
+    }
+
+    /**
+     * @param Licence|null $firstLicence
+     * @return Filter
+     */
+    public function setFirstLicence(?Licence $firstLicence): self
+    {
+        $this->firstLicence = $firstLicence;
+
+        return $this;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getFirstCategory(): ?Category
+    {
+        return $this->firstCategory;
+    }
+
+    /**
+     * @param Category|null $firstCategory
+     * @return Filter
+     */
+    public function setFirstCategory(?Category $firstCategory): self
+    {
+        $this->firstCategory = $firstCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStillRegistered(): bool
+    {
+        return $this->stillRegistered;
+    }
+
+    /**
+     * @param bool $stillRegistered
+     * @return Filter
+     */
+    public function setStillRegistered(bool $stillRegistered): self
+    {
+        $this->stillRegistered = $stillRegistered;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param int|null $duration
+     * @return Filter
+     */
+    public function setDuration(?int $duration): self
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOrMore(): bool
+    {
+        return $this->orMore;
+    }
+
+    /**
+     * @param bool $orMore
+     * @return Filter
+     */
+    public function setOrMore(bool $orMore): self
+    {
+        $this->orMore = $orMore;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStillAdherent(): bool
+    {
+        return $this->stillAdherent;
+    }
+
+    /**
+     * @param bool $stillAdherent
+     * @return Filter
+     */
+    public function setStillAdherent(bool $stillAdherent): self
+    {
+        $this->stillAdherent = $stillAdherent;
 
         return $this;
     }
