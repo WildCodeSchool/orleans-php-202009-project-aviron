@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} Erreur 500{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('error') }}
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid error-page d-flex flex-column align-items-center justify-content-center">
+        <h1 class="mb-3">Oups !</h1>
+        <p class="mb-0">Le serveur rencontre quelques problèmes.</p>
+        <p>Veuillez réessayer ultérieurement.</p>
+        <a href="{{ path('home') }}" class="btn btn-primary mt-4">Retour à l'accueil</a>
+    </div>
+{% endblock %}
