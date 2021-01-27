@@ -76,7 +76,7 @@ class PyramidCalculator
                     $seasonReferenceCount = $renewsSeason[$index];
                 } else {
                     $renewalPyramidPercent[$season][$yearIndex] = number_format(
-                        $renewsSeason[$index] / $seasonReferenceCount * 100,
+                        $seasonReferenceCount > 0 ? $renewsSeason[$index] / $seasonReferenceCount * 100 : 0,
                         1,
                         ',',
                         ' '
