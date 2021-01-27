@@ -1,7 +1,13 @@
 # Projet 3 - Stats Aviron
 
-Interface for the President of the Angers rowing club, which allows to integrate
-FFA's data and to get statistics
+This desktop application built on web technologies allows the user (rowing club manager) to follow-up with his club’s data and analyze them through seasons.
+Main features :
+- Securing the access of this non-public website, it can only be accessed by the administrator for now.
+- Importing the French Rowing Federation’s csv files containing subscribers data per season
+- Displaying a table summing up subscribers’ data per category, licence type or status
+- Filtering the tables according to different options the user can choose between
+- Displaying with tables and charts subscribers’ statistics, for the current ones and those who stopped their subscription
+- Displaying data of the subscription renewal with a pyramid, only for competition licences
 
 ## Getting Started
 
