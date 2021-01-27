@@ -3,10 +3,16 @@
 
 {% block body %}
 <div class="container">
-    <h1 class="text-center my-5">
+    <h1 class="text-center mt-5 mb-4">
         Statistiques - Général
     </h1>
-    <div class="row ml-4 pt-4">
+    <div class="text-center mb-5">
+        <a href="#category" class="btn btn-primary btn-sm">Répartition par Catégorie</a>
+        <a href="#licence" class="btn btn-primary btn-sm">Répartition par Type de Licence</a>
+        <a href="#gender" class="btn btn-primary btn-sm">Répartition par Genre</a>
+        <a href="#table" class="btn btn-primary btn-sm">Tableau général</a>
+    </div>
+    <div id="category" class="row ml-4 pt-4">
         <div class="col mt-5">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ licenceFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les licences</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Compétition' }) }}" class="btn {{ licenceFilter == 'Compétition' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Compétition</a>
@@ -21,7 +27,7 @@
             {{ render_chart(categoriesChart) }}
         </div>
     </div>
-    <div class="row ml-4 pt-4">
+    <div id="licence" class="row ml-4 pt-4">
         <div class="col mt-5">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes', licenceFilter : '' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
@@ -34,14 +40,14 @@
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div class="row pb-4 my-5 py-5">
+    <div id="gender" class="row pb-4 my-5 py-5">
         <div class="col">
             {{ render_chart(genderChart) }}
         </div>
     </div>
 </div>
 <div class="container-fluid">
-    <div class="row pt-4">
+    <div id="table" class="row pt-4">
         <div class="col-12">
             <table class="table table-hover table-striped">
                 <thead class="thead-dark">
