@@ -21,10 +21,6 @@ use Symfony\UX\Chartjs\Model\Chart;
  */
 class StatisticsController extends AbstractController
 {
-//    private const TOTAL_PALETTE_F = '#F74B75';
-//
-//    private const TOTAL_PALETTE_H = '#135B79';
-
     private const LICENCES_PALETTE = [
         'Découverte' => '#37cf9b',
         'Compétition' => '#6688c3',
@@ -147,22 +143,6 @@ class StatisticsController extends AbstractController
                 ],
             ]
         ]);
-
-//        $queryTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
-//
-//
-//        $totalBuilder
-//            ->query($queryTotalPerSeason)
-//            ->addDataSet('totalFemale', 'Femmes', [
-//                "backgroundColor" => self::TOTAL_PALETTE_F,
-//                "stack" => 'Femmes'
-//            ])
-//            ->addDataSet('totalMale', 'Hommes', [
-//                "backgroundColor" => self::TOTAL_PALETTE_H,
-//                "stack" => 'Hommes'
-//            ])
-//            ->labels('seasonName');
-//        $totalChart = $totalBuilder->buildChart('total-chart', MChart::BAR);
 
         //construction du graphique de licences
         foreach (self::LICENCES_NAME as $licenceName) {
