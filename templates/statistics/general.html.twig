@@ -2,11 +2,11 @@
 {% block title %}{{ parent() }} Statistiques générales{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-    <h1 class="text-center my-4">
+<div class="container">
+    <h1 class="text-center my-5">
         Statistiques - Général
     </h1>
-    <div class="row ml-4">
+    <div class="row ml-4 pt-4">
         <div class="col mt-5">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ licenceFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les licences</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Compétition' }) }}" class="btn {{ licenceFilter == 'Compétition' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Compétition</a>
@@ -21,7 +21,7 @@
             {{ render_chart(categoriesChart) }}
         </div>
     </div>
-    <div class="row ml-4">
+    <div class="row ml-4 pt-4">
         <div class="col mt-5">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes', licenceFilter : '' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
@@ -34,11 +34,13 @@
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div class="row pb-4 mt-5">
+    <div class="row pb-4 my-5 py-5">
         <div class="col">
-            {{ mukadi_chart(totalChart) }}
+            {{ render_chart(genderChart) }}
         </div>
     </div>
+</div>
+<div class="container-fluid">
     <div class="row pt-4">
         <div class="col-12">
             <table class="table table-hover table-striped">
