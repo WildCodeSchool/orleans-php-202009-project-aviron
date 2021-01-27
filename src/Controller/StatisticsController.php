@@ -17,14 +17,10 @@ use Symfony\UX\Chartjs\Model\Chart;
 
 /**
  * @SuppressWarnings(PHPMD)
- * @Route("/statistics", name="statistics_")
+ * @Route("/statistiques", name="statistics_")
  */
 class StatisticsController extends AbstractController
 {
-    private const TOTAL_PALETTE_F = '#F74B75';
-
-    private const TOTAL_PALETTE_H = '#135B79';
-
     private const LICENCES_PALETTE = [
         'Découverte' => '#37cf9b',
         'Compétition' => '#6688c3',
@@ -49,6 +45,16 @@ class StatisticsController extends AbstractController
         'Jeune' => '#37cf9b',
         'Junior' => '#6688c3',
         'Senior' => '#a65bd7',
+    ];
+
+    private const GENDER = [
+        'Femme' => 'F',
+        'Homme' => 'H'
+    ];
+
+    private const GENDER_PALETTE = [
+        'F' => '#F87380',
+        'H' => '#6688c3'
     ];
 
     /**
@@ -91,27 +97,52 @@ class StatisticsController extends AbstractController
             }
         }
 
-        //construction graphique par genre
-        $queryTotalPerSeason = $subscriptionRepository->getQueryForTotalPerSeason();
-
-        $totalBuilder
-            ->query($queryTotalPerSeason)
-            ->addDataSet('totalFemale', 'Femmes', [
-                "backgroundColor" => self::TOTAL_PALETTE_F,
-                "stack" => 'Femmes'
-            ])
-            ->addDataSet('totalMale', 'Hommes', [
-                "backgroundColor" => self::TOTAL_PALETTE_H,
-                "stack" => 'Hommes'
-            ])
-            ->labels('seasonName');
-        $totalChart = $totalBuilder->buildChart('total-chart', MChart::BAR);
-
         //récupération du nom des saisons pour label des graphique
         $seasonNames = [];
         foreach ($seasons as $season) {
             $seasonNames[] = $season->getName();
         }
+
+        //construction graphique par genre
+        foreach (self::GENDER as $gender) {
+            $genderData[$gender] = array_fill(0, count($seasonNames), 0);
+        }
+
+        for ($i = 0; $i < count($seasonNames); $i++) {
+            for ($j = 0; $j < count($totalPerSeason); $j++) {
+                if ($totalPerSeason[$j]['name'] == $seasonNames[$i]) {
+                    $genderData[$totalPerSeason[$j]['gender']][$i] += $totalPerSeason[$j]['total'];
+                }
+            }
+        }
+
+        foreach (self::GENDER as $gender => $label) {
+            $genderDatataSets[] = [
+                'label' => $gender,
+                'backgroundColor' => self::GENDER_PALETTE[$label],
+                'data' => $genderData[$label],
+            ];
+        }
+
+        $genderChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $genderChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => $genderDatataSets
+        ]);
+        $genderChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+            ]
+        ]);
 
         //construction du graphique de licences
         foreach (self::LICENCES_NAME as $licenceName) {
@@ -210,16 +241,16 @@ class StatisticsController extends AbstractController
             'licences' => $licences,
             'totalPerSeason' => $totalPerSeason,
             'grandTotal' => $grandTotalPerSeason,
-            'totalChart' => $totalChart,
             'licencesChart' => $licencesChart,
             'categoriesChart' => $categoriesChart,
             'categoryFilter' => $categoryFilter,
-            'licenceFilter' => $licenceFilter
+            'licenceFilter' => $licenceFilter,
+            'genderChart' => $genderChart
         ]);
     }
 
     /**
-     * @Route("/outgoing", name="outgoing")
+     * @Route("/sortants", name="outgoing")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
      * @param SubscriptionRepository $subscriptionRepository

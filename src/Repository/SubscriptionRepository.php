@@ -2,10 +2,16 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
+use App\Entity\Licence;
+use App\Entity\PyramidFilter;
+use App\Entity\Season;
+use App\Entity\Status;
 use App\Entity\Subscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\AST\Join;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -117,16 +123,14 @@ class SubscriptionRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string|null $status
+     * @param array|null $status
      * @param string|null $seasonName
      * @param string|null $licenceAcronym
-     * @param string|null $secondStatus
      * @return Subscription
      * @throws NonUniqueResultException
      */
     public function findAllSubscribersForSeasonByLicenceByStatus(
-        ?string $status,
-        ?string $secondStatus,
+        ?array $status,
         ?string $seasonName,
         ?string $licenceAcronym
     ) {
@@ -136,12 +140,10 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->innerJoin('App\Entity\Status', 'st', 'WITH', 'st.id = sub.status')
             ->join('App\Entity\Licence', 'l', 'WITH', 'l.id=sub.licence')
             ->andWhere('s.name = :seasonName')
-            ->andWhere('st.label = :status')
-            ->orWhere('st.label = :secondStatus')
+            ->andWhere('st.label IN (:status)')
             ->andWhere('l.acronym = :licenceAcronym')
             ->setParameter('seasonName', $seasonName)
             ->setParameter('status', $status)
-            ->setParameter('secondStatus', $secondStatus)
             ->setParameter('licenceAcronym', $licenceAcronym)
             ->getQuery()
             ->getOneOrNullResult();
@@ -262,6 +264,78 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->groupBy('month')
             ->getQuery()
             ->getResult();
+    }
+
+    public function findByPyramidFilter(Season $season, ?Licence $licence, ?PyramidFilter $filter): array
+    {
+        $queryBuilder = $this->createQueryBuilder('sub')
+            ->where('sub.season = :season')
+            ->setParameter('season', $season)
+            ->andWhere('sub.licence = :licence')
+            ->setParameter('licence', $licence);
+
+        if (!is_null($filter) && !empty($filter->getGender())) {
+            $queryBuilder = $queryBuilder
+                ->join('App\Entity\Subscriber', 'sr', 'WITH', 'sr.id = sub.subscriber')
+                ->andWhere('sr.gender IN (:gender)')
+                ->setParameter('gender', $filter->getGender());
+        }
+
+        if (!is_null($filter) && (!empty($filter->getFromCategory()) || !empty($filter->getToCategory()))) {
+            $queryBuilder = $this->filterByCategory(
+                $filter->getFromCategory(),
+                $filter->getToCategory(),
+                $queryBuilder
+            );
+        }
+
+        if (!is_null($filter) && !empty($filter->isNewSubscriber())) {
+            $queryBuilder = $this->filterNewSubscribers($queryBuilder);
+        }
+
+            return $queryBuilder->getQuery()->getResult();
+    }
+
+    private function filterByCategory(
+        ?Category $fromCategory,
+        ?Category $toCategory,
+        QueryBuilder $queryBuilder
+    ): QueryBuilder {
+        $categoryRepository = $this->getEntityManager()->getRepository(Category::class);
+        $categories = $categoryRepository->findAll();
+
+        $firstCategory = 0;
+        $lastCategory = 0;
+        foreach ($categories as $key => $value) {
+            $labelFirst = !is_null($fromCategory) ? $fromCategory->getLabel() : ' ';
+            $labelLast = !is_null($toCategory) ? $toCategory->getLabel() : ' ';
+            if ($value->getLabel() === $labelFirst) {
+                $firstCategory = $key;
+            }
+            if ($value->getLabel() === $labelLast) {
+                $lastCategory = $key;
+            }
+        }
+
+        $categoriesSelected = array_slice($categories, $firstCategory, $lastCategory - $firstCategory + 1);
+
+        $queryBuilder = $queryBuilder
+            ->andWhere('sub.category IN (:categories)')
+            ->setParameter('categories', $categoriesSelected);
+
+        return $queryBuilder;
+    }
+
+    private function filterNewSubscribers(QueryBuilder $queryBuilder): QueryBuilder
+    {
+        $statusRepository = $this->getEntityManager()->getRepository(Status::class);
+        $statusNew = [$statusRepository->findOneBy(['label' => 'N']), $statusRepository->findOneBy(['label' => 'T'])];
+
+        $queryBuilder = $queryBuilder
+            ->andWhere('sub.status IN (:statusNew)')
+            ->setParameter('statusNew', $statusNew);
+
+        return $queryBuilder;
     }
 
 // /**

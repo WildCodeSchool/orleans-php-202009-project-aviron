@@ -1,0 +1,53 @@
+{{ form_start(form) }}
+
+<div class="row ">
+    <div class="col-3">
+        <h5 class="">Saison</h5>
+        <div class="pl-4">
+            {{ form_row(form.fromSeason) }}
+            {{ form_row(form.toSeason) }}
+        </div>
+    </div>
+    <div class="col-1"></div>
+    <div class="col-4">
+        <h5 class="">Catégorie</h5>
+        <div class="pl-4">
+                <div>
+                    {{ form_row(form.fromCategory) }}
+                </div>
+                <div>
+                    {{ form_row(form.toCategory) }}
+                </div>
+        </div>
+    </div>
+    <div class="col-1"></div>
+    <div class="col-3">
+        <h5>Statut</h5>
+        <div class="pl-4 w-80">
+            {{ form_row(form.newSubscriber) }}
+        </div>
+        <h5 class="pt-4">Genre</h5>
+        <div class="pl-4 w-80">
+            {{ form_row(form.gender) }}
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <button type="submit" class="btn btn-primary my-4 mr-5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-check2"
+             viewBox="0 0 16 16">
+            <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5
+                10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+        </svg>
+        Appliquer
+    </button>
+    <a href="{{ path('pyramid') }}" class="btn btn-primary my-4" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+            <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+        </svg>
+        Reinitialiser
+    </a>
+</div>
+{{ form_end(form) }}
