@@ -23,7 +23,7 @@
         </li>
         <li>
             <a href="#statistics" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle" role="button"
-               aria-controls="statistiques">
+               aria-controls="statistics">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-clipboard-data mr-1" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
@@ -36,7 +36,7 @@
             </a>
             <ul class="collapse list-unstyled" id="statistics">
                 <li>
-                    <a href={{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}>Général</a>
+                    <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}">Général</a>
                 </li>
                 <li>
                     <a href="{{ path('statistics_outgoing') }}">Sortants</a>
@@ -45,7 +45,7 @@
         </li>
         <li>
             <a href="#recap" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"
-               role="button" aria-controls="Récapitulatifs">
+               role="button" aria-controls="recap">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                      class="bi bi-table mr-1" viewBox="0 0 16 16">
                     <path fill-rule="evenodd"
