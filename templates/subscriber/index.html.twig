@@ -88,7 +88,7 @@
             </div>
         </div>
         <div class="row mb-3 mr-1 justify-content-end align-items-center">
-            {% if display == 'renewal' %}
+            {% if display == 'renouvellements' %}
                 Statuts :
                 {% for status in statusDB %}
                     <div class="p-1 ml-2" style="background-color: {{ status.color }};">
@@ -96,7 +96,7 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            {% if display == 'subscriptions' %}
+            {% if display == 'inscriptions' %}
                 Catégories :
                 {% for color, category in categoriesDB %}
                     <div class="p-1 ml-2" style="background-color: {{ color }};">
