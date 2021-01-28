@@ -46,7 +46,9 @@ class PyramidCalculator
                         $seasonSubscriberSubscriptions = $seasonSubscription->getSubscriber()->getSubscriptions();
                         $seasonSubscriberSeasons = [];
                         foreach ($seasonSubscriberSubscriptions as $seasonSubscriberSubscription) {
-                            $seasonSubscriberSeasons[] = $seasonSubscriberSubscription->getSeason()->getName();
+                            if ($seasonSubscriberSubscription->getLicence() === $licence) {
+                                $seasonSubscriberSeasons[] = $seasonSubscriberSubscription->getSeason()->getName();
+                            }
                         }
                         if (in_array($seasons[$j]->getName(), $seasonSubscriberSeasons)) {
                             $renewSubscriptions++;
