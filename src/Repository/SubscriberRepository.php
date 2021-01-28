@@ -2,8 +2,6 @@
 
 namespace App\Repository;
 
-use App\DataFixtures\CategoryFixtures;
-use App\Entity\Category;
 use App\Entity\Filter;
 use App\Entity\Season;
 use App\Entity\Subscriber;
@@ -50,20 +48,6 @@ class SubscriberRepository extends ServiceEntityRepository
             $queryBuilder = $queryBuilder->andWhere('sr.gender IN (:gender)')
                 ->setParameter('gender', $filter->getGender());
         }
-        if (!empty($filter->getStatus())) {
-            $queryBuilder = $this->filterByStatus($filter->getStatus(), $filter->getSeasonStatus(), $queryBuilder);
-        }
-        if (!empty($filter->getLicences())) {
-            $queryBuilder = $this->filterByLicence($filter->getLicences(), $filter->getSeasonLicence(), $queryBuilder);
-        }
-        if (!empty($filter->getFromCategory()) || !empty($filter->getToCategory())) {
-            $queryBuilder = $this->filterByCategory(
-                $filter->getFromCategory(),
-                $filter->getToCategory(),
-                $filter->getSeasonCategory(),
-                $queryBuilder
-            );
-        }
         $queryBuilder = $queryBuilder->orderBy('sr.licenceNumber');
 
         return $queryBuilder->getQuery()->getResult();
@@ -97,55 +81,6 @@ class SubscriberRepository extends ServiceEntityRepository
             $queryBuilder = $queryBuilder->andWhere('sr.licenceNumber <= :toAdherent')
                 ->setParameter('toAdherent', $toAdherent);
         }
-        return $queryBuilder;
-    }
-
-    private function filterByStatus(?array $status, Season $seasonStatus, QueryBuilder $queryBuilder): QueryBuilder
-    {
-        $queryBuilder = $queryBuilder->andWhere('sn.status IN (:status)')
-            ->andWhere('sn.season = :season')
-            ->setParameter('status', $status)
-            ->setParameter('season', $seasonStatus);
-        return $queryBuilder;
-    }
-
-    private function filterByLicence(?array $licences, Season $seasonLicence, QueryBuilder $queryBuilder): QueryBuilder
-    {
-        $queryBuilder = $queryBuilder->andWhere('sn.licence IN (:licences)')
-            ->andWhere('sn.season = :season')
-            ->setParameter('licences', $licences)
-            ->setParameter('season', $seasonLicence);
-        return $queryBuilder;
-    }
-
-    private function filterByCategory(
-        ?Category $fromCategory,
-        ?Category $toCategory,
-        Season $seasonCategory,
-        QueryBuilder $queryBuilder
-    ): QueryBuilder {
-        $categoryRepository = $this->getEntityManager()->getRepository(Category::class);
-        $categories = $categoryRepository->findAll();
-
-        $firstCategory = 0;
-        $lastCategory = 0;
-        foreach ($categories as $key => $value) {
-            $labelFirst = !is_null($fromCategory) ? $fromCategory->getLabel() : ' ';
-            $labelLast = !is_null($toCategory) ? $toCategory->getLabel() : ' ';
-            if ($value->getLabel() === $labelFirst) {
-                $firstCategory = $key;
-            }
-            if ($value->getLabel() === $labelLast) {
-                $lastCategory = $key;
-            }
-        }
-
-        $categoriesSelected = array_slice($categories, $firstCategory, $lastCategory - $firstCategory + 1);
-
-        $queryBuilder = $queryBuilder->andWhere('sn.category IN (:categories)')
-            ->andWhere('sn.season = :season')
-            ->setParameter('categories', $categoriesSelected)
-            ->setParameter('season', $seasonCategory);
         return $queryBuilder;
     }
 }
