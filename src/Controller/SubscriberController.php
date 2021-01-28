@@ -143,7 +143,6 @@ class SubscriberController extends AbstractController
     /**
      * @Route("/export/{display}", name="export")
      * @param string $display
-     * @param Request $request
      * @param SubscriberRepository $subscriberRepository
      * @param SeasonRepository $seasonRepository
      * @param CategoryRepository $categoryRepository
@@ -152,45 +151,50 @@ class SubscriberController extends AbstractController
      */
     public function export(
         string $display,
-        Request $request,
         SubscriberRepository $subscriberRepository,
         SeasonRepository $seasonRepository,
         CategoryRepository $categoryRepository,
-        LicenceRepository $licenceRepository
+        LicenceRepository $licenceRepository,
+        FirstSubscription $firstSubscription,
+        SubscriptionDuration $subscriptionDuration,
+        StatusRepository $statusRepository
     ) {
-        /** @var array $filtersArray */
-        $filtersArray = $request->query->get('filter');
         $filters = new Filter();
-        $fromSeason = $seasonRepository->find($filtersArray['fromSeason']);
-        $toSeason = $seasonRepository->find($filtersArray['toSeason']);
-        $seasonStatus = $seasonRepository->find($filtersArray['seasonStatus']);
-        $seasonLicence = $seasonRepository->find($filtersArray['seasonLicence']);
-        $fromCategory = $categoryRepository->find($filtersArray['fromCategory']);
-        $toCategory = $categoryRepository->find($filtersArray['toCategory']);
-        $seasonCategory = $seasonRepository->find($filtersArray['seasonCategory']);
-        $firstCategory = $categoryRepository->find($filtersArray['firstCategory']);
-        $firstLicence = $licenceRepository->find($filtersArray['firstLicence']);
-
-        $filters
-            ->setFromSeason($fromSeason)
-            ->setToSeason($toSeason)
-            ->setFromAdherent((int)$filtersArray['fromAdherent'] ?? null)
-            ->setToAdherent((int)$filtersArray['toAdherent'] ?? null)
-            ->setGender($filtersArray['gender'] ?? null)
-            ->setStatus($filtersArray['status'] ?? null)
-            ->setSeasonStatus($seasonStatus ?? null)
-            ->setLicences($filtersArray['licences'] ?? null)
-            ->setSeasonLicence($seasonLicence ?? null)
-            ->setFromCategory($fromCategory ?? null)
-            ->setToCategory($toCategory ?? null)
-            ->setSeasonCategory($seasonCategory ?? null)
-            ->setFirstCategory($firstCategory ?? null)
-            ->setFirstLicence($firstLicence ?? null)
-            ->setStillRegistered($filtersArray['stillRegistered'] ?? false)
-            ->setDuration((int)$filtersArray['duration'] ?? null)
-            ->setOrMore($filtersArray['orMore'] ?? false)
-            ->setStillAdherent($filtersArray['stillAdherent'] ?? false);
+        $user = $this->getUser();
+        if (!is_null($user) && $user instanceof User && !is_null($user->getLastSearch())) {
+            $lastSearch = unserialize($user->getLastSearch()[0], ['allowed_classes' => true]);
+            $filters->hydrate(
+                $lastSearch,
+                $seasonRepository,
+                $statusRepository,
+                $licenceRepository,
+                $categoryRepository
+            );
+        }
         $subscribers = $subscriberRepository->findByFilter($filters);
+        if (!empty($filters->getFirstLicence())) {
+            $subscribers = $firstSubscription->filterWith(
+                $subscribers,
+                $filters->getFirstLicence(),
+                $filters->isStillRegistered()
+            );
+        }
+        if (!empty($filters->getFirstCategory())) {
+            $subscribers = $firstSubscription->filterWith(
+                $subscribers,
+                $filters->getFirstCategory(),
+                $filters->isStillRegistered()
+            );
+        }
+        if (!empty($filters->getDuration())) {
+            $subscribers = $subscriptionDuration->filterBy(
+                $subscribers,
+                $filters->getDuration(),
+                $filters->isOrMore(),
+                $filters->isStillAdherent()
+            );
+        }
+
         $seasons = $seasonRepository->findByFilter($filters);
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
             'subscribers' => $subscribers,

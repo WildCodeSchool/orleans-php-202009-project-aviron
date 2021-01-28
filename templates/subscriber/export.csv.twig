@@ -5,9 +5,9 @@ N° Licence,Prénom,Nom,Date de naissance,Genre{% for season in seasons %},{{ se
     {%- for subscription in subscriber.subscriptions|filter(subscription => subscription.season.id == season.id) -%}
         {%- if display == 'licences' -%}
                 {{- subscription.licence.acronym -}},
-        {%- elseif display == 'subscriptions' -%}
+        {%- elseif display == 'inscriptions' -%}
                 {{- subscription.category.label -}},
-        {%- elseif display == 'renewal' -%}
+        {%- elseif display == 'renouvellements' -%}
                 {{- subscription.status -}},
         {%- endif -%}
         {%- else -%}
