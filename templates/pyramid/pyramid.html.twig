@@ -11,12 +11,14 @@
     </div>
 
     <div class="row pt-4">
+        <h3>En nombre d'inscrits</h3>
+
         <table class="table table-hover table-striped">
             <thead class="thead-dark">
                 <tr>
                     {% for season in seasons %}
                         {% if loop.index == 1 %}
-                            <th class="text-center align-middle category-td h5">Général</th>
+                            <th></th>
                         {% endif %}
                         <th scope="col" class="text-center">{{ season.name }}</th>
                     {% endfor %}
@@ -36,6 +38,8 @@
     </div>
 
     <div class="row my-5">
+        <h3>En pourcentage du nombre d'inscrits</h3>
+
         <table class="table table-hover table-striped">
             <thead class="thead-dark">
             <tr></tr>
