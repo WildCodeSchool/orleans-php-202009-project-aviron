@@ -74,3 +74,10 @@
         opacity: 100%;
     }
 }
+
+.heart {
+    font-size: $small-font;
+    position: fixed;
+    bottom: $spacing;
+    left: $heart-spacing;
+}
