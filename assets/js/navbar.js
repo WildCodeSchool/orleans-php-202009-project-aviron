@@ -2,7 +2,7 @@ window.openNav = function () {
     document.getElementById('mySidebar').style.width = document.documentElement.style.getPropertyValue('$navbar-width');
     document.getElementById('content').style.marginLeft = document.documentElement.style.getPropertyValue('$navbar-width');
     setTimeout(() => {
-        document.getElementById('heart').style.display = 'inline-block'
+        document.getElementById('heart').style.display = 'inline-block';
     }, 300);
 };
 
