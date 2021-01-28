@@ -1,5 +1,13 @@
 @import 'variables';
 
+.navbar-collapse {
+    padding: $spacing 0;
+}
+
+.open-button {
+    position: fixed;
+}
+
 a[aria-expanded="true"] {
     background: darken($light, 3%);
 }
