@@ -8,7 +8,7 @@ N° Licence,Prénom,Nom,Date de naissance,Genre{% for season in seasons %},{{ se
         {%- elseif display == 'inscriptions' -%}
                 {{- subscription.category.label -}},
         {%- elseif display == 'renouvellements' -%}
-                {{- subscription.status -}},
+                {{- subscription.status.label -}},
         {%- endif -%}
         {%- else -%}
         {{- ' ' -}},
