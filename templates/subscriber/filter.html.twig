@@ -6,7 +6,7 @@
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center mt-4 mb-2">Récapitulatif des {{ display }}</h1>
-        <h2 class="text-center mb-5">Filtres de sélection</h2>
+        <h2 class="text-center mb-4">Filtres de sélection</h2>
         {{ form_start(form) }}
         {{ form_errors(form) }}
         <div class="row ml-5 justify-content-between">
@@ -31,7 +31,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3 ml-5">
+        <div class="row mt-1 ml-5">
             <div class="col-6">
                 <h2 class="title-filter ml-2 my-3">Catégorie</h2>
                 <div class="filter-group pb-2 pt-4 pl-4 d-flex justify-content-between align-items-center">
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3 ml-5">
+        <div class="row mt-1 ml-5">
             <div class="col-6">
                 <h2 class="title-filter ml-2 my-3">Type de licence</h2>
                 <div class="filter-group pb-2 pt-4 pl-4 d-flex justify-content-between">
@@ -94,7 +94,7 @@
                 </div>
             </div>
         </div>
-        <div class="row my-3 ml-5">
+        <div class="row mt-1 mb-2 ml-5">
             <div class="col-7">
                 <h2 class="title-filter ml-2 my-3">Statut</h2>
                 <div class="filter-group pb-2 pt-4 pl-4 d-flex flex-row justify-content-between">
@@ -107,7 +107,7 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary my-4">
+        <button type="submit" class="btn btn-primary my-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-check2"
                  viewBox="0 0 16 16">
                 <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5
@@ -115,7 +115,7 @@
             </svg>
             Appliquer
         </button>
-        <a href="{{ path('subscribers_reinitialisation', {display : display}) }}" class="btn btn-primary my-4 ml-2">
+        <a href="{{ path('subscribers_reinitialisation', {display : display}) }}" class="btn btn-primary my-3 ml-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                  class="bi bi-arrow-counterclockwise" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
