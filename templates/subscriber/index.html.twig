@@ -1,18 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }}
-    {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-    {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
-    {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
-{% endblock %}
+{% block title %}{{ parent() }} Récapitulatif des {{ display }}{% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="text-center my-4">
-            {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-            {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
-            {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
-        </h1>
+        <h1 class="text-center my-4">Récapitulatif des {{ display }}</h1>
         <div class="mb-4 filters">
             <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
             <div class="row px-4 pt-4">
@@ -88,7 +80,7 @@
             </div>
         </div>
         <div class="row mb-3 mr-1 justify-content-end align-items-center">
-            {% if display == 'renewal' %}
+            {% if display == 'renouvellements' %}
                 Statuts :
                 {% for status in statusDB %}
                     <div class="p-1 ml-2" style="background-color: {{ status.color }};">
@@ -96,7 +88,7 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            {% if display == 'subscriptions' %}
+            {% if display == 'inscriptions' %}
                 Catégories :
                 {% for color, category in categoriesDB %}
                     <div class="p-1 ml-2" style="background-color: {{ color }};">
@@ -168,7 +160,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <a href="{{ path('subscribers_export', {display : display}|merge(app.request.query.all)) }}" class="btn btn-sm btn-primary mt-3 mb-5">Exporter en csv</a>
+                        <a href="{{ path('subscribers_export', {display : display}) }}" class="btn btn-sm btn-primary mt-3 mb-5">Exporter en csv</a>
                     </div>
                 </div>
             </div>
