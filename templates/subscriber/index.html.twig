@@ -1,18 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }}
-    {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-    {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
-    {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
-{% endblock %}
+{% block title %}{{ parent() }} Récapitulatif des {{ display }}{% endblock %}
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="text-center my-4">
-            {% if display == 'licences' %}Récapitulatif des types de licences{% endif %}
-            {% if display == 'renouvellements' %}Récapitulatif des renouvellements{% endif %}
-            {% if display == 'inscriptions' %}Récapitulatif des inscriptions{% endif %}
-        </h1>
+        <h1 class="text-center my-4">Récapitulatif des {{ display }}</h1>
         <div class="mb-4 filters">
             <h2 class="h3 pt-3 pb-2 text-center">Filtres appliqués</h2>
             <div class="row px-4 pt-4">
