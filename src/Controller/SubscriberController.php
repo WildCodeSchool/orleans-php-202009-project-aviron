@@ -168,6 +168,8 @@ class SubscriberController extends AbstractController
     }
 
     /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      * @Route("/export/{display}", name="export")
      * @param string $display
      * @param SubscriberRepository $subscriberRepository
@@ -184,7 +186,8 @@ class SubscriberController extends AbstractController
         LicenceRepository $licenceRepository,
         FirstSubscription $firstSubscription,
         SubscriptionDuration $subscriptionDuration,
-        StatusRepository $statusRepository
+        StatusRepository $statusRepository,
+        Registration $registration
     ) {
         $filters = new Filter();
         $user = $this->getUser();
@@ -198,7 +201,10 @@ class SubscriberController extends AbstractController
                 $categoryRepository
             );
         }
+
+        $seasons = $seasonRepository->findByFilter($filters);
         $subscribers = $subscriberRepository->findByFilter($filters);
+
         if (!empty($filters->getFirstLicence())) {
             $subscribers = $firstSubscription->filterWith(
                 $subscribers,
@@ -222,7 +228,29 @@ class SubscriberController extends AbstractController
             );
         }
 
-        $seasons = $seasonRepository->findByFilter($filters);
+        if (!empty($filters->getStatus())) {
+            $subscribers = $registration->filterWithSeasonAndWithStatus(
+                $subscribers,
+                $filters->getStatus(),
+                $filters->getSeasonStatus()
+            );
+        }
+        if (!empty($filters->getLicences())) {
+            $subscribers = $registration->filterWithSeasonAndWithLicence(
+                $subscribers,
+                $filters->getLicences(),
+                $filters->getSeasonLicence()
+            );
+        }
+        if (!empty($filters->getFromCategory()) || !empty($filters->getToCategory())) {
+            $subscribers = $registration->filterWithSeasonAndWithCategories(
+                $subscribers,
+                $filters->getFromCategory(),
+                $filters->getToCategory(),
+                $filters->getSeasonCategory()
+            );
+        }
+
         $response = new Response($this->renderView('subscriber/export.csv.twig', [
             'subscribers' => $subscribers,
             'seasons' => $seasons,
