@@ -20,21 +20,18 @@ use Symfony\Component\Routing\Annotation\Route;
 class ToolsController extends AbstractController
 {
     /**
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      * @Route("/importer-une-saison", name="import", methods={"GET", "POST"})
      * @param Request $request
      * @param CsvImport $csvImport
      * @param SeasonRepository $seasonRepository
      * @param StatusCalculator $statusCalculator
-     * @param ImportValidator $importValidator
      * @return Response
      */
     public function importSeason(
         Request $request,
         CsvImport $csvImport,
         SeasonRepository $seasonRepository,
-        StatusCalculator $statusCalculator,
-        ImportValidator $importValidator
+        StatusCalculator $statusCalculator
     ): Response {
         $seasonImport = new Import();
         $form = $this->createForm(ImportType::class, $seasonImport);
@@ -42,7 +39,7 @@ class ToolsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newImport = $form->getData();
-            $filename = pathinfo($newImport->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
+           /* $filename = pathinfo($newImport->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
             $errors = $importValidator->validateSeasonName($newImport->getSeasonName(), $filename);
 
             if (!empty($errors)) {
@@ -51,7 +48,7 @@ class ToolsController extends AbstractController
                 }
 
                 return $this->redirectToRoute('tools_import');
-            }
+            }*/
 
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
