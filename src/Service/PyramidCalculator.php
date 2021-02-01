@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Licence;
 use App\Entity\PyramidFilter;
+use App\Entity\Subscription;
 use App\Repository\LicenceRepository;
 use App\Repository\SubscriptionRepository;
 
@@ -13,6 +14,7 @@ use App\Repository\SubscriptionRepository;
 class PyramidCalculator
 {
     private const COMPETITION_LICENCE = 'A';
+    private const UNIVERSITY_LICENCE = 'U';
 
     private SubscriptionRepository $subscriptionRepository;
 
@@ -28,10 +30,12 @@ class PyramidCalculator
     public function getRenewalPyramidCounts(array $seasons, ?PyramidFilter $filters): array
     {
         $renewalPyramid = [];
-        $licence = $this->licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
+        $licenceA = $this->licenceRepository->findOneBy(['acronym' => self::COMPETITION_LICENCE]);
+        $licenceU = $this->licenceRepository->findOneBy(['acronym' => self::UNIVERSITY_LICENCE]);
 
         for ($i = 0; $i < count($seasons); $i++) {
-            $seasonSubscriptions = $this->subscriptionRepository->findByPyramidFilter($seasons[$i], $licence, $filters);
+            $seasonSubscriptions = $this->subscriptionRepository
+                ->findByPyramidFilter($seasons[$i], $licenceA, $filters);
 
             $renewalSeason = [];
 
@@ -46,9 +50,13 @@ class PyramidCalculator
                         $seasonSubscriberSubscriptions = $seasonSubscription->getSubscriber()->getSubscriptions();
                         $seasonSubscriberSeasons = [];
                         foreach ($seasonSubscriberSubscriptions as $seasonSubscriberSubscription) {
-                            if ($seasonSubscriberSubscription->getLicence() === $licence) {
-                                $seasonSubscriberSeasons[] = $seasonSubscriberSubscription->getSeason()->getName();
-                            }
+                            $seasonSubscriberSeasons[] = $this
+                                ->findSeasonSubscriptionsByLicence(
+                                    $seasonSubscriberSubscription,
+                                    $licenceA,
+                                    $licenceU,
+                                    $filters
+                                );
                         }
                         if (in_array($seasons[$j]->getName(), $seasonSubscriberSeasons)) {
                             $renewSubscriptions++;
@@ -62,6 +70,26 @@ class PyramidCalculator
         }
 
         return $renewalPyramid;
+    }
+
+    private function findSeasonSubscriptionsByLicence(
+        Subscription $seasonSubscriberSubscription,
+        ?Licence $licenceA,
+        ?Licence $licenceU,
+        ?PyramidFilter $filters
+    ): ?string {
+        $seasonSubscriberSeason = '';
+        if ($seasonSubscriberSubscription->getLicence() === $licenceA) {
+            $seasonSubscriberSeason = $seasonSubscriberSubscription->getSeason()->getName();
+        }
+        if (
+            !is_null($filters) &&
+            $filters->isLicenceU() &&
+            $seasonSubscriberSubscription->getLicence() === $licenceU
+        ) {
+            $seasonSubscriberSeason = $seasonSubscriberSubscription->getSeason()->getName();
+        }
+        return $seasonSubscriberSeason;
     }
 
     public function getRenewalPyramidPercent(array $renewalPyramid): array

@@ -50,7 +50,11 @@ class PyramidFilterType extends AbstractType
                 'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
             ])
             ->add('newSubscriber', CheckboxType::class, [
-                'label' => 'Nouveaux uniquement',
+                'label' => 'Nouveaux A uniquement',
+                'required' => false
+            ])
+            ->add('licenceU', CheckboxType::class, [
+                'label' => 'Inclure Licences U',
                 'required' => false
             ])
             ->add('fromCategory', EntityType::class, [
