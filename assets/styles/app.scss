@@ -70,3 +70,14 @@ thead {
     position: absolute;
     right: 0;
 }
+
+.toTopButton{
+    position: fixed;
+    //height: 50px;
+    //width: 50px;
+    //vertical-align: middle;
+    padding: $spacing;
+    bottom : $spacing*2;
+    right: $spacing*2;
+    border-radius: $large-border*2;
+}

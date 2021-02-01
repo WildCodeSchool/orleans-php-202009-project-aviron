@@ -3,7 +3,7 @@
 
 {% block body %}
 <div class="container">
-    <h1 class="text-center mt-5 mb-4">
+    <h1 id="top" class="text-center mt-5 mb-4">
         Statistiques - Général
     </h1>
     <div class="text-center mb-5">
@@ -61,8 +61,8 @@
         </div>
     </div>
 </div>
-<div class="container-fluid">
-    <div id="table" class="row pt-4">
+<div class="container-fluid pr-5 pb-5">
+    <div id="table" class="row mr-2 pt-4">
         <div class="col-12">
             <table class="table table-hover table-striped">
                 <thead class="thead-dark">
@@ -145,17 +145,22 @@
                         {% endfor %}
                     {% endfor %}
                 </tr>
-
-
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 align-self-end">
+                <a href="#userBar" class="btn btn-sm btn-primary toTopButton" title="Retour en haut de la page">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                    </svg>
+                </a>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block javascripts %}
-    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
-    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
     {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('navbar') }}
 {% endblock %}
