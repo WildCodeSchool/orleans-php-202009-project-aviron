@@ -34,10 +34,10 @@ class PyramidController extends AbstractController
     ): Response {
 
         $filter = new PyramidFilter();
+        $filter->setToSeason($seasonRepository->findOneBy([], ['name' => 'DESC']));
 
         $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $filters = $form->getData();
