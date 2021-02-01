@@ -36,27 +36,31 @@ class FilterType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label' => 'De',
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La saison de début choisie n'est pas une valeur valide"
             ])
             ->add('toSeason', EntityType::class, [
                 'class' => Season::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'DESC');
+                        ->orderBy('s.name', 'ASC');
                 },
                 'choice_label' => 'name',
                 'label' => 'à',
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La saison de fin choisie n'est pas une valeur valide"
             ])
             ->add('fromAdherent', NumberType::class, [
                 'label' => 'De',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "Le numéro d'adhérent de début doit être un nombre"
             ])
             ->add('toAdherent', NumberType::class, [
                 'label' => 'à',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "Le numéro d'adhérent de fin doit être un nombre"
             ])
             ->add('gender', ChoiceType::class, [
                 'choices' => array_flip(Subscriber::GENDER),
@@ -86,7 +90,8 @@ class FilterType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La saison choisie pour le statut n'est pas une valeur valide"
             ])
             ->add('licences', EntityType::class, [
                 'class' => Licence::class,
@@ -105,7 +110,8 @@ class FilterType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La saison choisie pour le type de licence n'est pas une valeur valide"
             ])
             ->add('fromCategory', EntityType::class, [
                 'class' => Category::class,
@@ -121,7 +127,8 @@ class FilterType extends AbstractType
                 'placeholder' => '',
                 'label' => 'De',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La catégorie de début choisie n'est pas une valeur valide"
             ])
             ->add('toCategory', EntityType::class, [
                 'class' => Category::class,
@@ -137,7 +144,8 @@ class FilterType extends AbstractType
                 'placeholder' => '',
                 'label' => 'à',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La catégorie de fin choisie n'est pas une valeur valide"
             ])
             ->add('seasonCategory', EntityType::class, [
                 'class' => Season::class,
@@ -147,7 +155,8 @@ class FilterType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'label' => 'Saison',
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La saison choisie pour la catégorie n'est pas une valeur valide"
             ])
             ->add('firstLicence', EntityType::class, [
                 'class' => Licence::class,
@@ -156,7 +165,8 @@ class FilterType extends AbstractType
                 'placeholder' => 'Type de licence',
                 'required' => false,
                 'error_bubbling' => true,
-                'invalid_message' => "Le type de licence choisi n'est pas une valeur valide"
+                'invalid_message' =>
+                    "Le type de licence choisi pour la première inscription n'est pas une valeur valide"
             ])
             ->add('firstCategory', EntityType::class, [
                 'class' => Category::class,
@@ -172,7 +182,8 @@ class FilterType extends AbstractType
                 'placeholder' => 'Catégorie',
                 'label' => 'En',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La catégorie choisie pour la première inscription n'est pas une valeur valide"
             ])
             ->add('stillRegistered', CheckboxType::class, [
                 'required' => false,
@@ -182,7 +193,8 @@ class FilterType extends AbstractType
             ->add('duration', NumberType::class, [
                 'label' => 'ans',
                 'required' => false,
-                'error_bubbling' => true
+                'error_bubbling' => true,
+                'invalid_message' => "La durée d'inscription doit être un nombre"
             ])
             ->add('orMore', CheckboxType::class, [
                 'required' => false,
