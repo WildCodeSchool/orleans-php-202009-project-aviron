@@ -2,14 +2,10 @@
 
 namespace App\Entity;
 
-use App\Service\ImportValidator;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\SeasonName as SeasonAssert;
 
-/**
- * @Assert\Callback({"ImportValidator", "validate"})
- */
 class Import
 {
     /**
@@ -19,6 +15,7 @@ class Import
      *     match=true,
      *     message="Le nom de la saison n'est pas au bon format, format attendu : 2020-2021",
      * )
+     * @SeasonAssert/SeasonName
      */
     private string $seasonName;
 
