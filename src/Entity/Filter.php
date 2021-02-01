@@ -13,22 +13,26 @@ class Filter
 {
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="La saison de début ne peut pas être vide")
      */
     private Season $fromSeason;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="La saison de fin ne peut pas être vide")
      * @Assert\GreaterThanOrEqual(propertyPath="fromSeason",
      *     message="La saison de fin doit être supérieure ou égale à la saison de début")
      */
     private Season $toSeason;
 
+    /**
+     * @Assert\PositiveOrZero(message="Le numéro d'adhérent de début doit être supérieur ou égal à 0")
+     */
     private ?int $fromAdherent = null;
 
     /**
      * @Assert\GreaterThanOrEqual(propertyPath="fromAdherent",
      *     message="Le numéro d'adhérent de fin doit être supérieur ou égal au numéro de début")
+     * @Assert\Positive(message="Le numéro d'adhérent de fin doit être supérieur à 0")
      */
     private ?int $toAdherent = null;
 
@@ -37,14 +41,14 @@ class Filter
     private ?array $status = [];
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="La saison associée au statut ne peut pas être vide")
      */
     private Season $seasonStatus;
 
     private ?array $licences = [];
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="La saison associée au type de licence ne peut pas être vide")
      */
     private Season $seasonLicence;
 
@@ -53,7 +57,7 @@ class Filter
     private ?Category $toCategory = null;
 
     /**
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="La saison associée à la catégorie ne peut pas être vide")
      */
     private Season $seasonCategory;
 
@@ -63,6 +67,9 @@ class Filter
 
     private bool $stillRegistered = false;
 
+    /**
+     * @Assert\Positive(message="La durée d'inscription doit être supérieure à 0")
+     */
     private ?int $duration = null;
 
     private bool $orMore = false;

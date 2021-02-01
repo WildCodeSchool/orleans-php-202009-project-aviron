@@ -13,7 +13,12 @@
         <a href="#table" class="btn btn-primary btn-sm">Tableau général</a>
     </div>
     <div id="category" class="row ml-4 pt-4">
-        <div class="col mt-5">
+        <div class="col">
+            <h2>Répartition par Catégorie</h2>
+        </div>
+    </div>
+    <div class="row ml-4">
+        <div class="col my-3">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ licenceFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les licences</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Compétition' }) }}" class="btn {{ licenceFilter == 'Compétition' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Compétition</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Découverte' }) }}" class="btn {{ licenceFilter == 'Découverte' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Découverte</a>
@@ -28,7 +33,12 @@
         </div>
     </div>
     <div id="licence" class="row ml-4 pt-4">
-        <div class="col mt-5">
+        <div class="col">
+            <h2>Répartition par Type de Licence</h2>
+        </div>
+    </div>
+    <div class="row ml-4">
+        <div class="col my-3">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Juniors', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == 'Juniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Junior</a>
@@ -40,14 +50,19 @@
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div id="gender" class="row pb-4 my-5 py-5">
+    <div id="gender" class="row ml-4 pt-4">
+        <div class="col">
+            <h2>Répartition par Genre</h2>
+        </div>
+    </div>
+    <div class="row pb-4 mb-5">
         <div class="col">
             {{ render_chart(genderChart) }}
         </div>
     </div>
 </div>
-<div class="container-fluid">
-    <div id="table" class="row pt-4">
+<div class="container-fluid pr-5 pb-5">
+    <div id="table" class="row mr-2 pt-4">
         <div class="col-12">
             <table class="table table-hover table-striped">
                 <thead class="thead-dark">
@@ -130,17 +145,22 @@
                         {% endfor %}
                     {% endfor %}
                 </tr>
-
-
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 align-self-end">
+                <a href="#userBar" class="btn btn-sm btn-primary toTopButton" title="Retour en haut de la page">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="white" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/>
+                    </svg>
+                </a>
         </div>
     </div>
 </div>
 {% endblock %}
 {% block javascripts %}
-    <script src="/bundles/mukadichartjs/Chart.bundle.min.js"></script>
-    <script src="/bundles/mukadichartjs/mukadi.chart.min.js"></script>
     {{ encore_entry_script_tags('app') }}
     {{ encore_entry_script_tags('navbar') }}
 {% endblock %}

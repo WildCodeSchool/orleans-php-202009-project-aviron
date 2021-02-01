@@ -15,7 +15,8 @@ Main features :
 
 * Check composer is installed
 * Check yarn is installed
-* Check Symfony version is 5.*
+* Check Symfony version is 5.* and PHP 7.4
+* The Bootstrap version used is 4.5
 
 ### Install
 
@@ -38,6 +39,7 @@ Main features :
    # MAILER_DSN=smtp://user:pass@smtp.example.com:port
    ###< symfony/mailer ###
    ```
+   `MAILER_FROM_ADDRESS` is the sender's email address
 5. Create the database with `php bin/console doctrine:database:create`
 6. Execute migrations and create tables with `php bin/console doctrine:migrations:migrate`
 7. Load the fixtures with `php bin/console doctrine:fixtures:load`
@@ -47,11 +49,6 @@ Main features :
 
 1. Run `symfony server:start` to launch your local php web server
 
-## Built With
-* Symfony 5
-* PHP 7.4  
-* Bootstrap 4
-* Symfony UX Chart JS 1.1
 
 ## Authors
 
