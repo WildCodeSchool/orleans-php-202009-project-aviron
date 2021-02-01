@@ -27,6 +27,24 @@ class PyramidFilter
 
     private bool $newSubscriber = false;
 
+    private bool $licenceU = false;
+
+    /**
+     * @return bool
+     */
+    public function isLicenceU(): bool
+    {
+        return $this->licenceU;
+    }
+
+    /**
+     * @param bool $licenceU
+     */
+    public function setLicenceU(bool $licenceU): void
+    {
+        $this->licenceU = $licenceU;
+    }
+
 
     /**
      * @return Season
