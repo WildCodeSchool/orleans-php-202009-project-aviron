@@ -214,4 +214,9 @@ class FilterType extends AbstractType
             'data_class' => Filter::class
         ]);
     }
+
+    public function getBlockPrefix(): string
+    {
+        return '';
+    }
 }
