@@ -13,7 +13,12 @@
         <a href="#table" class="btn btn-primary btn-sm">Tableau général</a>
     </div>
     <div id="category" class="row ml-4 pt-4">
-        <div class="col mt-5">
+        <div class="col">
+            <h2>Répartition par Catégorie</h2>
+        </div>
+    </div>
+    <div class="row ml-4">
+        <div class="col my-3">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '' }) }}" class="btn {{ licenceFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les licences</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Compétition' }) }}" class="btn {{ licenceFilter == 'Compétition' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Compétition</a>
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : 'Découverte' }) }}" class="btn {{ licenceFilter == 'Découverte' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Découverte</a>
@@ -28,7 +33,12 @@
         </div>
     </div>
     <div id="licence" class="row ml-4 pt-4">
-        <div class="col mt-5">
+        <div class="col">
+            <h2>Répartition par Type de Licence</h2>
+        </div>
+    </div>
+    <div class="row ml-4">
+        <div class="col my-3">
             <a href="{{ path('statistics_general', { categoryFilter : '', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == '' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Toutes les catégories</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Jeunes', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == 'Jeunes' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Jeune</a>
             <a href="{{ path('statistics_general', { categoryFilter : 'Juniors', licenceFilter : '', '_fragment':'licence' }) }}" class="btn {{ categoryFilter == 'Juniors' ? 'btn-secondary' : 'btn-primary' }} btn-sm">Junior</a>
@@ -40,7 +50,12 @@
             {{ render_chart(licencesChart) }}
         </div>
     </div>
-    <div id="gender" class="row pb-4 my-5 py-5">
+    <div id="gender" class="row ml-4 pt-4">
+        <div class="col">
+            <h2>Répartition par Genre</h2>
+        </div>
+    </div>
+    <div class="row pb-4 mb-5">
         <div class="col">
             {{ render_chart(genderChart) }}
         </div>
