@@ -39,16 +39,6 @@ class ToolsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $newImport = $form->getData();
-           /* $filename = pathinfo($newImport->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
-            $errors = $importValidator->validateSeasonName($newImport->getSeasonName(), $filename);
-
-            if (!empty($errors)) {
-                foreach ($errors as $error) {
-                    $this->addFlash('danger', $error);
-                }
-
-                return $this->redirectToRoute('tools_import');
-            }*/
 
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
