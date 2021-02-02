@@ -36,7 +36,7 @@ class StatisticsController extends AbstractController
     ];
 
     private const CATEGORIES_NAME = [
-        "Jeune" => ['J9', 'J12', 'J13', 'J14'],
+        "Jeune" => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
         "Junior" => ['J15', 'J16', 'J17', 'J18'],
         "Senior" => ['S','S-23'],
     ];
@@ -79,7 +79,7 @@ class StatisticsController extends AbstractController
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
         $licences = $licenceRepository->findAll();
-        $seasons = $seasonRepository->findAll();
+        $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
         $totalPerSeason = $subscriptionRepository->totalPerSeason();
         $grandTotalPerSeason = $subscriptionRepository->grandTotalPerSeason();
         $categoryFilter = $request->query->get('categoryFilter');
@@ -189,7 +189,6 @@ class StatisticsController extends AbstractController
 
         //construction du graphique de catégories
         $totalCategories = $subscriptionRepository->totalCategoriesPerSeason($licenceFilter);
-
         foreach (self::CATEGORIES_NAME as $categoryName => $categoryLabel) {
             $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
         }
