@@ -143,7 +143,6 @@ class CsvImport
                         ->setLastname($csvLine['NOM'])
                         ->setGender($csvLine['SEXE'])
                         ->setBirthdate($this->stringToDatetime($csvLine['DATE NAISSANCE']));
-                    $total++;
                 } elseif ($subscriber->getLicenceNumber() < $csvLine['NO ADHERENT']) {
                     $subscriber->setLicenceNumber($csvLine['NO ADHERENT']);
                 }
@@ -174,6 +173,7 @@ class CsvImport
                     ->setSubscriptionDate($subscriptionDate)
                     ->setLicence($licence)
                     ->setCategory($this->categoryRepository->findOneBy(['label' => $csvLine['CATEGORIE AGE']]));
+                $total++;
             } elseif ($subscriptionDate > $subscription->getSubscriptionDate()) {
                 $subscription
                     ->setSubscriptionDate($subscriptionDate)
