@@ -37,7 +37,7 @@ class PyramidController extends AbstractController
                 $seasons = $seasonRepository->findByFilter($filters);
         }
 
-        isset($seasons) ? : $seasons = $seasonRepository->findAll();
+        isset($seasons) ? : $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
 
         $renewalPyramid = $pyramidCalculator->getRenewalPyramidCounts($seasons, $filters ?? null);
         $renewalPyramidPercent = $pyramidCalculator->getRenewalPyramidPercent($renewalPyramid);
