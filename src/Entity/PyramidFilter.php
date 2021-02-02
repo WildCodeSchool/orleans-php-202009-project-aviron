@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\ChronologicalOrder as SeasonOrder;
+use App\Validator\AgeCategoryOrder as CategoryOrder;
 
 /**
  * @SeasonOrder/ChronologicalOrder
+ * @CategoryOrder/AgeCategoryOrder
  */
 
 class PyramidFilter
