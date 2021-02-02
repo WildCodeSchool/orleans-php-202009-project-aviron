@@ -42,7 +42,7 @@ class ToolsController extends AbstractController
             $season = $csvImport->createSeason($newImport->getSeasonName());
 
             $subscriberTotal = $csvImport->createSubscriptions($csvData, $season);
-            $this->addFlash('success', $subscriberTotal . ' abonné(s) importé(s) en base de données');
+            $this->addFlash('success', $subscriberTotal . ' inscription(s) ajoutée(s) en base de données');
 
             $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
             $statusCalculator->calculate($seasons);
