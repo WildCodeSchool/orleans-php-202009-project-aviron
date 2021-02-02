@@ -99,7 +99,6 @@ class MonthlySubscriptionChartMaker extends ChartMaker
                     'data' => $previousSeasonData,
                     'lineTension' => 0,
                     'borderWidth' => 3,
-
                 ],
             ],
         ]);
