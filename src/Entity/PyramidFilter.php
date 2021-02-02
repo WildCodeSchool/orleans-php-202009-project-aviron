@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PyramidFilter
 {
-
     /**
      * @Assert\NotBlank()
      */
@@ -15,7 +14,7 @@ class PyramidFilter
     /**
      * @Assert\NotBlank()
      * @Assert\GreaterThanOrEqual(propertyPath="fromSeason",
-     *     message="La saison de fin doit être supérieure ou égale à la saison de début")
+     *     message="La saison de fin doit être supérieure à la saison de début")
      */
     private Season $toSeason;
 
@@ -140,7 +139,6 @@ class PyramidFilter
 
         return $this;
     }
-
 
     /**
      * @return bool
