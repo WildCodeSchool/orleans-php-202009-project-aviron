@@ -46,11 +46,14 @@ class ToolsController extends AbstractController
                 'success',
                 $subscriptionCounts['newSubscriptionsCount'] . ' inscription(s) ajoutée(s) en base de données'
             );
-            $this->addFlash(
-                'danger',
-                $subscriptionCounts['SubscriptionDateAnomalies'] . ' incohérences détectées 
+
+            if ($subscriptionCounts['SubscriptionDateAnomalies'] > 0) {
+                $this->addFlash(
+                    'danger',
+                    $subscriptionCounts['SubscriptionDateAnomalies'] . ' incohérences détectées 
                 entre la date de saisie dans le fichier et la saison ajoutée'
-            );
+                );
+            }
 
             $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
             $statusCalculator->calculate($seasons);
