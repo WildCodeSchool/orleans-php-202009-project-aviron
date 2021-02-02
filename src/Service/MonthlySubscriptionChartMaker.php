@@ -54,43 +54,63 @@ class MonthlySubscriptionChartMaker extends ChartMaker
         $previousSeasonData = [];
         $currentSeasonIndex = 0;
         $previousSeasonIndex = 0;
+        $totalCurrent = 0;
+        $totalPrevious = 0;
         for ($i = 0; $i < 12; $i++) {
             if (
                 isset($currentSeasonMonthlyCount[$currentSeasonIndex]['month']) &&
                 $currentSeasonMonthlyCount[$currentSeasonIndex]['month'] == self::MONTH_SORT[$i]
             ) {
-                $currentSeasonData[] = $currentSeasonMonthlyCount[$currentSeasonIndex]['count'];
+                $totalCurrent += $currentSeasonMonthlyCount[$currentSeasonIndex]['count'];
+                $currentSeasonData[] = $totalCurrent;
                 $currentSeasonIndex++;
             } else {
-                $currentSeasonData[] = 0;
+                $currentSeasonData[] = $totalCurrent;
             }
 
             if (
                 isset($previousSeasonMonthlyCount[$previousSeasonIndex]['month']) &&
                 $previousSeasonMonthlyCount[$previousSeasonIndex]['month'] == self::MONTH_SORT[$i]
             ) {
-                $previousSeasonData[] = $previousSeasonMonthlyCount[$previousSeasonIndex]['count'];
+                $totalPrevious += $previousSeasonMonthlyCount[$previousSeasonIndex]['count'];
+                $previousSeasonData[] = $totalPrevious;
                 $previousSeasonIndex++;
             } else {
                 $previousSeasonData[] = 0;
             }
         }
 
-        $monthlySubscriptionsChart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
+        $monthlySubscriptionsChart = $this->chartBuilder->createChart(Chart::TYPE_LINE);
         $monthlySubscriptionsChart->setData([
             'labels' => self::MONTH_LABELS,
             'datasets' => [
                 [
                     'label' => 'Saison en cours',
-                    'backgroundColor' => self::CURRENT_YEAR_COLOR,
+                    'borderColor' => self::CURRENT_YEAR_COLOR,
+                    'backgroundColor' => 'transparent',
                     'data' => $currentSeasonData,
+                    'lineTension' => 0,
+                    'borderWidth' => 5,
                 ],
                 [
                     'label' => 'Saison précédente',
-                    'backgroundColor' => self::PREVIOUS_YEAR_COLOR,
+                    'borderColor' => self::PREVIOUS_YEAR_COLOR,
+                    'backgroundColor' => 'transparent',
                     'data' => $previousSeasonData,
+                    'lineTension' => 0,
+                    'borderWidth' => 3,
                 ],
             ],
+        ]);
+        $monthlySubscriptionsChart->setOptions([
+            'scales' => [
+                'yAxes' => [[
+                    'ticks' => [
+                        'beginAtZero' => true,
+                    ]
+                ]]
+            ]
+
         ]);
 
         return $monthlySubscriptionsChart;

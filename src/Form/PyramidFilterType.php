@@ -2,53 +2,31 @@
 
 namespace App\Form;
 
-use App\Entity\Category;
 use App\Entity\PyramidFilter;
-use App\Entity\Season;
-use App\Entity\Subscriber;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PyramidFilterType extends AbstractType
+class PyramidFilterType extends FilterType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
         $builder
-            ->add('fromSeason', EntityType::class, [
-                'class' => Season::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'ASC');
-                },
-                'choice_label' => 'name',
-                'label' => 'De',
-                'error_bubbling' => true
-            ])
-            ->add('toSeason', EntityType::class, [
-                'class' => Season::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('s')
-                        ->orderBy('s.name', 'DESC');
-                },
-                'choice_label' => 'name',
-                'label' => 'à',
-                'error_bubbling' => true
-            ])
-            ->add('gender', ChoiceType::class, [
-                'choices' => array_flip(Subscriber::GENDER),
-                'expanded' => true,
-                'multiple' => true,
-                'label' => false,
-                'required' => false,
-                'placeholder' => false,
-                'error_bubbling' => true,
-                'invalid_message' => "Le sexe choisi n'est pas une valeur valide"
-            ])
+            ->remove('fromAdherent')
+            ->remove('toAdherent')
+            ->remove('status')
+            ->remove('seasonStatus')
+            ->remove('licences')
+            ->remove('seasonLicence')
+            ->remove('seasonCategory')
+            ->remove('firstLicence')
+            ->remove('firstCategory')
+            ->remove('stillRegistered')
+            ->remove('duration')
+            ->remove('orMore')
+            ->remove('stillAdherent')
+
             ->add('newSubscriber', CheckboxType::class, [
                 'label' => 'Nouveaux A uniquement',
                 'required' => false
@@ -56,40 +34,7 @@ class PyramidFilterType extends AbstractType
             ->add('licenceU', CheckboxType::class, [
                 'label' => 'Inclure Licences U',
                 'required' => false
-            ])
-            ->add('fromCategory', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => function ($category) {
-                    return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
-                },
-                'choice_value' => function (?Category $entity) {
-                    return $entity ? $entity->getLabel() : '';
-                },
-                'group_by' => function ($choice, $key, $value) {
-                    return $choice->getNewGroup();
-                },
-                'placeholder' => '',
-                'label' => 'De',
-                'required' => false,
-                'error_bubbling' => true
-            ])
-            ->add('toCategory', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => function ($category) {
-                    return $category->getLabel() . ' (' . $category->getOldGroup() . ')';
-                },
-                'choice_value' => function (?Category $entity) {
-                    return $entity ? $entity->getLabel() : '';
-                },
-                'group_by' => function ($choice, $key, $value) {
-                    return $choice->getNewGroup();
-                },
-                'placeholder' => '',
-                'label' => 'à',
-                'required' => false,
-                'error_bubbling' => true
-            ])
-            ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
