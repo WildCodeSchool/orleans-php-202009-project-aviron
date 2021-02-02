@@ -23,15 +23,6 @@ class SeasonRepository extends ServiceEntityRepository
         parent::__construct($registry, Season::class);
     }
 
-    public function findAllOrderByName(): array
-    {
-        return $this->createQueryBuilder('season')
-            ->select('season.name, season.startingDate, season.endingDate')
-            ->orderBy('season.name')
-            ->getQuery()
-            ->getResult();
-    }
-
     /**
      * @param Filter|PyramidFilter $filter
      * @return int|mixed|string
