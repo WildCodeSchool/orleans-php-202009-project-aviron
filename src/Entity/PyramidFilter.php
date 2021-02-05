@@ -3,6 +3,13 @@
 namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator\ChronologicalOrder as SeasonOrder;
+use App\Validator\AgeCategoryOrder as CategoryOrder;
+
+/**
+ * @SeasonOrder/ChronologicalOrder
+ * @CategoryOrder/AgeCategoryOrder
+ */
 
 class PyramidFilter
 {
@@ -13,8 +20,6 @@ class PyramidFilter
 
     /**
      * @Assert\NotBlank()
-     * @Assert\GreaterThanOrEqual(propertyPath="fromSeason",
-     *     message="La saison de fin doit être supérieure à la saison de début")
      */
     private Season $toSeason;
 
