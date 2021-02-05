@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Season;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
@@ -57,7 +58,10 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('tools_import');
         } else {
             $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
-            $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName() ?? null;
+            $previousSeason = null;
+            if ($seasonRepository->findBy([], ['name' => 'DESC'], 1, 1) != null) {
+                $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName();
+            }
         }
 
         $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
