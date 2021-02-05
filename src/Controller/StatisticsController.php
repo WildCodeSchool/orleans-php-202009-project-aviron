@@ -138,7 +138,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -181,7 +185,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -227,7 +235,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
