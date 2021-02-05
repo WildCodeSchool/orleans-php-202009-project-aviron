@@ -26,6 +26,7 @@ class StatisticsController extends AbstractController
         'Compétition' => '#6688c3',
         'Universitaire' => '#a65bd7',
         'Indoor' => '#f2e13c',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const LICENCES_NAME = [
@@ -33,6 +34,7 @@ class StatisticsController extends AbstractController
         'C' => 'Compétition',
         'U' => 'Universitaire',
         'I' => 'Indoor',
+        'Total' => 'Total'
     ];
 
     private const CATEGORIES_NAME = [
@@ -45,6 +47,7 @@ class StatisticsController extends AbstractController
         'Jeune' => '#37cf9b',
         'Junior' => '#6688c3',
         'Senior' => '#a65bd7',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const GENDER = [
@@ -118,7 +121,6 @@ class StatisticsController extends AbstractController
             }
         }
 
-
         for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
             $genderData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
@@ -168,6 +170,10 @@ class StatisticsController extends AbstractController
                     $licencesData[$totalLicences[$j]['name']][$i] += $totalLicences[$j]['total'];
                 }
             }
+        }
+
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $licencesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
         foreach (self::LICENCES_NAME as $licenceName) {
