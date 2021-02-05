@@ -49,12 +49,14 @@ class StatisticsController extends AbstractController
 
     private const GENDER = [
         'Femme' => 'F',
-        'Homme' => 'H'
+        'Homme' => 'H',
+        'Total' => 'Total'
     ];
 
     private const GENDER_PALETTE = [
         'F' => '#F87380',
-        'H' => '#6688c3'
+        'H' => '#6688c3',
+        'Total' => '#e7e7e7ff'
     ];
 
     /**
@@ -116,6 +118,11 @@ class StatisticsController extends AbstractController
             }
         }
 
+
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $genderData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
+        }
+
         foreach (self::GENDER as $gender => $label) {
             $genderDatataSets[] = [
                 'label' => $gender,
@@ -138,7 +145,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true,
+                        "stacked" => false,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
@@ -185,7 +192,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true,
+                        "stacked" => false,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
@@ -235,7 +242,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true,
+                        "stacked" => false,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
