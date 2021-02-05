@@ -26,6 +26,7 @@ class StatisticsController extends AbstractController
         'Compétition' => '#6688c3',
         'Universitaire' => '#a65bd7',
         'Indoor' => '#f2e13c',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const LICENCES_NAME = [
@@ -33,6 +34,7 @@ class StatisticsController extends AbstractController
         'C' => 'Compétition',
         'U' => 'Universitaire',
         'I' => 'Indoor',
+        'Total' => 'Total'
     ];
 
     private const CATEGORIES_NAME = [
@@ -45,16 +47,19 @@ class StatisticsController extends AbstractController
         'Jeune' => '#37cf9b',
         'Junior' => '#6688c3',
         'Senior' => '#a65bd7',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const GENDER = [
         'Femme' => 'F',
-        'Homme' => 'H'
+        'Homme' => 'H',
+        'Total' => 'Total'
     ];
 
     private const GENDER_PALETTE = [
         'F' => '#F87380',
-        'H' => '#6688c3'
+        'H' => '#6688c3',
+        'Total' => '#e7e7e7ff'
     ];
 
     /**
@@ -116,6 +121,10 @@ class StatisticsController extends AbstractController
             }
         }
 
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $genderData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
+        }
+
         foreach (self::GENDER as $gender => $label) {
             $genderDatataSets[] = [
                 'label' => $gender,
@@ -138,7 +147,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => false,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -157,6 +170,10 @@ class StatisticsController extends AbstractController
                     $licencesData[$totalLicences[$j]['name']][$i] += $totalLicences[$j]['total'];
                 }
             }
+        }
+
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $licencesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
         foreach (self::LICENCES_NAME as $licenceName) {
@@ -181,7 +198,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => false,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -192,6 +213,8 @@ class StatisticsController extends AbstractController
         foreach (self::CATEGORIES_NAME as $categoryName => $categoryLabel) {
             $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
         }
+
+        $categoriesData['Total'] = array_fill(0, count($seasonNames), 0);
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalCategories); $j++) {
@@ -205,6 +228,10 @@ class StatisticsController extends AbstractController
             }
         }
 
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $categoriesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
+        }
+
         foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
             $categoryDataSets[] = [
                 'label' => $categoryName,
@@ -212,6 +239,11 @@ class StatisticsController extends AbstractController
                 'data' => $categoriesData[$categoryName],
             ];
         }
+        $categoryDataSets[] = [
+            'label' => 'Total',
+            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
+            'data' => $categoriesData['Total'],
+        ];
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
@@ -227,7 +259,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => false,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
