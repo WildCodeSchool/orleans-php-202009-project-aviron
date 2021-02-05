@@ -29,13 +29,13 @@
 
     .close-button {
         color: $secondary;
-        opacity: 60%;
+        opacity: 0.6;
         position: absolute;
         right: $spacing;
         top: $spacing;
 
         &:hover {
-            opacity: 100%;
+            opacity: 1;
         }
     }
 }
@@ -67,11 +67,11 @@
 .open-button {
     color: $primary;
     left: $spacing;
-    opacity: 80%;
+    opacity: 0.8;
     top: 0;
 
     &:hover {
-        opacity: 100%;
+        opacity: 1;
     }
 }
 
