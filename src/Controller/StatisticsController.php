@@ -214,6 +214,8 @@ class StatisticsController extends AbstractController
             $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
         }
 
+        $categoriesData['Total'] = array_fill(0, count($seasonNames), 0);
+
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalCategories); $j++) {
                 if ($totalCategories[$j]['seasonName'] == $seasonNames[$i]) {
@@ -226,6 +228,10 @@ class StatisticsController extends AbstractController
             }
         }
 
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $categoriesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
+        }
+
         foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
             $categoryDataSets[] = [
                 'label' => $categoryName,
@@ -233,6 +239,11 @@ class StatisticsController extends AbstractController
                 'data' => $categoriesData[$categoryName],
             ];
         }
+        $categoryDataSets[] = [
+            'label' => 'Total',
+            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
+            'data' => $categoriesData['Total'],
+        ];
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
