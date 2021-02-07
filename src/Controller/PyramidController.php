@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\PyramidFilter;
 use App\Form\PyramidFilterType;
+use App\Repository\CategoryRepository;
 use App\Repository\SeasonRepository;
 use App\Service\PyramidCalculator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,12 +24,15 @@ class PyramidController extends AbstractController
      */
     public function renewalPyramid(
         SeasonRepository $seasonRepository,
+        CategoryRepository $categoryRepository,
         PyramidCalculator $pyramidCalculator,
         Request $request
     ): Response {
 
         $filter = new PyramidFilter();
         $filter->setToSeason($seasonRepository->findOneBy([], ['name' => 'DESC']));
+        $filter->setFromCategory($categoryRepository->findOneBy(['label' => 'J9']));
+        $filter->setToCategory($categoryRepository->findOneBy(['label' => 'S']));
         $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
