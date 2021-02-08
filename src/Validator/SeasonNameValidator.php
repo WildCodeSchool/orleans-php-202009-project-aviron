@@ -33,18 +33,20 @@ class SeasonNameValidator extends ConstraintValidator
         }
 
        // Vérifie que la saison entrée est bien attenante aux saisons déjà en base de données
-        $firstSeason = ($this->seasonRepository->findOneBy([], ['name' => 'ASC']))->getName();
-        $lastSeason = ($this->seasonRepository->findOneBy([], ['name' => 'DESC']))->getName();
+        if (($this->seasonRepository->findOneBy([], ['name' => 'ASC'])) !== null) {
+            $firstSeason = ($this->seasonRepository->findOneBy([], ['name' => 'ASC']))->getName();
+            $lastSeason = ($this->seasonRepository->findOneBy([], ['name' => 'DESC']))->getName();
 
-        if (
+            if (
                 $firstSeason !== null &&
                 $lastSeason !== null &&
                 ($seasonYears[1] < substr($firstSeason, 0, 4) ||
                     $seasonYears[0] > substr($lastSeason, 5, 4))
-        ) {
-            $this->context->buildViolation('La saison ' . $seasonName . ' n\'est pas attenante
+            ) {
+                $this->context->buildViolation('La saison ' . $seasonName . ' n\'est pas attenante
                 aux saisons déjà importées qui vont de ' . $firstSeason . ' à ' . $lastSeason . '.')
-                ->addViolation();
+                    ->addViolation();
+            }
         }
     }
 }
