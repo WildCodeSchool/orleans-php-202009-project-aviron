@@ -31,7 +31,7 @@ class StatisticsController extends AbstractController
 
     private const LICENCES_NAME = [
         'D' => 'Découverte',
-        'C' => 'Compétition',
+        'A' => 'Compétition',
         'U' => 'Universitaire',
         'I' => 'Indoor',
         'Total' => 'Total'
@@ -341,6 +341,12 @@ class StatisticsController extends AbstractController
             }
         }
 
+        //getting season names for graphs labels
+        $seasonNames = [];
+        for ($i = 1; $i < count($seasons); $i++) {
+            $seasonNames[] = $seasons[$i]->getName();
+        }
+
         //getting total outgoing members by gender
         $subscriptionsGenders = [];
 
@@ -366,11 +372,6 @@ class StatisticsController extends AbstractController
                     [$subscriberGender]++;
                 }
             }
-        }
-
-        $seasonNames = [];
-        for ($i = 1; $i < count($seasons); $i++) {
-            $seasonNames[] = $seasons[$i]->getName();
         }
 
         $outgoingGenderDataSets = [];
@@ -425,10 +426,90 @@ class StatisticsController extends AbstractController
             ]
         ]);
 
+        //getting total outgoing members by gender
+        $subscriptionsLicences = [];
+
+        foreach ($licences as $licence) {
+            for ($season = 1; $season < count($seasons); $season++) {
+                $previousSub = $subscriptionRepository->findBy([
+                    'season' => $seasons[$season - 1],
+                    'licence' => $licence,
+                ]);
+
+                $subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()] = 0;
+
+                foreach ($previousSub as $subscription) {
+                    $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
+
+                    $subscriberSeasons = [];
+                    foreach ($subscriptionsSubscriber as $subscriber) {
+                        $subscriberSeasons[] = $subscriber->getSeason()->getName();
+                    }
+
+                    if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
+                        $subscriptionsLicences[$licence->getName()]
+                        [$seasons[$season]->getName()]++;
+                    }
+                }
+            }
+        }
+
+        $licenceNames = [];
+
+        for ($i = 0; $i < count($licences); $i++) {
+            $licenceNames[] = $licences[$i]->getName();
+        }
+
+        $outgoingLicenceDataSets = [];
+
+        foreach (self::LICENCES_NAME as $licenceName) {
+            $licencesData[$licenceName] = array_fill(0, count($seasonNames), 0);
+        }
+
+        for ($i = 0; $i < count($licenceNames); $i++) {
+            for ($j = 0; $j < count($seasonNames); $j++) {
+                $licencesData[$licenceNames[$i]][$j] = $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+                $licencesData['Total'][$j] += $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+            }
+        }
+
+        foreach (self::LICENCES_NAME as $licenceName) {
+            $outgoingLicenceDataSets[] = [
+                'label' => $licenceName,
+                'backgroundColor' => self::LICENCES_PALETTE[$licenceName],
+                'data' => $licencesData[$licenceName],
+            ];
+        }
+
+        $outgoingLicenceChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $outgoingLicenceChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => $outgoingLicenceDataSets
+        ]);
+        $outgoingLicenceChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => false,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
+                    ]
+                ],
+            ]
+        ]);
+
         return $this->render('statistics/outgoing.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
             'outgoingGenderChart' => $outgoingGenderChart,
+            'outgoingLicenceChart' => $outgoingLicenceChart,
         ]);
     }
 }
