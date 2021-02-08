@@ -5,6 +5,17 @@
         <h1 class="text-center mt-5 mb-4">
             Statistiques - Sortants
         </h1>
+        <div id="category" class="row ml-4 pt-4">
+            <div class="col">
+                <h2>Répartition par Catégories</h2>
+            </div>
+        </div>
+        <div class="row pb-4 mb-5">
+            <div class="col">
+                {{ render_chart(outgoingCategoryChart) }}
+            </div>
+        </div>
+
         <div id="gender" class="row ml-4 pt-4">
             <div class="col">
                 <h2>Répartition par Genre</h2>
