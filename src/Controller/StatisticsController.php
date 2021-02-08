@@ -436,7 +436,9 @@ class StatisticsController extends AbstractController
                     'licence' => $licence,
                 ]);
 
-                $subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()] = 0;
+                if (!isset($subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()])) {
+                    $subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()] = 0;
+                }
 
                 foreach ($previousSub as $subscription) {
                     $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
@@ -445,7 +447,6 @@ class StatisticsController extends AbstractController
                     foreach ($subscriptionsSubscriber as $subscriber) {
                         $subscriberSeasons[] = $subscriber->getSeason()->getName();
                     }
-
                     if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
                         $subscriptionsLicences[$licence->getName()]
                         [$seasons[$season]->getName()]++;
@@ -460,6 +461,8 @@ class StatisticsController extends AbstractController
             $licenceNames[] = $licences[$i]->getName();
         }
 
+        $licenceNames = array_values(array_unique($licenceNames));
+
         $outgoingLicenceDataSets = [];
 
         foreach (self::LICENCES_NAME as $licenceName) {
@@ -469,7 +472,9 @@ class StatisticsController extends AbstractController
         for ($i = 0; $i < count($licenceNames); $i++) {
             for ($j = 0; $j < count($seasonNames); $j++) {
                 $licencesData[$licenceNames[$i]][$j] = $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+                /*if ()*/
                 $licencesData['Total'][$j] += $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+                dump($licencesData);
             }
         }
 
