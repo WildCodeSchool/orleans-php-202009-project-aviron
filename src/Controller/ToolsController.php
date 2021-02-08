@@ -41,7 +41,9 @@ class ToolsController extends AbstractController
             $csvData = $csvImport->getDataFromCsv($newImport->getFile());
             $season = $csvImport->createSeason($newImport->getSeasonName());
 
-            $subscriptionCounts = $csvImport->createSubscriptions($csvData, $season);
+            $csvDataClean = $csvImport->csvDataManagement($csvData);
+
+            $subscriptionCounts = $csvImport->createSubscriptions($csvDataClean, $season);
             $this->addFlash(
                 'success',
                 $subscriptionCounts['newSubscriptionsCount'] . ' inscription(s) ajoutée(s) en base de données'
