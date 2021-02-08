@@ -54,6 +54,7 @@
                 <table class="table table-hover table-striped">
                     <thead class="thead-dark">
                     <tr>
+                        <th class="w-25"></th>
                         {% for status,count in subscribersByStatus %}
                             <th scope="col" class="text-center"> {{ status }}</th>
                         {% endfor %}
@@ -61,10 +62,19 @@
                     </thead>
                     <tbody>
                     <tr>
+                        <th>{{ currentSeason }}</th>
                         {% for status,count in subscribersByStatus %}
-                            <td>{{ count }}</td>
+                            <td class="font-weight-bold">{{ count }}</td>
                         {% endfor %}
                     </tr>
+                    {% if previousSeason is not null %}
+                        <tr>
+                            <th>{{ previousSeason }}</th>
+                            {% for status,count in previousSubscribersByStatus %}
+                                <td>{{ count }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -73,6 +83,7 @@
                 <table class="table table-hover table-striped">
                     <thead class="thead-dark">
                     <tr>
+                        <th class="w-25"></th>
                         {% for licence,count in subscribersByLicences %}
                             <th scope="col" class="text-center"> {{ licence }}</th>
                         {% endfor %}
@@ -80,10 +91,19 @@
                     </thead>
                     <tbody>
                     <tr>
+                        <th>{{ currentSeason }}</th>
                         {% for licence,count in subscribersByLicences %}
-                            <td>{{ count }}</td>
+                            <td class="font-weight-bold">{{ count }}</td>
                         {% endfor %}
                     </tr>
+                    {% if previousSeason is not null %}
+                        <tr>
+                            <th>{{ previousSeason}}</th>
+                            {% for licence,count in previousSubscribersByLicences %}
+                                <td>{{ count }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>
@@ -95,6 +115,7 @@
                 <table class="table table-hover table-striped">
                     <thead class="thead-dark">
                     <tr>
+                        <th></th>
                         {% for category, count in subscribersByCategories %}
                             <th>{{ category }}</th>
                         {% endfor %}
@@ -102,10 +123,19 @@
                     </thead>
                     <tbody>
                     <tr>
+                        <th>{{ currentSeason }}</th>
                         {% for category, count in subscribersByCategories %}
-                            <td> {{ count }}</td>
+                            <td class="font-weight-bold"> {{ count }}</td>
                         {% endfor %}
                     </tr>
+                    {% if previousSeason is not null %}
+                        <tr>
+                            <th>{{ previousSeason  ?? '-'}}</th>
+                            {% for category, count in previousSubscribersByCategories %}
+                                <td> {{ count }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endif %}
                     </tbody>
                 </table>
             </div>

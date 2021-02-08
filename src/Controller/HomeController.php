@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Season;
 use App\Repository\CategoryRepository;
 use App\Repository\LicenceRepository;
 use App\Repository\SeasonRepository;
@@ -57,7 +58,10 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('tools_import');
         } else {
             $actualSeason = $seasonRepository->findOneBy([], ['name' => 'DESC'])->getName();
-            $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName() ?? null;
+            $previousSeason = null;
+            if ($seasonRepository->findBy([], ['name' => 'DESC'], 1, 1) != null) {
+                $previousSeason = $seasonRepository->findBy([], ['name' => 'DESC'], 1, 1)[0]->getName();
+            }
         }
 
         $actualSubscribers = $subscriptionRepository->findAllSubscribersForActualSeason(
@@ -82,18 +86,35 @@ class HomeController extends AbstractController
             $subscribersLicences,
             $licenceRepository
         );
-
         $subscribersCategories = $subscriptionRepository->subscribersByYearByCategories($actualSeason);
         $countByCategories = $countSubscribers->countSubscribersWithLabel(
             $subscribersCategories,
             $categoryRepository
         );
-
         $subscribersStatus = $subscriptionRepository->subscribersByYearByStatus($actualSeason);
         $countByStatus = $countSubscribers->countSubscribersWithLabel(
             $subscribersStatus,
             $statusRepository
         );
+
+        // Tableaux comparaisons n-1
+        if ($previousSeason !== null) {
+            $subscribersLicencesPrevious = $subscriptionRepository->subscribersByYearByLicences($previousSeason);
+            $countByLicencesPrevious = $countSubscribers->countSubscribersWithLabel(
+                $subscribersLicencesPrevious,
+                $licenceRepository
+            );
+            $subscribersCategoriesPrevious = $subscriptionRepository->subscribersByYearByCategories($previousSeason);
+            $countByCategoriesPrevious = $countSubscribers->countSubscribersWithLabel(
+                $subscribersCategoriesPrevious,
+                $categoryRepository
+            );
+            $subscribersStatusPrevious = $subscriptionRepository->subscribersByYearByStatus($previousSeason);
+            $countByStatusPrevious = $countSubscribers->countSubscribersWithLabel(
+                $subscribersStatusPrevious,
+                $statusRepository
+            );
+        }
 
         $monthlySubscriptionsChart = $monthlySubscriptionChartMaker->getChart($actualSeason, $previousSeason);
 
@@ -103,9 +124,13 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'currentSeason' => $actualSeason,
+            'previousSeason' => $previousSeason,
             'subscribersByLicences' => $countByLicences,
+            'previousSubscribersByLicences' => $countByLicencesPrevious ?? [],
             'subscribersByCategories' => $countByCategories,
+            'previousSubscribersByCategories' => $countByCategoriesPrevious ?? [],
             'subscribersByStatus' => $countByStatus,
+            'previousSubscribersByStatus' => $countByStatusPrevious ?? [],
             'youngSubscribers' => $youngSubscribers,
             'actualSubscribers' => $actualSubscribers,
             'newSubscribers' => $newSubscribers,

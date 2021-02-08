@@ -80,6 +80,17 @@ class CsvImport
         ]);
     }
 
+    public function csvDataManagement(array $csvData): array
+    {
+        $csvClean = [];
+        // Pour chaque ligne on crée un entrée dans le tableau clean avec le numéro d'adhérent en clé.
+        // S'il existe déjà, la ligne se met à jour avec la dernière entrée
+        foreach ($csvData as $csvLine) {
+            $csvClean[$csvLine['NO ADHERENT']] = $csvLine;
+        }
+        return $csvClean;
+    }
+
     /**
      * @param string $seasonName
      * @return Season
@@ -191,7 +202,18 @@ class CsvImport
         $this->entityManager->refresh($season);
         $this->entityManager->flush();
 
+        $this->entityManager->refresh($season);
+        $this->removeEmptySeason($season);
+
         return $counts;
+    }
+
+    private function removeEmptySeason(Season $season): void
+    {
+        if (count($season->getSubscriptions()) === 0) {
+            $this->entityManager->remove($season);
+            $this->entityManager->flush();
+        }
     }
 
     private function stringToDatetime(string $date): DateTime

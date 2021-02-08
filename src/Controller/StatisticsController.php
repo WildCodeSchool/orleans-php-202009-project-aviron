@@ -26,6 +26,7 @@ class StatisticsController extends AbstractController
         'Compétition' => '#6688c3',
         'Universitaire' => '#a65bd7',
         'Indoor' => '#f2e13c',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const LICENCES_NAME = [
@@ -33,28 +34,32 @@ class StatisticsController extends AbstractController
         'C' => 'Compétition',
         'U' => 'Universitaire',
         'I' => 'Indoor',
+        'Total' => 'Total'
     ];
 
     private const CATEGORIES_NAME = [
         "Jeune" => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
         "Junior" => ['J15', 'J16', 'J17', 'J18'],
-        "Senior" => ['S','S-23'],
+        "Senior" => ['S', 'S-23'],
     ];
 
     private const CATEGORIES_PALETTES = [
         'Jeune' => '#37cf9b',
         'Junior' => '#6688c3',
         'Senior' => '#a65bd7',
+        'Total' => '#e7e7e7ff'
     ];
 
     private const GENDER = [
         'Femme' => 'F',
-        'Homme' => 'H'
+        'Homme' => 'H',
+        'Total' => 'Total'
     ];
 
     private const GENDER_PALETTE = [
         'F' => '#F87380',
-        'H' => '#6688c3'
+        'H' => '#6688c3',
+        'Total' => '#e7e7e7ff'
     ];
 
     /**
@@ -84,7 +89,6 @@ class StatisticsController extends AbstractController
         $grandTotalPerSeason = $subscriptionRepository->grandTotalPerSeason();
         $categoryFilter = $request->query->get('categoryFilter');
         $licenceFilter = $request->query->get('licenceFilter');
-
 
         //construction du tableau du total par licence par catégorie par saison
         foreach ($categories as $category) {
@@ -116,19 +120,43 @@ class StatisticsController extends AbstractController
             }
         }
 
-        foreach (self::GENDER as $gender => $label) {
-            $genderDatataSets[] = [
-                'label' => $gender,
-                'backgroundColor' => self::GENDER_PALETTE[$label],
-                'data' => $genderData[$label],
-            ];
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $genderData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
         $genderChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $genderChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $genderDatataSets
+            'datasets' => [
+                    [
+                        'type' => 'bar',
+                        'label' => 'Femme',
+                        'backgroundColor' => self::GENDER_PALETTE['F'],
+                        'data' => $genderData['F'],
+                        'stack' => 1,
+                        'barPercentage' => 1.5,
+
+                    ],
+                    [
+                        'type' => 'bar',
+                        'label' => 'Homme',
+                        'backgroundColor' => self::GENDER_PALETTE['H'],
+                        'data' => $genderData['H'],
+                        'stack' => 1,
+                        'barPercentage' => 1.5,
+                    ],
+                    [
+                        'type' => 'bar',
+                        'label' => 'Total',
+                        'backgroundColor' => self::GENDER_PALETTE['Total'],
+                        'data' => $genderData['Total'],
+                        'stack' => 0,
+                        'barPercentage' => 0,
+                        'barThickness' => 20,
+                    ],
+                ]
         ]);
+
         $genderChart->setOptions([
             "scales" => [
                 "xAxes" => [
@@ -138,7 +166,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -159,18 +191,57 @@ class StatisticsController extends AbstractController
             }
         }
 
-        foreach (self::LICENCES_NAME as $licenceName) {
-            $licenceDatataSets[] = [
-                'label' => $licenceName,
-                'backgroundColor' => self::LICENCES_PALETTE[$licenceName],
-                'data' => $licencesData[$licenceName],
-            ];
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $licencesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
         $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $licencesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $licenceDatataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Découverte',
+                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
+                    'data' => $licencesData['Découverte'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Compétition',
+                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
+                    'data' => $licencesData['Compétition'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Universitaire',
+                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
+                    'data' => $licencesData['Universitaire'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Indoor',
+                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
+                    'data' => $licencesData['Indoor'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $licencesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
         $licencesChart->setOptions([
             "scales" => [
@@ -181,17 +252,24 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
         ]);
+
 
         //construction du graphique de catégories
         $totalCategories = $subscriptionRepository->totalCategoriesPerSeason($licenceFilter);
         foreach (self::CATEGORIES_NAME as $categoryName => $categoryLabel) {
             $categoriesData[$categoryName] = array_fill(0, count($seasonNames), 0);
         }
+
+        $categoriesData['Total'] = array_fill(0, count($seasonNames), 0);
 
         for ($i = 0; $i < count($seasonNames); $i++) {
             for ($j = 0; $j < count($totalCategories); $j++) {
@@ -205,18 +283,64 @@ class StatisticsController extends AbstractController
             }
         }
 
-        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
-            $categoryDataSets[] = [
-                'label' => $categoryName,
-                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
-                'data' => $categoriesData[$categoryName],
-            ];
+        for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
+            $categoriesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
+//        dump($categoriesData);
+//        exit();
+
+//        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
+//            $categoryDataSets[] = [
+//                'label' => $categoryName,
+//                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
+//                'data' => $categoriesData[$categoryName],
+//            ];
+//        }
+//        $categoryDataSets[] = [
+//            'label' => 'Total',
+//            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
+//            'data' => $categoriesData['Total'],
+//        ];
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $categoryDataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Jeune',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeune'],
+                    'data' => $categoriesData['Jeune'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Junior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Junior'],
+                    'data' => $categoriesData['Junior'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Senior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Senior'],
+                    'data' => $categoriesData['Senior'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $categoriesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
         $categoriesChart->setOptions([
             "scales" => [
@@ -227,7 +351,11 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => true
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
                     ]
                 ],
             ]
@@ -255,13 +383,15 @@ class StatisticsController extends AbstractController
      * @param SubscriptionRepository $subscriptionRepository
      * @param LicenceRepository $licenceRepository
      * @param CategoryRepository $categoryRepository
+     * @param ChartBuilderInterface $chartBuilder
      * @return Response
      */
     public function outgoingStatistics(
         SeasonRepository $seasonRepository,
         SubscriptionRepository $subscriptionRepository,
         LicenceRepository $licenceRepository,
-        CategoryRepository $categoryRepository
+        CategoryRepository $categoryRepository,
+        ChartBuilderInterface $chartBuilder
     ): Response {
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
@@ -304,9 +434,94 @@ class StatisticsController extends AbstractController
             }
         }
 
+        //getting total outgoing members by gender
+        $subscriptionsGenders = [];
+
+        for ($season = 1; $season < count($seasons); $season++) {
+            $previousSub = $subscriptionRepository->findBy([
+                'season' => $seasons[$season - 1],
+            ]);
+
+            $subscriptionsGenders[$seasons[$season]->getName()]['H'] = 0;
+            $subscriptionsGenders[$seasons[$season]->getName()]['F'] = 0;
+
+            foreach ($previousSub as $subscription) {
+                $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
+                $subscriberGender = $subscription->getSubscriber()->getGender();
+
+                $subscriberSeasons = [];
+                foreach ($subscriptionsSubscriber as $subscriber) {
+                    $subscriberSeasons[] = $subscriber->getSeason()->getName();
+                }
+
+                if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
+                    $subscriptionsGenders[$seasons[$season]->getName()]
+                    [$subscriberGender]++;
+                }
+            }
+        }
+
+        $seasonNames = [];
+        for ($i = 1; $i < count($seasons); $i++) {
+            $seasonNames[] = $seasons[$i]->getName();
+        }
+
+        $outgoingGenderDataSets = [];
+        $outgoingGenderData = [];
+
+        foreach (self::GENDER as $gender) {
+            $outgoingGenderData[$gender] = array_fill(0, count($seasonNames), 0);
+        }
+
+        for ($i = 0; $i < count($seasonNames); $i++) {
+            $outgoingGenderData['H'][$i] = $subscriptionsGenders[$seasonNames[$i]]['H'];
+            $outgoingGenderData['F'][$i] = $subscriptionsGenders[$seasonNames[$i]]['F'];
+            $outgoingGenderData['Total'][$i] =
+                $subscriptionsGenders[$seasonNames[$i]]['H'] + $subscriptionsGenders[$seasonNames[$i]]['F'];
+        }
+
+        foreach ($subscriptionsGenders as $seasonsData) {
+            foreach ($seasonsData as $gender => $total) {
+                $outgoingGenderData[] = [$gender => $total];
+            }
+        }
+
+        foreach (self::GENDER as $gender => $label) {
+            $outgoingGenderDataSets[] = [
+                'label' => $gender,
+                'backgroundColor' => self::GENDER_PALETTE[$label],
+                'data' => $outgoingGenderData[$label],
+            ];
+        }
+
+        $outgoingGenderChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $outgoingGenderChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => $outgoingGenderDataSets
+        ]);
+        $outgoingGenderChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => false,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
+                    ]
+                ],
+            ]
+        ]);
+
         return $this->render('statistics/outgoing.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
+            'outgoingGenderChart' => $outgoingGenderChart,
         ]);
     }
 }

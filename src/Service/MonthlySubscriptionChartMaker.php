@@ -76,7 +76,7 @@ class MonthlySubscriptionChartMaker extends ChartMaker
                 $previousSeasonData[] = $totalPrevious;
                 $previousSeasonIndex++;
             } else {
-                $previousSeasonData[] = 0;
+                $previousSeasonData[] = $totalPrevious;
             }
         }
 
