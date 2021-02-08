@@ -202,7 +202,18 @@ class CsvImport
         $this->entityManager->refresh($season);
         $this->entityManager->flush();
 
+        $this->entityManager->refresh($season);
+        $this->removeEmptySeason($season);
+
         return $counts;
+    }
+
+    private function removeEmptySeason(Season $season): void
+    {
+        if (count($season->getSubscriptions()) === 0) {
+            $this->entityManager->remove($season);
+            $this->entityManager->flush();
+        }
     }
 
     private function stringToDatetime(string $date): DateTime
