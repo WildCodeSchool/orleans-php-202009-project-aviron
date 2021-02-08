@@ -426,7 +426,7 @@ class StatisticsController extends AbstractController
             ]
         ]);
 
-        //getting total outgoing members by gender
+        //getting total outgoing members by licences
         $subscriptionsLicences = [];
 
         foreach ($licences as $licence) {
