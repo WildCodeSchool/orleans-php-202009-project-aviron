@@ -14,10 +14,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PyramidController extends AbstractController
 {
+    private const FIRST_AGE_CATEGORY = 'J9';
+    private const LAST_AGE_CATEGORY = 'S';
+
     /**
      * @Route("/pyramide-des-renouvellements", name="pyramid")
      * @SuppressWarnings(PHPMD.LongVariable)
      * @param SeasonRepository $seasonRepository
+     * @param CategoryRepository $categoryRepository
      * @param PyramidCalculator $pyramidCalculator
      * @param Request $request
      * @return Response
@@ -31,8 +35,8 @@ class PyramidController extends AbstractController
 
         $filter = new PyramidFilter();
         $filter->setToSeason($seasonRepository->findOneBy([], ['name' => 'DESC']));
-        $filter->setFromCategory($categoryRepository->findOneBy(['label' => 'J9']));
-        $filter->setToCategory($categoryRepository->findOneBy(['label' => 'S']));
+        $filter->setFromCategory($categoryRepository->findOneBy(['label' => self::FIRST_AGE_CATEGORY]));
+        $filter->setToCategory($categoryRepository->findOneBy(['label' => self::LAST_AGE_CATEGORY]));
         $form = $this->createForm(PyramidFilterType::class, $filter, ['method' => 'GET']);
         $form->handleRequest($request);
 
