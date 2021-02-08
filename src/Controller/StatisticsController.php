@@ -125,19 +125,39 @@ class StatisticsController extends AbstractController
             $genderData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
-        foreach (self::GENDER as $gender => $label) {
-            $genderDatataSets[] = [
-                'label' => $gender,
-                'backgroundColor' => self::GENDER_PALETTE[$label],
-                'data' => $genderData[$label],
-            ];
-        }
-
         $genderChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $genderChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $genderDatataSets
+            'datasets' => [
+                    [
+                        'type' => 'bar',
+                        'label' => 'Femme',
+                        'backgroundColor' => self::GENDER_PALETTE['F'],
+                        'data' => $genderData['F'],
+                        'stack' => 1,
+                        'barPercentage' => 1.5,
+
+                    ],
+                    [
+                        'type' => 'bar',
+                        'label' => 'Homme',
+                        'backgroundColor' => self::GENDER_PALETTE['H'],
+                        'data' => $genderData['H'],
+                        'stack' => 1,
+                        'barPercentage' => 1.5,
+                    ],
+                    [
+                        'type' => 'bar',
+                        'label' => 'Total',
+                        'backgroundColor' => self::GENDER_PALETTE['Total'],
+                        'data' => $genderData['Total'],
+                        'stack' => 0,
+                        'barPercentage' => 0,
+                        'barThickness' => 20,
+                    ],
+                ]
         ]);
+
         $genderChart->setOptions([
             "scales" => [
                 "xAxes" => [
@@ -147,7 +167,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => false,
+                        "stacked" => true,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
@@ -176,18 +196,53 @@ class StatisticsController extends AbstractController
             $licencesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
 
-        foreach (self::LICENCES_NAME as $licenceName) {
-            $licenceDatataSets[] = [
-                'label' => $licenceName,
-                'backgroundColor' => self::LICENCES_PALETTE[$licenceName],
-                'data' => $licencesData[$licenceName],
-            ];
-        }
-
         $licencesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $licencesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $licenceDatataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Découverte',
+                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
+                    'data' => $licencesData['Découverte'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Compétition',
+                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
+                    'data' => $licencesData['Compétition'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Universitaire',
+                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
+                    'data' => $licencesData['Universitaire'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Indoor',
+                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
+                    'data' => $licencesData['Indoor'],
+                    'stack' => 1,
+                    'barPercentage' => 1.5,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $licencesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
         $licencesChart->setOptions([
             "scales" => [
@@ -198,7 +253,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => false,
+                        "stacked" => true,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
@@ -207,6 +262,7 @@ class StatisticsController extends AbstractController
                 ],
             ]
         ]);
+
 
         //construction du graphique de catégories
         $totalCategories = $subscriptionRepository->totalCategoriesPerSeason($licenceFilter);
@@ -231,24 +287,61 @@ class StatisticsController extends AbstractController
         for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
             $categoriesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
+//        dump($categoriesData);
+//        exit();
 
-        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
-            $categoryDataSets[] = [
-                'label' => $categoryName,
-                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
-                'data' => $categoriesData[$categoryName],
-            ];
-        }
-        $categoryDataSets[] = [
-            'label' => 'Total',
-            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
-            'data' => $categoriesData['Total'],
-        ];
+//        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
+//            $categoryDataSets[] = [
+//                'label' => $categoryName,
+//                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
+//                'data' => $categoriesData[$categoryName],
+//            ];
+//        }
+//        $categoryDataSets[] = [
+//            'label' => 'Total',
+//            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
+//            'data' => $categoriesData['Total'],
+//        ];
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $categoryDataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Jeune',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeune'],
+                    'data' => $categoriesData['Jeune'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Junior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Junior'],
+                    'data' => $categoriesData['Junior'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Senior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Senior'],
+                    'data' => $categoriesData['Senior'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $categoriesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
         $categoriesChart->setOptions([
             "scales" => [
@@ -259,7 +352,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => false,
+                        "stacked" => true,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
