@@ -90,7 +90,6 @@ class StatisticsController extends AbstractController
         $categoryFilter = $request->query->get('categoryFilter');
         $licenceFilter = $request->query->get('licenceFilter');
 
-        
         //construction du tableau du total par licence par catégorie par saison
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
@@ -380,11 +379,12 @@ class StatisticsController extends AbstractController
         foreach (self::GENDER as $gender) {
             $outgoingGenderData[$gender] = array_fill(0, count($seasonNames), 0);
         }
-        
+
         for ($i = 0; $i < count($seasonNames); $i++) {
-                $outgoingGenderData['H'][$i] = $subscriptionsGenders[$seasonNames[$i]]['H'];
-                $outgoingGenderData['F'][$i] = $subscriptionsGenders[$seasonNames[$i]]['F'];
-                $outgoingGenderData['Total'][$i] = $subscriptionsGenders[$seasonNames[$i]]['H'] + $subscriptionsGenders[$seasonNames[$i]]['F'];
+            $outgoingGenderData['H'][$i] = $subscriptionsGenders[$seasonNames[$i]]['H'];
+            $outgoingGenderData['F'][$i] = $subscriptionsGenders[$seasonNames[$i]]['F'];
+            $outgoingGenderData['Total'][$i] =
+                $subscriptionsGenders[$seasonNames[$i]]['H'] + $subscriptionsGenders[$seasonNames[$i]]['F'];
         }
 
         foreach ($subscriptionsGenders as $seasonsData) {
