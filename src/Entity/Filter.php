@@ -8,7 +8,13 @@ use App\Repository\SeasonRepository;
 use App\Repository\StatusRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use App\Validator\ChronologicalOrder as SeasonOrder;
+use App\Validator\AgeCategoryOrder as CategoryOrder;
 
+/**
+ * @SeasonOrder/ChronologicalOrder
+ * @CategoryOrder/AgeCategoryOrder
+ */
 class Filter
 {
 
@@ -19,8 +25,6 @@ class Filter
 
     /**
      * @Assert\NotBlank(message="La saison de fin ne peut pas être vide")
-     * @Assert\GreaterThanOrEqual(propertyPath="fromSeason",
-     *     message="La saison de fin doit être supérieure ou égale à la saison de début")
      */
     private Season $toSeason;
 

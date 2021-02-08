@@ -25,15 +25,17 @@ class AgeCategoryOrderValidator extends ConstraintValidator
 
     public function validate($protocol, Constraint $constraint): void
     {
-        if (
-            self::AGE_CATEGORIES[$protocol->getfromCategory()->getLabel()] >
-            self::AGE_CATEGORIES[$protocol->gettoCategory()->getLabel()]
-        ) {
-            $this->context->buildViolation(
-                'La catégorie de fin doit être supérieure à la catégorie de début'
-            )
-                ->atPath('toCategory')
-                ->addViolation();
+        if (!is_null($protocol->getfromCategory()) && !is_null($protocol->gettoCategory())) {
+            if (
+                self::AGE_CATEGORIES[$protocol->getfromCategory()->getLabel()] >
+                self::AGE_CATEGORIES[$protocol->gettoCategory()->getLabel()]
+            ) {
+                $this->context->buildViolation(
+                    'La catégorie de fin doit être supérieure à la catégorie de début'
+                )
+                    ->atPath('toCategory')
+                    ->addViolation();
+            }
         }
     }
 }

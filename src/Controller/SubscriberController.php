@@ -26,6 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubscriberController extends AbstractController
 {
     private const PAGINATION_LIMIT = 25;
+    private const FIRST_AGE_CATEGORY = 'J9';
+    private const LAST_AGE_CATEGORY = 'S';
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
