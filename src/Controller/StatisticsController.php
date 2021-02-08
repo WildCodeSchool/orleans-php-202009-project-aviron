@@ -472,7 +472,6 @@ class StatisticsController extends AbstractController
         for ($i = 0; $i < count($licenceNames); $i++) {
             for ($j = 0; $j < count($seasonNames); $j++) {
                 $licencesData[$licenceNames[$i]][$j] = $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
-                /*if ()*/
                 $licencesData['Total'][$j] += $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
                 dump($licencesData);
             }
