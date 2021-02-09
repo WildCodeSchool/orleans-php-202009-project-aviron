@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class SubscriberController extends AbstractController
 {
-    private const PAGINATION_LIMIT = 25;
+    private const PAGINATION_LIMIT = 50;
 
     /**
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
