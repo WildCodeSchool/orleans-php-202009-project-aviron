@@ -135,7 +135,7 @@ class StatisticsController extends AbstractController
                         'backgroundColor' => self::GENDER_PALETTE['F'],
                         'data' => $genderData['F'],
                         'stack' => 1,
-                        'barPercentage' => 1.5,
+                        'barPercentage' => 1,
 
                     ],
                     [
@@ -144,7 +144,7 @@ class StatisticsController extends AbstractController
                         'backgroundColor' => self::GENDER_PALETTE['H'],
                         'data' => $genderData['H'],
                         'stack' => 1,
-                        'barPercentage' => 1.5,
+                        'barPercentage' => 1,
                     ],
                     [
                         'type' => 'bar',
@@ -206,7 +206,7 @@ class StatisticsController extends AbstractController
                     'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
                     'data' => $licencesData['Découverte'],
                     'stack' => 1,
-                    'barPercentage' => 1.5,
+                    'barPercentage' => 1,
 
                 ],
                 [
@@ -215,7 +215,7 @@ class StatisticsController extends AbstractController
                     'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
                     'data' => $licencesData['Compétition'],
                     'stack' => 1,
-                    'barPercentage' => 1.5,
+                    'barPercentage' => 1,
                 ],
                 [
                     'type' => 'bar',
@@ -223,7 +223,7 @@ class StatisticsController extends AbstractController
                     'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
                     'data' => $licencesData['Universitaire'],
                     'stack' => 1,
-                    'barPercentage' => 1.5,
+                    'barPercentage' => 1,
                 ],
                 [
                     'type' => 'bar',
@@ -231,7 +231,7 @@ class StatisticsController extends AbstractController
                     'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
                     'data' => $licencesData['Indoor'],
                     'stack' => 1,
-                    'barPercentage' => 1.5,
+                    'barPercentage' => 1,
                 ],
                 [
                     'type' => 'bar',
@@ -287,21 +287,6 @@ class StatisticsController extends AbstractController
         for ($i = 0; $i < count($grandTotalPerSeason); $i++) {
             $categoriesData['Total'][$i] += $grandTotalPerSeason[$i]['total'];
         }
-//        dump($categoriesData);
-//        exit();
-
-//        foreach (self::CATEGORIES_NAME as $categoryName => $labels) {
-//            $categoryDataSets[] = [
-//                'label' => $categoryName,
-//                'backgroundColor' => self::CATEGORIES_PALETTES[$categoryName],
-//                'data' => $categoriesData[$categoryName],
-//            ];
-//        }
-//        $categoryDataSets[] = [
-//            'label' => 'Total',
-//            'backgroundColor' => self::CATEGORIES_PALETTES['Total'],
-//            'data' => $categoriesData['Total'],
-//        ];
 
         $categoriesChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $categoriesChart->setData([
