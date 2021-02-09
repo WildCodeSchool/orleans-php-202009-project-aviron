@@ -38,15 +38,16 @@ class StatisticsController extends AbstractController
     ];
 
     private const CATEGORIES_NAME = [
-        "Jeune" => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
-        "Junior" => ['J15', 'J16', 'J17', 'J18'],
-        "Senior" => ['S', 'S-23'],
+        "Jeunes" => ['J9', 'J10', 'J11', 'J12', 'J13', 'J14'],
+        "Juniors" => ['J15', 'J16', 'J17', 'J18'],
+        "Seniors" => ['S', 'S-23'],
+        "Total" => [],
     ];
 
     private const CATEGORIES_PALETTES = [
-        'Jeune' => '#37cf9b',
-        'Junior' => '#6688c3',
-        'Senior' => '#a65bd7',
+        'Jeunes' => '#37cf9b',
+        'Juniors' => '#6688c3',
+        'Seniors' => '#a65bd7',
         'Total' => '#e7e7e7ff'
     ];
 
@@ -309,8 +310,8 @@ class StatisticsController extends AbstractController
                 [
                     'type' => 'bar',
                     'label' => 'Jeune',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeune'],
-                    'data' => $categoriesData['Jeune'],
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeunes'],
+                    'data' => $categoriesData['Jeunes'],
                     'stack' => 1,
                     'barPercentage' => 1,
 
@@ -318,16 +319,16 @@ class StatisticsController extends AbstractController
                 [
                     'type' => 'bar',
                     'label' => 'Junior',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Junior'],
-                    'data' => $categoriesData['Junior'],
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Juniors'],
+                    'data' => $categoriesData['Juniors'],
                     'stack' => 1,
                     'barPercentage' => 1,
                 ],
                 [
                     'type' => 'bar',
                     'label' => 'Senior',
-                    'backgroundColor' => self::CATEGORIES_PALETTES['Senior'],
-                    'data' => $categoriesData['Senior'],
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Seniors'],
+                    'data' => $categoriesData['Seniors'],
                     'stack' => 1,
                     'barPercentage' => 1,
                 ],
@@ -518,10 +519,122 @@ class StatisticsController extends AbstractController
             ]
         ]);
 
+        //getting total outgoing members by categories
+        $subscriptionsCategories = [];
+
+        foreach ($categories as $category) {
+            for ($season = 1; $season < count($seasons); $season++) {
+                $previousSub = $subscriptionRepository->findBy([
+                    'season' => $seasons[$season - 1],
+                    'category' => $category,
+                ]);
+
+                if (!isset($subscriptionsCategories[$category->getNewGroup()][$seasons[$season]->getName()])) {
+                    $subscriptionsCategories[$category->getNewGroup()][$seasons[$season]->getName()] = 0;
+                }
+
+                foreach ($previousSub as $subscription) {
+                    $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
+
+                    $subscriberSeasons = [];
+                    foreach ($subscriptionsSubscriber as $subscriber) {
+                        $subscriberSeasons[] = $subscriber->getSeason()->getName();
+                    }
+                    if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
+                        $subscriptionsCategories[$category->getNewGroup()]
+                        [$seasons[$season]->getName()]++;
+                    }
+                }
+            }
+        }
+
+        $categoryNames = [];
+
+        for ($i = 0; $i < count($categories); $i++) {
+            $categoryNames[] = $categories[$i]->getNewGroup();
+        }
+
+        $categoryNames = array_values(array_unique($categoryNames));
+
+        $categoryData = [];
+
+        foreach (self::CATEGORIES_NAME as $categoryName => $saucisse) {
+            $categoryData[$categoryName] = array_fill(0, count($seasonNames), 0);
+        }
+        $categoryData['Total'] = array_fill(0, count($seasonNames), 0);
+
+        for ($i = 0; $i < count($categoryNames); $i++) {
+            for ($j = 0; $j < count($seasonNames); $j++) {
+                $categoryData[$categoryNames[$i]][$j] = $subscriptionsCategories[$categoryNames[$i]][$seasonNames[$j]];
+                $categoryData['Total'][$j] += $subscriptionsCategories[$categoryNames[$i]][$seasonNames[$j]];
+            }
+        }
+
+        $outgoingCategoryChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $outgoingCategoryChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Jeune',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Jeunes'],
+                    'data' => $categoryData['Jeunes'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Junior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Juniors'],
+                    'data' => $categoryData['Juniors'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Senior',
+                    'backgroundColor' => self::CATEGORIES_PALETTES['Seniors'],
+                    'data' => $categoryData['Seniors'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $categoryData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
+        ]);
+        $outgoingCategoryChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
+                    ]
+                ],
+            ]
+        ]);
+
+
         return $this->render('statistics/outgoing.html.twig', [
             'statistics' => $subscriptions,
             'seasons' => $seasons,
             'outgoingGenderChart' => $outgoingGenderChart,
+            'outgoingCategoryChart' => $outgoingCategoryChart,
         ]);
     }
 }
