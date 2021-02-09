@@ -523,6 +523,121 @@ class StatisticsController extends AbstractController
             ]
         ]);
 
+        //getting total outgoing members by licences
+        $subscriptionsLicences = [];
+
+        foreach ($licences as $licence) {
+            for ($season = 1; $season < count($seasons); $season++) {
+                $previousSub = $subscriptionRepository->findBy([
+                    'season' => $seasons[$season - 1],
+                    'licence' => $licence,
+                ]);
+
+                if (!isset($subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()])) {
+                    $subscriptionsLicences[$licence->getName()][$seasons[$season]->getName()] = 0;
+                }
+
+                foreach ($previousSub as $subscription) {
+                    $subscriptionsSubscriber = $subscription->getSubscriber()->getSubscriptions();
+
+                    $subscriberSeasons = [];
+                    foreach ($subscriptionsSubscriber as $subscriber) {
+                        $subscriberSeasons[] = $subscriber->getSeason()->getName();
+                    }
+                    if (!in_array($seasons[$season]->getName(), $subscriberSeasons)) {
+                        $subscriptionsLicences[$licence->getName()]
+                        [$seasons[$season]->getName()]++;
+                    }
+                }
+            }
+        }
+
+        $licenceNames = [];
+
+        for ($i = 0; $i < count($licences); $i++) {
+            $licenceNames[] = $licences[$i]->getName();
+        }
+
+        $licenceNames = array_values(array_unique($licenceNames));
+
+        foreach (self::LICENCES_NAME as $licenceName) {
+            $licencesData[$licenceName] = array_fill(0, count($seasonNames), 0);
+        }
+
+        for ($i = 0; $i < count($licenceNames); $i++) {
+            for ($j = 0; $j < count($seasonNames); $j++) {
+                $licencesData[$licenceNames[$i]][$j] = $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+                $licencesData['Total'][$j] += $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
+            }
+        }
+
+        $outgoingLicenceChart = $chartBuilder->createChart(Chart::TYPE_BAR);
+        $outgoingLicenceChart->setData([
+            'labels' => $seasonNames,
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Découverte',
+                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
+                    'data' => $licencesData['Découverte'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Compétition',
+                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
+                    'data' => $licencesData['Compétition'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Universitaire',
+                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
+                    'data' => $licencesData['Universitaire'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Indoor',
+                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
+                    'data' => $licencesData['Indoor'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $licencesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
+        ]);
+        $outgoingLicenceChart->setOptions([
+            "scales" => [
+                "xAxes" => [
+                    [
+                        "stacked" => true
+                    ]
+                ],
+                "yAxes" => [
+                    [
+                        "stacked" => true,
+                        'ticks' => [
+                            'beginAtZero' => true,
+                            'max' => 500
+                        ]
+                    ]
+                ],
+            ]
+        ]);
+
         //getting total outgoing members by categories
         $subscriptionsCategories = [];
 
@@ -638,6 +753,7 @@ class StatisticsController extends AbstractController
             'statistics' => $subscriptions,
             'seasons' => $seasons,
             'outgoingGenderChart' => $outgoingGenderChart,
+            'outgoingLicenceChart' => $outgoingLicenceChart,
             'outgoingCategoryChart' => $outgoingCategoryChart,
         ]);
     }
