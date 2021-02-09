@@ -46,8 +46,16 @@ class MonthlySubscriptionChartMaker extends ChartMaker
 
     public function getChart(?string $currentSeason, ?string $previousSeason): Chart
     {
-        $currentSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($currentSeason);
-        $previousSeasonMonthlyCount = $this->subscriptionRepository->getMonthlySubscriptionsByYear($previousSeason);
+        $currentSeasonMonthlyCountRaw = $this
+            ->subscriptionRepository
+            ->getMonthlySubscriptionsByYear($currentSeason);
+        $previousSeasonMonthlyCountRaw = $this
+            ->subscriptionRepository
+            ->getMonthlySubscriptionsByYear($previousSeason);
+
+        // Tri des données de septembre à aout
+        $currentSeasonMonthlyCount = $this->seasonMonthlySort($currentSeasonMonthlyCountRaw);
+        $previousSeasonMonthlyCount = $this->seasonMonthlySort($previousSeasonMonthlyCountRaw);
 
         // Mise en forme des données récupérées pour les passer au graphique
         $currentSeasonData = [];
@@ -132,6 +140,22 @@ class MonthlySubscriptionChartMaker extends ChartMaker
         ]);
 
         return $monthlySubscriptionsChart;
+    }
+
+    private function seasonMonthlySort(array $seasonMonthlyCount): array
+    {
+        $sortedMonthlyCount = [];
+        for ($i = 0; $i < 12; $i++) {
+            for ($j = 0; $j < 12; $j++) {
+                if (
+                    isset($seasonMonthlyCount[$j])
+                    && (string)self::MONTH_SORT[$i] === $seasonMonthlyCount[$j]['month']
+                ) {
+                    $sortedMonthlyCount[] = $seasonMonthlyCount[$j];
+                }
+            }
+        }
+        return $sortedMonthlyCount;
     }
 
     private function isLastSeasonInFile(array $seasonMonthlyCount, int $seasonIndex): bool
