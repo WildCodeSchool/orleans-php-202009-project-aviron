@@ -463,8 +463,6 @@ class StatisticsController extends AbstractController
 
         $licenceNames = array_values(array_unique($licenceNames));
 
-        $outgoingLicenceDataSets = [];
-
         foreach (self::LICENCES_NAME as $licenceName) {
             $licencesData[$licenceName] = array_fill(0, count($seasonNames), 0);
         }
@@ -473,22 +471,56 @@ class StatisticsController extends AbstractController
             for ($j = 0; $j < count($seasonNames); $j++) {
                 $licencesData[$licenceNames[$i]][$j] = $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
                 $licencesData['Total'][$j] += $subscriptionsLicences[$licenceNames[$i]][$seasonNames[$j]];
-                dump($licencesData);
             }
         }
-
-        foreach (self::LICENCES_NAME as $licenceName) {
-            $outgoingLicenceDataSets[] = [
-                'label' => $licenceName,
-                'backgroundColor' => self::LICENCES_PALETTE[$licenceName],
-                'data' => $licencesData[$licenceName],
-            ];
-        }
-
+        
         $outgoingLicenceChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $outgoingLicenceChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $outgoingLicenceDataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Découverte',
+                    'backgroundColor' => self::LICENCES_PALETTE['Découverte'],
+                    'data' => $licencesData['Découverte'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Compétition',
+                    'backgroundColor' => self::LICENCES_PALETTE['Compétition'],
+                    'data' => $licencesData['Compétition'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Universitaire',
+                    'backgroundColor' => self::LICENCES_PALETTE['Universitaire'],
+                    'data' => $licencesData['Universitaire'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Indoor',
+                    'backgroundColor' => self::LICENCES_PALETTE['Indoor'],
+                    'data' => $licencesData['Indoor'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::LICENCES_PALETTE['Total'],
+                    'data' => $licencesData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
         $outgoingLicenceChart->setOptions([
             "scales" => [
@@ -499,7 +531,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => false,
+                        "stacked" => true,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
