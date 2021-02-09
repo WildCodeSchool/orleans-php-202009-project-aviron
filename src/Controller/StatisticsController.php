@@ -734,7 +734,7 @@ class StatisticsController extends AbstractController
             'statistics' => $subscriptions,
             'seasons' => $seasons,
             'outgoingGenderChart' => $outgoingGenderChart,
-            'outgoingLicenceChart' =>$outgoingLicenceChart,
+            'outgoingLicenceChart' => $outgoingLicenceChart,
             'outgoingCategoryChart' => $outgoingCategoryChart,
         ]);
     }
