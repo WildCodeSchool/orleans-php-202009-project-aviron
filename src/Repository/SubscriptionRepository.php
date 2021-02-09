@@ -262,8 +262,6 @@ class SubscriptionRepository extends ServiceEntityRepository
             ->where('sn.name = :seasonName')
             ->setParameter('seasonName', $season)
             ->groupBy('month')
-            ->orderBy('YEAR(sub.subscriptionDate)')
-            ->addOrderBy('month')
             ->getQuery()
             ->getResult();
     }
