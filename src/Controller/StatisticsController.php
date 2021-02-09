@@ -129,33 +129,33 @@ class StatisticsController extends AbstractController
         $genderChart->setData([
             'labels' => $seasonNames,
             'datasets' => [
-                    [
-                        'type' => 'bar',
-                        'label' => 'Femme',
-                        'backgroundColor' => self::GENDER_PALETTE['F'],
-                        'data' => $genderData['F'],
-                        'stack' => 1,
-                        'barPercentage' => 1,
+                [
+                    'type' => 'bar',
+                    'label' => 'Femme',
+                    'backgroundColor' => self::GENDER_PALETTE['F'],
+                    'data' => $genderData['F'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
 
-                    ],
-                    [
-                        'type' => 'bar',
-                        'label' => 'Homme',
-                        'backgroundColor' => self::GENDER_PALETTE['H'],
-                        'data' => $genderData['H'],
-                        'stack' => 1,
-                        'barPercentage' => 1,
-                    ],
-                    [
-                        'type' => 'bar',
-                        'label' => 'Total',
-                        'backgroundColor' => self::GENDER_PALETTE['Total'],
-                        'data' => $genderData['Total'],
-                        'stack' => 0,
-                        'barPercentage' => 0,
-                        'barThickness' => 20,
-                    ],
-                ]
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Homme',
+                    'backgroundColor' => self::GENDER_PALETTE['H'],
+                    'data' => $genderData['H'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::GENDER_PALETTE['Total'],
+                    'data' => $genderData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
 
         $genderChart->setOptions([
@@ -452,7 +452,6 @@ class StatisticsController extends AbstractController
             $seasonNames[] = $seasons[$i]->getName();
         }
 
-        $outgoingGenderDataSets = [];
         $outgoingGenderData = [];
 
         foreach (self::GENDER as $gender) {
@@ -472,19 +471,39 @@ class StatisticsController extends AbstractController
             }
         }
 
-        foreach (self::GENDER as $gender => $label) {
-            $outgoingGenderDataSets[] = [
-                'label' => $gender,
-                'backgroundColor' => self::GENDER_PALETTE[$label],
-                'data' => $outgoingGenderData[$label],
-            ];
-        }
-
         $outgoingGenderChart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $outgoingGenderChart->setData([
             'labels' => $seasonNames,
-            'datasets' => $outgoingGenderDataSets
+            'datasets' => [
+                [
+                    'type' => 'bar',
+                    'label' => 'Femme',
+                    'backgroundColor' => self::GENDER_PALETTE['F'],
+                    'data' => $outgoingGenderData['F'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Homme',
+                    'backgroundColor' => self::GENDER_PALETTE['H'],
+                    'data' => $outgoingGenderData['H'],
+                    'stack' => 1,
+                    'barPercentage' => 1,
+                ],
+                [
+                    'type' => 'bar',
+                    'label' => 'Total',
+                    'backgroundColor' => self::GENDER_PALETTE['Total'],
+                    'data' => $outgoingGenderData['Total'],
+                    'stack' => 0,
+                    'barPercentage' => 0,
+                    'barThickness' => 20,
+                ],
+            ]
         ]);
+
         $outgoingGenderChart->setOptions([
             "scales" => [
                 "xAxes" => [
@@ -494,7 +513,7 @@ class StatisticsController extends AbstractController
                 ],
                 "yAxes" => [
                     [
-                        "stacked" => false,
+                        "stacked" => true,
                         'ticks' => [
                             'beginAtZero' => true,
                             'max' => 500
