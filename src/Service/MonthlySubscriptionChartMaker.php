@@ -70,8 +70,7 @@ class MonthlySubscriptionChartMaker extends ChartMaker
 
                     $lastMonthInFileCurrent = $this->isLastSeasonInFile(
                         $currentSeasonMonthlyCount,
-                        $currentSeasonIndex,
-                        $lastMonthInFileCurrent
+                        $currentSeasonIndex
                     );
                     $currentSeasonIndex++;
                 } else {
@@ -89,8 +88,7 @@ class MonthlySubscriptionChartMaker extends ChartMaker
 
                     $lastMonthInFilePrevious = $this->isLastSeasonInFile(
                         $previousSeasonMonthlyCount,
-                        $previousSeasonIndex,
-                        $lastMonthInFilePrevious
+                        $previousSeasonIndex
                     );
 
                     $previousSeasonIndex++;
@@ -136,15 +134,9 @@ class MonthlySubscriptionChartMaker extends ChartMaker
         return $monthlySubscriptionsChart;
     }
 
-    private function isLastSeasonInFile(array $seasonMonthlyCount, int $seasonIndex, bool $lastIndex): bool
+    private function isLastSeasonInFile(array $seasonMonthlyCount, int $seasonIndex): bool
     {
-        if (
-            !$lastIndex &&
-            $seasonMonthlyCount[$seasonIndex]['month'] ===
-            $seasonMonthlyCount[array_key_last($seasonMonthlyCount)]['month']
-        ) {
-            $lastIndex = true;
-        }
-        return $lastIndex;
+        return ($seasonMonthlyCount[$seasonIndex]['month'] ===
+            $seasonMonthlyCount[array_key_last($seasonMonthlyCount)]['month']);
     }
 }
