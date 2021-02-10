@@ -5,6 +5,12 @@
         <h1 class="text-center mt-5 mb-4">
             Statistiques - Sortants
         </h1>
+        <div class="text-center mb-5">
+            <a href="#category" class="btn btn-primary btn-sm">Répartition par Catégorie</a>
+            <a href="#licence" class="btn btn-primary btn-sm">Répartition par Type de Licence</a>
+            <a href="#gender" class="btn btn-primary btn-sm">Répartition par Genre</a>
+            <a href="#table" class="btn btn-primary btn-sm">Tableau général</a>
+        </div>
         <div id="category" class="row ml-4 pt-4">
             <div class="col">
                 <h2>Répartition par Catégories</h2>
@@ -15,7 +21,7 @@
                 {{ render_chart(outgoingCategoryChart) }}
             </div>
         </div>
-        <div id="category" class="row ml-4 pt-4">
+        <div id="licence" class="row ml-4 pt-4">
             <div class="col">
                 <h2>Répartition par Type de Licence</h2>
             </div>
