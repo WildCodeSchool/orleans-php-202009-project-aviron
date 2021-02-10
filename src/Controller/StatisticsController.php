@@ -382,7 +382,7 @@ class StatisticsController extends AbstractController
         $subscriptions = [];
         $categories = $categoryRepository->findAll();
         $licences = $licenceRepository->findAll();
-        $seasons = $seasonRepository->findAll();
+        $seasons = $seasonRepository->findBy([], ['name' => 'ASC']);
 
         foreach ($categories as $category) {
             foreach ($licences as $licence) {
